@@ -1,3 +1,12 @@
+#if OPENGL
+	#define SV_POSITION POSITION
+	#define VS_SHADERMODEL vs_3_0
+	#define PS_SHADERMODEL ps_3_0
+#else
+	#define VS_SHADERMODEL vs_4_0_level_9_1
+	#define PS_SHADERMODEL ps_4_0_level_9_1
+#endif
+
 // Draw transformed, colored geometry.
 
 // Global Parameters
@@ -46,7 +55,7 @@ technique Colored
 {
     pass Pass0
     {
-        VertexShader = compile vs_1_1 ColoredVS();
-        PixelShader = compile ps_1_1 ColoredPS();
+        VertexShader = compile VS_SHADERMODEL ColoredVS();
+        PixelShader = compile PS_SHADERMODEL ColoredPS();
     }
 }
