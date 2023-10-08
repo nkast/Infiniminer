@@ -4,12 +4,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using Microsoft.Xna.Framework.Net;
-using Microsoft.Xna.Framework.Storage;
 using Lidgren.Network;
 using Lidgren.Network.Xna;
 
@@ -222,7 +219,7 @@ namespace Infiniminer
             if (soundList.Count == 0)
                 return;
 
-            soundList[sound].Play(volumeLevel);
+            soundList[sound].Play(volumeLevel, 1.0f, 1.0f);
         }
 
         public void PlaySound(InfiniminerSound sound, Vector3 position)
@@ -232,7 +229,7 @@ namespace Infiniminer
 
             float distance = (position - playerPosition).Length();
             float volume = Math.Max(0, 10 - distance) / 10.0f * volumeLevel;
-            soundList[sound].Play(volume);
+            soundList[sound].Play(volume, 1.0f, 1.0f);
         }
 
         public void PlaySoundForEveryone(InfiniminerSound sound, Vector3 position)
