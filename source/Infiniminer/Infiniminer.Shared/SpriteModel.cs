@@ -30,12 +30,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using Microsoft.Xna.Framework.Net;
-using Microsoft.Xna.Framework.Storage;
 
 namespace Infiniminer
 {
@@ -119,7 +116,7 @@ namespace Infiniminer
             activeAnimation = new List<AnimationFrame>();
             activeAnimation.Add(dummyFrame);
 
-            vertexDeclaration = new VertexDeclaration(graphicsDevice, VertexPositionTexture.VertexElements);
+            vertexDeclaration = new VertexDeclaration(VertexPositionTexture.VertexDeclaration.GetVertexElements());
         }
 
         public void SetSpriteTexture(Texture2D spriteTexture)
@@ -140,23 +137,12 @@ namespace Infiniminer
             effect.Parameters["xView"].SetValue(viewMatrix);
             effect.Parameters["xProjection"].SetValue(projectionMatrix);
             effect.Parameters["xTexture"].SetValue(texSprite);
-            effect.Begin();
-            effect.Techniques[0].Passes[0].Begin();
+            effect.Techniques[0].Passes[0].Apply();
 
-            graphicsDevice.RenderState.CullMode = CullMode.None;
-            graphicsDevice.SamplerStates[0].MagFilter = TextureFilter.Point;
-
-            // Since the per-pixel alpha is either 0 or 1 we can use an alpha test instead of alpha blending.
-            graphicsDevice.RenderState.AlphaTestEnable = true;
-            graphicsDevice.RenderState.AlphaFunction = CompareFunction.Greater;
-            graphicsDevice.RenderState.ReferenceAlpha = 128;
+            graphicsDevice.RasterizerState = RasterizerState.CullNone;
+            graphicsDevice.SamplerStates[0] = new SamplerState() { Filter = TextureFilter.Point };
 
             graphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, vertices, 0, vertices.Length / 3);
-
-            graphicsDevice.RenderState.AlphaTestEnable = false;
-            
-            effect.Techniques[0].Passes[0].End();
-            effect.End();
         }
 
         public void DrawText(Matrix viewMatrix, Matrix projectionMatrix, Vector3 drawPosition, string hoverText)
@@ -169,7 +155,7 @@ namespace Infiniminer
 
             // Draw our text over the player.
             SpriteBatch spriteBatch = new SpriteBatch(graphicsDevice);
-            spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.SaveState);
+            spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Immediate);
             Vector3 screenSpace = graphicsDevice.Viewport.Project(Vector3.Zero,
                                                                   projectionMatrix,
                                                                   viewMatrix,
