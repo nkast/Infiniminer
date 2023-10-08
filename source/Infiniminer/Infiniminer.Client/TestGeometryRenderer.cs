@@ -4,12 +4,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using Microsoft.Xna.Framework.Net;
-using Microsoft.Xna.Framework.Storage;
 
 namespace Infiniminer
 {
@@ -25,7 +22,7 @@ namespace Infiniminer
         public GeometryDebugger(GraphicsDevice graphicsDevice, Effect effect)
         {
             this.graphicsDevice = graphicsDevice;
-            vertexDeclaration = new VertexDeclaration(graphicsDevice, VertexPositionColor.VertexElements);
+            vertexDeclaration = new VertexDeclaration(VertexPositionColor.VertexDeclaration.GetVertexElements());
             this.effect = effect;
         }
 
@@ -36,16 +33,12 @@ namespace Infiniminer
             effect.Parameters["World"].SetValue(Matrix.Identity);
             effect.Parameters["View"].SetValue(ViewMatrix);
             effect.Parameters["Projection"].SetValue(ProjectionMatrix);
-            effect.Begin();
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
             {
-                pass.Begin();
-                graphicsDevice.RenderState.CullMode = CullMode.None;
-                graphicsDevice.VertexDeclaration = vertexDeclaration;
+                pass.Apply();
+                graphicsDevice.RasterizerState = RasterizerState.CullNone;
                 graphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, sphereVertices, 0, sphereVertices.Length / 3);
-                pass.End();
             }
-            effect.End();
         }
 
         public void DrawLine(Vector3 posStart, Vector3 posEnd, Color color)
