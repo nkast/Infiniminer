@@ -4,12 +4,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using Microsoft.Xna.Framework.Net;
-using Microsoft.Xna.Framework.Storage;
 
 namespace Infiniminer
 {
@@ -43,7 +40,7 @@ namespace Infiniminer
             effect = gameInstance.Content.Load<Effect>("effect_skyplane");
 
             // Create our vertices.
-            vertexDeclaration = new VertexDeclaration(gameInstance.GraphicsDevice, VertexPositionTexture.VertexElements);
+            vertexDeclaration = new VertexDeclaration(VertexPositionTexture.VertexDeclaration.GetVertexElements());
             vertices = new VertexPositionTexture[6];
             vertices[0] = new VertexPositionTexture(new Vector3(-210, 100, -210), new Vector2(0, 0));
             vertices[1] = new VertexPositionTexture(new Vector3(274, 100, -210), new Vector2(1, 0));
@@ -75,19 +72,15 @@ namespace Infiniminer
             effect.Parameters["xProjection"].SetValue(projectionMatrix);
             effect.Parameters["xTexture"].SetValue(texNoise);
             effect.Parameters["xTime"].SetValue(effectTime);
-            effect.Begin();
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
             {
-                pass.Begin();
-                graphicsDevice.SamplerStates[0].MagFilter = TextureFilter.Point;
-                graphicsDevice.RenderState.CullMode = CullMode.None;
-                graphicsDevice.RenderState.DepthBufferEnable = false;
-                graphicsDevice.VertexDeclaration = vertexDeclaration;
+                pass.Apply();
+                graphicsDevice.SamplerStates[0] = new SamplerState() { Filter = TextureFilter.Point };
+                graphicsDevice.RasterizerState = RasterizerState.CullNone;
+                graphicsDevice.DepthStencilState = DepthStencilState.None;
                 graphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, vertices, 0, vertices.Length / 3);
-                graphicsDevice.RenderState.DepthBufferEnable = true;
-                pass.End();
+                graphicsDevice.DepthStencilState = DepthStencilState.Default;
             }
-            effect.End();
         }
     }
 }
