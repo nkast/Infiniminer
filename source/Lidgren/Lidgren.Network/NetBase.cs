@@ -392,7 +392,7 @@ public abstract partial class NetBase : IDisposable
 		try
 		{
 #if DEBUG
-				SendDelayedPackets(now);
+			SendDelayedPackets(now);
 #endif
 
 			while (true)
@@ -771,15 +771,15 @@ public abstract partial class NetBase : IDisposable
 			Start();
 
 #if DEBUG
-			if (!m_suppressSimulatedLag)
+		if (!m_suppressSimulatedLag)
+		{
+			bool send = SimulatedSendPacket(data, length, remoteEP);
+			if (!send)
 			{
-				bool send = SimulatedSendPacket(data, length, remoteEP);
-				if (!send)
-				{
-					m_statistics.CountPacketSent(length);
-					return;
-				}
+				m_statistics.CountPacketSent(length);
+				return;
 			}
+		}
 #endif
 
 		try
@@ -788,8 +788,8 @@ public abstract partial class NetBase : IDisposable
 			int bytesSent = m_socket.SendTo(data, 0, length, SocketFlags.None, remoteEP);
 			//LogVerbose("Sent " + bytesSent + " bytes");
 #if DEBUG || USE_RELEASE_STATISTICS
-				if (!m_suppressSimulatedLag)
-					m_statistics.CountPacketSent(bytesSent);
+			if (!m_suppressSimulatedLag)
+				m_statistics.CountPacketSent(bytesSent);
 #endif
 			return;
 		}
@@ -798,9 +798,9 @@ public abstract partial class NetBase : IDisposable
 			if (sex.SocketErrorCode == SocketError.WouldBlock)
 			{
 #if DEBUG
-					// send buffer overflow?
-					LogWrite("SocketException.WouldBlock thrown during sending; send buffer overflow? Increase buffer using NetAppConfiguration.SendBufferSize");
-					throw new NetException("SocketException.WouldBlock thrown during sending; send buffer overflow? Increase buffer using NetConfiguration.SendBufferSize", sex);
+				// send buffer overflow?
+				LogWrite("SocketException.WouldBlock thrown during sending; send buffer overflow? Increase buffer using NetAppConfiguration.SendBufferSize");
+				throw new NetException("SocketException.WouldBlock thrown during sending; send buffer overflow? Increase buffer using NetConfiguration.SendBufferSize", sex);
 #else
 				// gulp
 				return;
@@ -922,8 +922,8 @@ public abstract partial class NetBase : IDisposable
 	{
 		LogWrite("Performing shutdown (" + reason + ")");
 #if DEBUG
-			// just send all delayed packets; since we won't have the possibility to do it after socket is closed
-			SendDelayedPackets(NetTime.Now + this.SimulatedMinimumLatency + this.SimulatedLatencyVariance + 1000.0);
+		// just send all delayed packets; since we won't have the possibility to do it after socket is closed
+		SendDelayedPackets(NetTime.Now + this.SimulatedMinimumLatency + this.SimulatedLatencyVariance + 1000.0);
 #endif
 		lock (m_bindLock)
 		{

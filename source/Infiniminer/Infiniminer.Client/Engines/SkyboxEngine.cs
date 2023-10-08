@@ -47,7 +47,7 @@ namespace Infiniminer
             // Generate a noise texture.
             randGen = new Random();
             texNoise = new Texture2D(gameInstance.GraphicsDevice, 64, 64);
-            uint[] noiseData = new uint[64*64];
+            uint[] noiseData = new uint[64 * 64];
             for (int i = 0; i < 64 * 64; i++)
                 if (randGen.Next(32) == 0)
                     noiseData[i] = Color.White.PackedValue;
