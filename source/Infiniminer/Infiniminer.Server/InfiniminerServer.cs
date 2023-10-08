@@ -46,12 +46,7 @@ namespace Infiniminer
 
         uint duplicateNameCount = 0;
 
-        public InfiniminerServer()
-        {
-            Console.SetWindowSize(1, 1);
-            Console.SetBufferSize(80, CONSOLE_SIZE + 4);
-            Console.SetWindowSize(80, CONSOLE_SIZE + 4);
-        }
+        public InfiniminerServer() { }
 
         public string GetExtraInfo()
         {
