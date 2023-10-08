@@ -6,12 +6,9 @@ using StateMasher;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using Microsoft.Xna.Framework.Net;
-using Microsoft.Xna.Framework.Storage;
 
 namespace Infiniminer.States
 {
@@ -91,7 +88,7 @@ namespace Infiniminer.States
             string progressText = String.Format("{0:00}% LOADED", dataPacketsRecieved / 256.0f * 100);
 
             SpriteBatch spriteBatch = new SpriteBatch(graphicsDevice);
-            spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Deferred, SaveStateMode.SaveState);
+            spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred);
             spriteBatch.Draw(texMenu, drawRect, Color.White);
             spriteBatch.DrawString(uiFont, progressText, new Vector2(((int)(_SM.GraphicsDevice.Viewport.Width / 2 - uiFont.MeasureString(progressText).X / 2)), drawRect.Y + 430), Color.White);
             for (int i=0; i<currentHint.Length; i++)
