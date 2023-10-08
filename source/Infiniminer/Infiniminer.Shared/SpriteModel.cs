@@ -46,7 +46,7 @@ namespace Infiniminer
         public int spriteColumn;
         public float length;
     }
-    
+
     public class SpriteModel
     {
         /* Animation scripts provide a light-weight way to define animations. They consist of a sequence of frames
@@ -85,7 +85,7 @@ namespace Infiniminer
         Effect effect;
         Game gameInstance;
         SpriteFont nameFont = null;
-        
+
         // Constructor for SpriteModel. Loads up the texture referenced by spriteSheetPath to use for drawing. 
         // Each individual sprite should be fit to a 24×32 box with the bottom center of the box corresponding to 
         // the SpriteModel's origin. A sprite sheet is expected to have a column of four sprites for every frame 
@@ -251,7 +251,7 @@ namespace Infiniminer
         //}
 
         // Advance the animation counter by the time-delta in gameTime.
-        
+
         public void Update(GameTime gameTime)
         {
             List<AnimationFrame> currentAnimation = runningActive ? activeAnimation : passiveAnimation;

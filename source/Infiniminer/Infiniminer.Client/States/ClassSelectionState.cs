@@ -37,10 +37,10 @@ namespace Infiniminer.States
         string nextState = null;
 
         ClickRegion[] clkClassMenu = new ClickRegion[4] {
-	        new ClickRegion(new Rectangle(54,168,142,190), "miner"), 
-	        new ClickRegion(new Rectangle(300,169,142,190), "prospector"), 
-	        new ClickRegion(new Rectangle(580,170,133,187), "engineer"), 
-	        new ClickRegion(new Rectangle(819,172,133,190), "sapper")
+            new ClickRegion(new Rectangle(54,168,142,190), "miner"),
+            new ClickRegion(new Rectangle(300,169,142,190), "prospector"),
+            new ClickRegion(new Rectangle(580,170,133,187), "engineer"),
+            new ClickRegion(new Rectangle(819,172,133,190), "sapper")
         };
 
         public override void OnEnter(string oldState)
@@ -85,7 +85,7 @@ namespace Infiniminer.States
         {
             SpriteBatch spriteBatch = new SpriteBatch(graphicsDevice);
             spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred);
-            spriteBatch.Draw((_P.playerTeam == PlayerTeam.Red)?texMenuRed:texMenuBlue, drawRect, Color.White);
+            spriteBatch.Draw((_P.playerTeam == PlayerTeam.Red) ? texMenuRed : texMenuBlue, drawRect, Color.White);
             spriteBatch.End();
         }
 

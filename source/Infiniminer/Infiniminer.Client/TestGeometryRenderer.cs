@@ -61,13 +61,13 @@ namespace Infiniminer
 
         public void DrawLine(Vector3 posStart, Vector3 posEnd, Color color)
         {
-            
+
         }
 
         public VertexPositionColor[] ConstructSphereVertices(Vector3 position, float radius, Color color)
         {
             VertexPositionColor[] vertices = new VertexPositionColor[3 * 8];
-            VertexPositionColor top = new VertexPositionColor(Vector3.Up*radius+position, color);
+            VertexPositionColor top = new VertexPositionColor(Vector3.Up * radius + position, color);
             VertexPositionColor bottom = new VertexPositionColor(Vector3.Down * radius + position, color);
             VertexPositionColor left = new VertexPositionColor(Vector3.Left * radius + position, color);
             VertexPositionColor right = new VertexPositionColor(Vector3.Right * radius + position, color);

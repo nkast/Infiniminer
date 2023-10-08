@@ -138,8 +138,8 @@ public abstract partial class NetBase
 	private void DelayPacket(byte[] data, int length, IPEndPoint remoteEP, float delay)
 	{
 #if DEBUG
-			if (Thread.CurrentThread != m_heartbeatThread)
-				throw new Exception("Threading error; should be heartbeat thread. Please check callstack!");
+		if (Thread.CurrentThread != m_heartbeatThread)
+			throw new Exception("Threading error; should be heartbeat thread. Please check callstack!");
 #endif
 		DelayedPacket pk = new DelayedPacket();
 		pk.Data = new byte[length];

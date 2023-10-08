@@ -30,9 +30,6 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Infiniminer
 {
-
-
-
     [Serializable]
     public struct VertexPositionTextureShade : IVertexType
     {
@@ -44,10 +41,10 @@ namespace Infiniminer
         VertexDeclaration IVertexType.VertexDeclaration => VertexDeclaration;
 
         public static readonly VertexElement[] VertexElements = new VertexElement[]
-        { 
+        {
             new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0),
             new VertexElement(sizeof(float)*3,VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0),
-            new VertexElement(sizeof(float)*5,VertexElementFormat.Single, VertexElementUsage.TextureCoordinate, 1)               
+            new VertexElement(sizeof(float)*5,VertexElementFormat.Single, VertexElementUsage.TextureCoordinate, 1)
         };
 
         public VertexPositionTextureShade(Vector3 position, Vector2 uv, double shade)
@@ -103,8 +100,8 @@ namespace Infiniminer
     public class BlockEngine
     {
         BlockType[,,] blockList = null;
-        public BlockType[, ,] downloadList = null;
-        Dictionary<uint,bool>[,] faceMap = null;
+        public BlockType[,,] downloadList = null;
+        Dictionary<uint, bool>[,] faceMap = null;
         BlockTexture[,] blockTextureMap = null;
         IMTexture[] blockTextures = null;
         Effect basicEffect;
@@ -149,16 +146,16 @@ namespace Infiniminer
                     }
 
             // Initialize the face lists.
-            faceMap = new Dictionary<uint,bool>[(byte)BlockTexture.MAXIMUM, NUMREGIONS];
+            faceMap = new Dictionary<uint, bool>[(byte)BlockTexture.MAXIMUM, NUMREGIONS];
             for (BlockTexture blockTexture = BlockTexture.None; blockTexture < BlockTexture.MAXIMUM; blockTexture++)
-                for (int r=0; r<NUMREGIONS; r++)
+                for (int r = 0; r < NUMREGIONS; r++)
                     faceMap[(byte)blockTexture, r] = new Dictionary<uint, bool>();
 
             // Initialize the texture map.
             blockTextureMap = new BlockTexture[(byte)BlockType.MAXIMUM, 6];
             for (BlockType blockType = BlockType.None; blockType < BlockType.MAXIMUM; blockType++)
                 for (BlockFaceDirection faceDir = BlockFaceDirection.XIncreasing; faceDir < BlockFaceDirection.MAXIMUM; faceDir++)
-                    blockTextureMap[(byte)blockType,(byte)faceDir] = BlockInformation.GetTexture(blockType, faceDir);
+                    blockTextureMap[(byte)blockType, (byte)faceDir] = BlockInformation.GetTexture(blockType, faceDir);
 
             // Load the textures we'll use.
             blockTextures = new IMTexture[(byte)BlockTexture.MAXIMUM];
@@ -227,7 +224,7 @@ namespace Infiniminer
         // Returns true if we are solid at this point.
         public bool SolidAtPoint(Vector3 point)
         {
-            return BlockAtPoint(point) != BlockType.None; 
+            return BlockAtPoint(point) != BlockType.None;
         }
 
         public bool SolidAtPointForPlayer(Vector3 point)
@@ -253,14 +250,14 @@ namespace Infiniminer
             ushort z = (ushort)point.Z;
             if (x < 0 || y < 0 || z < 0 || x >= MAPSIZE || y >= MAPSIZE || z >= MAPSIZE)
                 return BlockType.None;
-            return blockList[x, y, z]; 
+            return blockList[x, y, z];
         }
 
         public bool RayCollision(Vector3 startPosition, Vector3 rayDirection, float distance, int searchGranularity, ref Vector3 hitPoint, ref Vector3 buildPoint)
         {
             Vector3 testPos = startPosition;
             Vector3 buildPos = startPosition;
-            for (int i=0; i<searchGranularity; i++)
+            for (int i = 0; i < searchGranularity; i++)
             {
                 testPos += rayDirection * distance / searchGranularity;
                 BlockType testBlock = BlockAtPoint(testPos);
@@ -279,7 +276,7 @@ namespace Infiniminer
         {
             RegenerateDirtyVertexLists();
 
-            for (BlockTexture blockTexture = BlockTexture.None+1; blockTexture < BlockTexture.MAXIMUM; blockTexture++)
+            for (BlockTexture blockTexture = BlockTexture.None + 1; blockTexture < BlockTexture.MAXIMUM; blockTexture++)
                 for (uint r = 0; r < NUMREGIONS; r++)
                 {
                     // Figure out if we should be rendering translucently.
@@ -320,17 +317,17 @@ namespace Infiniminer
             if (renderLava)
             {
                 basicEffect.CurrentTechnique = basicEffect.Techniques["LavaBlock"];
-                basicEffect.Parameters["xTime"].SetValue(elapsedTime%5);
+                basicEffect.Parameters["xTime"].SetValue(elapsedTime % 5);
             }
             else
                 basicEffect.CurrentTechnique = basicEffect.Techniques["Block"];
-            
+
             basicEffect.Parameters["xWorld"].SetValue(Matrix.Identity);
             basicEffect.Parameters["xView"].SetValue(gameInstance.propertyBag.playerCamera.ViewMatrix);
             basicEffect.Parameters["xProjection"].SetValue(gameInstance.propertyBag.playerCamera.ProjectionMatrix);
             basicEffect.Parameters["xTexture"].SetValue(blockTexture);
             basicEffect.Parameters["xLODColor"].SetValue(lodColor.ToVector3());
-            
+
             foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
             {
                 pass.Apply();
@@ -355,12 +352,12 @@ namespace Infiniminer
                     //  [MG_PORT_NOTES] The cheatsheet says additive, may not be correct?
                     graphicsDevice.BlendState = BlendState.Additive;
                 }
-            }            
+            }
         }
 
         private void RegenerateDirtyVertexLists()
         {
-            for (BlockTexture blockTexture = BlockTexture.None+1; blockTexture < BlockTexture.MAXIMUM; blockTexture++)
+            for (BlockTexture blockTexture = BlockTexture.None + 1; blockTexture < BlockTexture.MAXIMUM; blockTexture++)
                 for (int r = 0; r < NUMREGIONS; r++)
                     if (vertexListDirty[(byte)blockTexture, r])
                     {
@@ -393,7 +390,7 @@ namespace Infiniminer
             foreach (uint faceInfo in faceList.Keys)
             {
                 BuildFaceVertices(ref vertexList, vertexPointer, faceInfo, texture == (int)BlockTexture.Spikes);
-                vertexPointer += 6;            
+                vertexPointer += 6;
             }
             DynamicVertexBuffer vertexBuffer = new DynamicVertexBuffer(gameInstance.GraphicsDevice, typeof(VertexPositionTextureShade), vertexList.Length * VertexPositionTextureShade.SizeInBytes, BufferUsage.WriteOnly);
             //  [MG_PORT_NOTES] .ContentLost is not part of MonoGame. Need to find some other way to support this
@@ -572,7 +569,7 @@ namespace Infiniminer
             y = regionNumber % REGIONRATIO;
             regionNumber = (regionNumber - y) / REGIONRATIO;
             z = regionNumber;
-            return new Vector3(x * REGIONSIZE + REGIONSIZE / 2, y * REGIONSIZE + REGIONSIZE / 2, z * REGIONSIZE + REGIONSIZE / 2);            
+            return new Vector3(x * REGIONSIZE + REGIONSIZE / 2, y * REGIONSIZE + REGIONSIZE / 2, z * REGIONSIZE + REGIONSIZE / 2);
         }
 
         private void ShowQuad(ushort x, ushort y, ushort z, BlockFaceDirection faceDir, BlockType blockType)

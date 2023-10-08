@@ -142,7 +142,7 @@ namespace Infiniminer
             for (int i = 0; i < 50; i++)
             {
                 Particle p = new Particle();
-                p.Color = new Color(90,60,40);
+                p.Color = new Color(90, 60, 40);
                 p.Size = (float)(randGen.NextDouble() * 0.4 + 0.05);
                 p.Position = explosionPosition;
                 p.Position.Y += (float)randGen.NextDouble() - 0.5f;
@@ -157,7 +157,7 @@ namespace Infiniminer
             {
                 Particle p = new Particle();
                 p.Color = color;
-                p.Size = (float)(randGen.NextDouble()*0.2 + 0.05);
+                p.Size = (float)(randGen.NextDouble() * 0.2 + 0.05);
                 p.Position = playerPosition;
                 p.Position.Y -= (float)randGen.NextDouble();
                 p.Velocity = new Vector3((float)randGen.NextDouble() * 5 - 2.5f, (float)randGen.NextDouble() * 4f, (float)randGen.NextDouble() * 5 - 2.5f);

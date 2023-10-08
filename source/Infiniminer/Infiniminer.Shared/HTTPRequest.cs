@@ -45,7 +45,7 @@ namespace Infiniminer
             {
                 request.ContentLength = bytes.Length;
                 os = request.GetRequestStream();
-                os.Write (bytes, 0, bytes.Length);
+                os.Write(bytes, 0, bytes.Length);
             }
             catch (WebException ex)
             {

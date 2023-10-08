@@ -55,10 +55,10 @@ namespace Infiniminer
         public void JoinGame(IPEndPoint serverEndPoint)
         {
             // Clear out the map load progress indicator.
-            propertyBag.mapLoadProgress = new bool[64,64];
+            propertyBag.mapLoadProgress = new bool[64, 64];
             for (int i = 0; i < 64; i++)
-                for (int j=0; j<64; j++)
-                    propertyBag.mapLoadProgress[i,j] = false;
+                for (int j = 0; j < 64; j++)
+                    propertyBag.mapLoadProgress[i, j] = false;
 
             // Create our connect message.
             NetBuffer connectBuffer = propertyBag.netClient.CreateBuffer();
@@ -72,7 +72,7 @@ namespace Infiniminer
         public List<ServerInformation> EnumerateServers(float discoveryTime)
         {
             List<ServerInformation> serverList = new List<ServerInformation>();
-            
+
             // Discover local servers.
             propertyBag.netClient.DiscoverLocalServers(5565);
             NetBuffer msgBuffer = propertyBag.netClient.CreateBuffer();
@@ -173,18 +173,18 @@ namespace Infiniminer
                                     {
                                         byte x = msgBuffer.ReadByte();
                                         byte y = msgBuffer.ReadByte();
-                                        propertyBag.mapLoadProgress[x,y] = true;
-                                        for (byte dy=0; dy<16; dy++)
-                                            for (byte z=0; z<64; z++)
+                                        propertyBag.mapLoadProgress[x, y] = true;
+                                        for (byte dy = 0; dy < 16; dy++)
+                                            for (byte z = 0; z < 64; z++)
                                             {
                                                 BlockType blockType = (BlockType)msgBuffer.ReadByte();
                                                 if (blockType != BlockType.None)
-                                                    propertyBag.blockEngine.downloadList[x, y+dy, z] = blockType;
+                                                    propertyBag.blockEngine.downloadList[x, y + dy, z] = blockType;
                                             }
                                         bool downloadComplete = true;
-                                        for (x=0; x<64; x++)
-                                            for (y=0; y<64; y+=16)
-                                                if (propertyBag.mapLoadProgress[x,y] == false)
+                                        for (x = 0; x < 64; x++)
+                                            for (y = 0; y < 64; y += 16)
+                                                if (propertyBag.mapLoadProgress[x, y] == false)
                                                 {
                                                     downloadComplete = false;
                                                     break;
@@ -259,7 +259,7 @@ namespace Infiniminer
                                             if (propertyBag.blockEngine.BlockAtPoint(new Vector3(x, y, z)) != BlockType.None)
                                                 propertyBag.blockEngine.RemoveBlock(x, y, z);
                                             propertyBag.blockEngine.AddBlock(x, y, z, blockType);
-                                            CheckForStandingInLava();                                          
+                                            CheckForStandingInLava();
                                         }
                                     }
                                     break;
@@ -267,7 +267,7 @@ namespace Infiniminer
                                 case InfiniminerMessage.TriggerExplosion:
                                     {
                                         Vector3 blockPos = msgBuffer.ReadVector3();
-                                        
+
                                         // Play the explosion sound.
                                         propertyBag.PlaySound(InfiniminerSound.Explosion, blockPos);
 
@@ -460,7 +460,7 @@ namespace Infiniminer
             if (dataFile.Data.ContainsKey("pretty"))
                 RenderPretty = bool.Parse(dataFile.Data["pretty"]);
             if (dataFile.Data.ContainsKey("volume"))
-                volumeLevel = Math.Max(0,Math.Min(1,float.Parse(dataFile.Data["volume"], System.Globalization.CultureInfo.InvariantCulture)));
+                volumeLevel = Math.Max(0, Math.Min(1, float.Parse(dataFile.Data["volume"], System.Globalization.CultureInfo.InvariantCulture)));
 
             graphicsDeviceManager.ApplyChanges();
             base.Initialize();
@@ -474,7 +474,7 @@ namespace Infiniminer
         protected override void OnExiting(object sender, EventArgs args)
         {
             propertyBag.netClient.Shutdown("Client exiting.");
-            
+
             base.OnExiting(sender, args);
         }
 

@@ -122,14 +122,14 @@ namespace Infiniminer.States
                     if (_P.radarValue == 200)
                         _P.PlaySound(InfiniminerSound.RadarLow);
                     if (_P.radarValue == 1000)
-                        _P.PlaySound(InfiniminerSound.RadarHigh);   
+                        _P.PlaySound(InfiniminerSound.RadarHigh);
                 }
             }
 
             // Update the player"s position.
             if (!_P.playerDead)
                 UpdatePlayerPosition(gameTime, keyState);
-            
+
             // Update the camera regardless of if we"re alive or not.
             _P.UpdateCamera(gameTime);
 
@@ -149,7 +149,7 @@ namespace Infiniminer.States
             {
                 BlockType standingOnBlock = _P.blockEngine.BlockAtPoint(footPosition);
                 BlockType hittingHeadOnBlock = _P.blockEngine.BlockAtPoint(headPosition);
-                
+
                 // If we"re hitting the ground with a high velocity, die!
                 if (standingOnBlock != BlockType.None && _P.playerVelocity.Y < 0)
                 {
@@ -176,7 +176,7 @@ namespace Infiniminer.States
                     int blockIn = (int)(headPosition.Y);
                     _P.playerPosition.Y = (float)(blockIn - 0.15f);
                 }
-                
+
                 // If the player is stuck in the ground, bring them out.
                 // This happens because we"re standing on a block at -1.5, but stuck in it at -1.4, so -1.45 is the sweet spot.
                 if (_P.blockEngine.SolidAtPointForPlayer(footPosition))
@@ -184,7 +184,7 @@ namespace Infiniminer.States
                     int blockOn = (int)(footPosition.Y);
                     _P.playerPosition.Y = (float)(blockOn + 1 + 1.45);
                 }
-                
+
                 _P.playerVelocity.Y = 0;
 
                 // Logic for standing on a block.
@@ -227,7 +227,7 @@ namespace Infiniminer.States
                         _P.KillPlayer("WAS INCINERATED BY LAVA!");
                         return;
                 }
-            }                
+            }
             _P.playerPosition += _P.playerVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             // Death by falling off the map.
@@ -251,7 +251,7 @@ namespace Infiniminer.States
                 if (keyState.IsKeyDown(Keys.A))
                     moveVector -= _P.playerCamera.GetRightVector();
             }
-            
+
             if (moveVector.X != 0 || moveVector.Z != 0)
             {
                 // "Flatten" the movement vector so that we don"t move up/down.
@@ -322,7 +322,7 @@ namespace Infiniminer.States
                 return true;
             }
 
-            return false;         
+            return false;
         }
 
         public override void OnRenderAtEnter(GraphicsDevice graphicsDevice)
@@ -371,7 +371,7 @@ namespace Infiniminer.States
                         msgBuffer.Write(_P.chatEntryBuffer);
                         _P.netClient.SendMessage(msgBuffer, NetChannel.ReliableInOrder3);
                     }
-                    
+
                     _P.chatEntryBuffer = "";
                     _P.chatMode = ChatMessageType.None;
                 }
@@ -466,7 +466,7 @@ namespace Infiniminer.States
 
         public override void OnKeyUp(Keys key)
         {
-            
+
         }
 
         public override void OnMouseDown(MouseButton button, int x, int y)
@@ -499,8 +499,8 @@ namespace Infiniminer.States
                         _P.FireRadar();
                         break;
                 }
-            }     
-       
+            }
+
             // If we"re dead, come back to life.
             if (_P.playerDead && _P.screenEffectCounter > 2)
             {
@@ -510,7 +510,7 @@ namespace Infiniminer.States
 
         public override void OnMouseUp(MouseButton button, int x, int y)
         {
-            
+
         }
 
         public override void OnMouseScroll(int scrollDelta)
@@ -531,7 +531,7 @@ namespace Infiniminer.States
                 _P.PlaySound(InfiniminerSound.ClickLow);
                 _P.playerBlockSelected -= 1;
                 if (_P.playerBlockSelected < 0)
-                    _P.playerBlockSelected = _P.playerBlocks.Length-1;
+                    _P.playerBlockSelected = _P.playerBlocks.Length - 1;
             }
         }
     }

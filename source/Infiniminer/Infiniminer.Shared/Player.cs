@@ -126,7 +126,7 @@ namespace Infiniminer
                 Vector3 a = interpList[8].position, b = interpList[9].position;
                 double ta = interpList[8].gameTime, tb = interpList[9].gameTime;
                 Vector3 d = b - a;
-                double timeScale = (interpList[9].gameTime - interpList[0].gameTime)/9;
+                double timeScale = (interpList[9].gameTime - interpList[0].gameTime) / 9;
                 double timeAmount = Math.Min((gameTime - ta) / timeScale, 1);
                 Position = a + d * (float)timeAmount;
             }

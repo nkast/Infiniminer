@@ -116,8 +116,8 @@ public sealed partial class NetConnection
 	internal void HandleUserMessage(IncomingNetMessage msg)
 	{
 #if DEBUG
-			if (System.Threading.Thread.CurrentThread != m_owner.m_heartbeatThread)
-				throw new Exception("Threading error; should be heartbeat thread. Please check callstack!");
+		if (System.Threading.Thread.CurrentThread != m_owner.m_heartbeatThread)
+			throw new Exception("Threading error; should be heartbeat thread. Please check callstack!");
 #endif
 
 		//

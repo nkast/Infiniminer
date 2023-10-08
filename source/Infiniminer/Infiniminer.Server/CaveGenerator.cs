@@ -35,13 +35,13 @@ namespace Infiniminer
         private static Random randGen = new Random();
 
         // Create a cave system.
-        public static BlockType[, ,] GenerateCaveSystem(int size, bool includeLava, uint oreFactor)
+        public static BlockType[,,] GenerateCaveSystem(int size, bool includeLava, uint oreFactor)
         {
             float gradientStrength = (float)randGen.NextDouble();
-            BlockType[, ,] caveData = CaveGenerator.GenerateConstant(size, BlockType.Dirt);
+            BlockType[,,] caveData = CaveGenerator.GenerateConstant(size, BlockType.Dirt);
 
             // Add ore.
-            float[, ,] oreNoise = CaveGenerator.GeneratePerlinNoise(32);
+            float[,,] oreNoise = CaveGenerator.GeneratePerlinNoise(32);
             oreNoise = InterpolateData(ref oreNoise, 32, size);
             for (int i = 0; i < oreFactor; i++)
                 CaveGenerator.PaintWithRandomWalk(ref caveData, ref oreNoise, size, 1, BlockType.Ore, false);
@@ -51,15 +51,15 @@ namespace Infiniminer
             AddDiamond(ref caveData, size);
 
             // Level off everything above ground level, replacing it with mountains.
-            float[, ,] mountainNoise = CaveGenerator.GeneratePerlinNoise(32);
+            float[,,] mountainNoise = CaveGenerator.GeneratePerlinNoise(32);
             mountainNoise = InterpolateData(ref mountainNoise, 32, size);
             for (int x = 0; x < size; x++)
                 for (int y = 0; y < size; y++)
-                    for (int z = 0; z <= Defines.GROUND_LEVEL*2; z++)
+                    for (int z = 0; z <= Defines.GROUND_LEVEL * 2; z++)
                         mountainNoise[x, y, z] = z < 3 ? 0 : Math.Min(1, z / (Defines.GROUND_LEVEL * 2));
-            float[, ,] gradient = CaveGenerator.GenerateGradient(size);
+            float[,,] gradient = CaveGenerator.GenerateGradient(size);
             CaveGenerator.AddDataTo(ref mountainNoise, ref gradient, size, 0.1f, 0.9f);
-            BlockType[, ,] mountainData = CaveGenerator.GenerateConstant(size, BlockType.None);
+            BlockType[,,] mountainData = CaveGenerator.GenerateConstant(size, BlockType.None);
             int numMountains = randGen.Next(size, size * 3);
             for (int i = 0; i < numMountains; i++)
                 CaveGenerator.PaintWithRandomWalk(ref mountainData, ref mountainNoise, size, randGen.Next(2, 3), BlockType.Dirt, false);
@@ -68,9 +68,9 @@ namespace Infiniminer
                     for (int z = 0; z <= Defines.GROUND_LEVEL; z++)
                         if (mountainData[x, y, z] == BlockType.None)
                             caveData[x, y, z] = BlockType.None;
-            
+
             // Carve some caves into the ground.
-            float[, ,] caveNoise = CaveGenerator.GeneratePerlinNoise(32);
+            float[,,] caveNoise = CaveGenerator.GeneratePerlinNoise(32);
             caveNoise = InterpolateData(ref caveNoise, 32, size);
             gradient = CaveGenerator.GenerateGradient(size);
             CaveGenerator.AddDataTo(ref caveNoise, ref gradient, size, 1 - gradientStrength, gradientStrength);
@@ -79,7 +79,7 @@ namespace Infiniminer
                 CaveGenerator.PaintWithRandomWalk(ref caveData, ref caveNoise, size, randGen.Next(1, 2), BlockType.None, false);
 
             // Carve the map into a sphere.
-            float[, ,] sphereGradient = CaveGenerator.GenerateRadialGradient(size);
+            float[,,] sphereGradient = CaveGenerator.GenerateRadialGradient(size);
             cavesToCarve = randGen.Next(size / 8, size / 2);
             for (int i = 0; i < cavesToCarve; i++)
                 CaveGenerator.PaintWithRandomWalk(ref caveData, ref sphereGradient, size, randGen.Next(1, 2), BlockType.None, true);
@@ -123,9 +123,9 @@ namespace Infiniminer
         //    data[x, y, z] = blockType;
         //}
 
-        public static void AddRocks(ref BlockType[, ,] data, int size)
+        public static void AddRocks(ref BlockType[,,] data, int size)
         {
-            int numRocks = randGen.Next(size, 2*size);
+            int numRocks = randGen.Next(size, 2 * size);
             CaveInfo += " numRocks=" + numRocks;
             for (int i = 0; i < numRocks; i++)
             {
@@ -146,7 +146,7 @@ namespace Infiniminer
             }
         }
 
-        public static void AddLava(ref BlockType[, ,] data, int size)
+        public static void AddLava(ref BlockType[,,] data, int size)
         {
             int numFlows = randGen.Next(size / 16, size / 2);
             while (numFlows > 0)
@@ -170,16 +170,16 @@ namespace Infiniminer
                 zf = 1 - Math.Abs(zf - 1);
                 int z = (int)(zf * size);
 
-                if (data[x, y, z] == BlockType.None && z+1 < size-1)
+                if (data[x, y, z] == BlockType.None && z + 1 < size - 1)
                 {
                     data[x, y, z] = BlockType.Rock;
-                    data[x, y, z+1] = BlockType.Lava;
+                    data[x, y, z + 1] = BlockType.Lava;
                     numFlows -= 1;
                 }
             }
         }
 
-        public static void AddDiamond(ref BlockType[, ,] data, int size)
+        public static void AddDiamond(ref BlockType[,,] data, int size)
         {
             CaveInfo += "diamond";
 
@@ -202,17 +202,17 @@ namespace Infiniminer
         }
 
         // Gold appears in fairly numerous streaks, located at medium depths.
-        public static void AddGold(ref BlockType[, ,] data, int size)
+        public static void AddGold(ref BlockType[,,] data, int size)
         {
             CaveInfo += "gold";
 
             int numVeins = 16;
             for (int i = 0; i < numVeins; i++)
             {
-                int fieldLength = randGen.Next(size/3, size);
+                int fieldLength = randGen.Next(size / 3, size);
                 float x = randGen.Next(0, size);
                 float y = randGen.Next(0, size);
-                
+
                 // generate a random z-value weighted toward a medium depth
                 float zf = 0;
                 for (int j = 0; j < 4; j++)
@@ -247,15 +247,15 @@ namespace Infiniminer
                             tz += 1;
                             break;
                     }
-                    if (x + tx >= 0 && y + ty>= 0 && z+tz >= 0 && x+tx < size && y+ty < size && z+tz < size)
-                        data[(int)x+tx, (int)y+ty, (int)z+tz] = BlockType.Gold;
+                    if (x + tx >= 0 && y + ty >= 0 && z + tz >= 0 && x + tx < size && y + ty < size && z + tz < size)
+                        data[(int)x + tx, (int)y + ty, (int)z + tz] = BlockType.Gold;
                 }
             }
         }
 
         // Generates a cube of noise with sides of length size. Noise falls in a linear
         // distribution ranging from 0 to magnitude.
-        public static float[, ,] GenerateNoise(int size, float magnitude)
+        public static float[,,] GenerateNoise(int size, float magnitude)
         {
             float[,,] noiseArray = new float[size, size, size];
             for (int x = 0; x < size; x++)
@@ -282,13 +282,13 @@ namespace Infiniminer
         }
 
         // Does a random walk of noiseData, setting cells to 0 in caveData in the process.
-        public static void PaintWithRandomWalk(ref BlockType[, ,] caveData, ref float[, ,] noiseData, int size, int paintRadius, BlockType paintValue, bool dontStopAtEdge)
+        public static void PaintWithRandomWalk(ref BlockType[,,] caveData, ref float[,,] noiseData, int size, int paintRadius, BlockType paintValue, bool dontStopAtEdge)
         {
             int x = randGen.Next(0, size);
             int y = randGen.Next(0, size);
             int z = randGen.Next(0, size);
 
-            if (z < size/50)
+            if (z < size / 50)
                 z = 0;
 
             int count = 0;
@@ -297,7 +297,7 @@ namespace Infiniminer
             {
                 float oldNoise = noiseData[x, y, z];
 
-                PaintAtPoint(ref caveData, x, y, z, size, paintRadius+1, paintValue);
+                PaintAtPoint(ref caveData, x, y, z, size, paintRadius + 1, paintValue);
                 int dx = randGen.Next(0, paintRadius * 2 + 1) - paintRadius;
                 int dy = randGen.Next(0, paintRadius * 2 + 1) - paintRadius;
                 int dz = randGen.Next(0, paintRadius * 2 + 1) - paintRadius;
@@ -330,7 +330,7 @@ namespace Infiniminer
                 // If we're jumping to a higher value on the noise gradient, move twice as far.
                 if (newNoise > oldNoise)
                 {
-                    PaintAtPoint(ref caveData, x, y, z, size, paintRadius+1, paintValue);
+                    PaintAtPoint(ref caveData, x, y, z, size, paintRadius + 1, paintValue);
                     x += dx;
                     y += dy;
                     z += dz;
@@ -353,24 +353,24 @@ namespace Infiniminer
 
                     if (z < 0)
                         z = 0;
-                }  
+                }
             }
         }
 
-        public static void PaintAtPoint(ref BlockType[, ,] caveData, int x, int y, int z, int size, int paintRadius, BlockType paintValue)
+        public static void PaintAtPoint(ref BlockType[,,] caveData, int x, int y, int z, int size, int paintRadius, BlockType paintValue)
         {
             for (int dx = -paintRadius; dx <= paintRadius; dx++)
                 for (int dy = -paintRadius; dy <= paintRadius; dy++)
                     for (int dz = -paintRadius; dz <= paintRadius; dz++)
-                        if (x+dx >= 0 && y+dy>= 0 && z+dz >= 0 && x+dx < size && y+dy < size && z+dz < size)
-                            if (dx*dx+dy*dy+dz*dz<paintRadius*paintRadius)
+                        if (x + dx >= 0 && y + dy >= 0 && z + dz >= 0 && x + dx < size && y + dy < size && z + dz < size)
+                            if (dx * dx + dy * dy + dz * dz < paintRadius * paintRadius)
                                 caveData[x + dx, y + dy, z + dz] = paintValue;
         }
 
         // Generates a set of constant values.
-        public static BlockType[, ,] GenerateConstant(int size, BlockType value)
+        public static BlockType[,,] GenerateConstant(int size, BlockType value)
         {
-            BlockType[, ,] data = new BlockType[size, size, size];
+            BlockType[,,] data = new BlockType[size, size, size];
             for (int x = 0; x < size; x++)
                 for (int y = 0; y < size; y++)
                     for (int z = 0; z < size; z++)
@@ -378,9 +378,9 @@ namespace Infiniminer
             return data;
         }
 
-        public static float[, ,] GenerateGradient(int size)
+        public static float[,,] GenerateGradient(int size)
         {
-            float[, ,] data = new float[size, size, size];
+            float[,,] data = new float[size, size, size];
 
             for (int x = 0; x < size; x++)
                 for (int y = 0; y < size; y++)
@@ -391,9 +391,9 @@ namespace Infiniminer
         }
 
         // Radial gradient concentrated with high values at the outside.
-        public static float[, ,] GenerateRadialGradient(int size)
+        public static float[,,] GenerateRadialGradient(int size)
         {
-            float[, ,] data = new float[size, size, size];
+            float[,,] data = new float[size, size, size];
 
             for (int x = 0; x < size; x++)
                 for (int y = 0; y < size; y++)
@@ -406,20 +406,20 @@ namespace Infiniminer
         }
 
         // Adds the values in dataSrc to the values in dataDst, storing the result in dataDst.
-        public static void AddDataTo(ref float[, ,] dataDst, ref float[, ,] dataSrc, int size, float scalarDst, float scalarSrc)
+        public static void AddDataTo(ref float[,,] dataDst, ref float[,,] dataSrc, int size, float scalarDst, float scalarSrc)
         {
             for (int x = 0; x < size; x++)
                 for (int y = 0; y < size; y++)
                     for (int z = 0; z < size; z++)
-                        dataDst[x, y, z] = Math.Max(Math.Min(dataDst[x, y, z]*scalarDst + dataSrc[x, y, z]*scalarSrc, 1), 0);
+                        dataDst[x, y, z] = Math.Max(Math.Min(dataDst[x, y, z] * scalarDst + dataSrc[x, y, z] * scalarSrc, 1), 0);
         }
-        public static void AddDataTo(ref float[, ,] dataDst, ref float[, ,] dataSrc, int size)
+        public static void AddDataTo(ref float[,,] dataDst, ref float[,,] dataSrc, int size)
         {
             AddDataTo(ref dataDst, ref dataSrc, size, 1, 1);
         }
 
         // Resizes dataIn, with size sizeIn, to be of size sizeOut.
-        public static float[, ,] InterpolateData(ref float[, ,] dataIn, int sizeIn, int sizeOut)
+        public static float[,,] InterpolateData(ref float[,,] dataIn, int sizeIn, int sizeOut)
         {
             Debug.Assert(sizeOut > sizeIn, "sizeOut must be greater than sizeIn");
             Debug.Assert(sizeOut % sizeIn == 0, "sizeOut must be a multiple of sizeIn");
@@ -428,12 +428,12 @@ namespace Infiniminer
 
             int r = sizeOut / sizeIn;
 
-            for (int x=0; x<sizeOut; x++)
+            for (int x = 0; x < sizeOut; x++)
                 for (int y = 0; y < sizeOut; y++)
                     for (int z = 0; z < sizeOut; z++)
                     {
-                        int xIn0 = x / r,       yIn0 = y / r,       zIn0 = z / r;
-                        int xIn1 = xIn0 + 1,    yIn1 = yIn0 + 1,    zIn1 = zIn0 + 1;
+                        int xIn0 = x / r, yIn0 = y / r, zIn0 = z / r;
+                        int xIn1 = xIn0 + 1, yIn1 = yIn0 + 1, zIn1 = zIn0 + 1;
                         if (xIn1 >= sizeIn)
                             xIn1 = 0;
                         if (yIn1 >= sizeIn)
@@ -454,7 +454,7 @@ namespace Infiniminer
                         float yS = ((float)(y % r)) / r;
                         float zS = ((float)(z % r)) / r;
 
-                        dataOut[x, y, z] =  v000 * (1 - xS) * (1 - yS) * (1 - zS) +
+                        dataOut[x, y, z] = v000 * (1 - xS) * (1 - yS) * (1 - zS) +
                                             v100 * xS * (1 - yS) * (1 - zS) +
                                             v010 * (1 - xS) * yS * (1 - zS) +
                                             v001 * (1 - xS) * (1 - yS) * zS +
@@ -469,13 +469,13 @@ namespace Infiniminer
 
         // Renders a specific z-level of a 256x256x256 data array to a texture.
         private static uint[] pixelData = new uint[256 * 256];
-        public static void RenderSlice(ref BlockType[, ,] data, int z, Texture2D renderTexture)
+        public static void RenderSlice(ref BlockType[,,] data, int z, Texture2D renderTexture)
         {
             for (int x = 0; x < 256; x++)
                 for (int y = 0; y < 256; y++)
                 {
                     uint c = 0xFF000000;
-                    if (data[x,y,z] == BlockType.Dirt)
+                    if (data[x, y, z] == BlockType.Dirt)
                         c = 0xFFFFFFFF;
                     if (data[x, y, z] == BlockType.Ore)
                         c = 0xFF888888;

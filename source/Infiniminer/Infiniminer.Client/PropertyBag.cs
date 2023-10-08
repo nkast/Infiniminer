@@ -55,8 +55,8 @@ namespace Infiniminer
         }
     }
 
-	public class PropertyBag
-	{
+    public class PropertyBag
+    {
         // Game engines.
         public BlockEngine blockEngine = null;
         public InterfaceEngine interfaceEngine = null;
@@ -76,7 +76,7 @@ namespace Infiniminer
         public PlayerClass playerClass;
         public PlayerTools[] playerTools = new PlayerTools[1] { PlayerTools.Pickaxe };
         public int playerToolSelected = 0;
-        public BlockType[] playerBlocks = new BlockType[1] {BlockType.None};
+        public BlockType[] playerBlocks = new BlockType[1] { BlockType.None };
         public int playerBlockSelected = 0;
         public PlayerTeam playerTeam = PlayerTeam.Red;
         public bool playerDead = true;
@@ -120,7 +120,7 @@ namespace Infiniminer
         {
             // Initialize our network device.
             NetConfiguration netConfig = new NetConfiguration("InfiniminerPlus");
-            
+
             netClient = new NetClient(netConfig);
             netClient.SetMessageTypeEnabled(NetMessageType.ConnectionRejected, true);
             //netClient.SimulatedMinimumLatency = 0.1f;
@@ -292,7 +292,7 @@ namespace Infiniminer
                         newPosition.X += (float)(2 - screenEffectCounter) * (float)(randGen.NextDouble() - 0.5) * 0.5f;
                         newPosition.Y += (float)(2 - screenEffectCounter) * (float)(randGen.NextDouble() - 0.5) * 0.5f;
                         newPosition.Z += (float)(2 - screenEffectCounter) * (float)(randGen.NextDouble() - 0.5) * 0.5f;
-                        if (!blockEngine.SolidAtPointForPlayer(newPosition) && (newPosition-playerPosition).Length() < 0.7f)
+                        if (!blockEngine.SolidAtPointForPlayer(newPosition) && (newPosition - playerPosition).Length() < 0.7f)
                             playerCamera.Position = newPosition;
                     }
                     // For 2 to 3, move the camera back.
@@ -401,7 +401,7 @@ namespace Infiniminer
 
                 case PlayerClass.Engineer:
                     playerTools = new PlayerTools[3] {  PlayerTools.Pickaxe,
-                                                        PlayerTools.ConstructionGun,     
+                                                        PlayerTools.ConstructionGun,
                                                         PlayerTools.DeconstructionGun   };
                     playerBlocks = new BlockType[9] {   playerTeam == PlayerTeam.Red ? BlockType.SolidRed : BlockType.SolidBlue,
                                                         BlockType.TransRed,
@@ -455,7 +455,7 @@ namespace Infiniminer
             msgBuffer.Write(playerCamera.GetLookVector());
             msgBuffer.Write((byte)PlayerTools.Pickaxe);
             msgBuffer.Write((byte)BlockType.None);
-            netClient.SendMessage(msgBuffer, NetChannel.ReliableUnordered); 
+            netClient.SendMessage(msgBuffer, NetChannel.ReliableUnordered);
         }
 
         public void FireConstructionGun(BlockType blockType)
@@ -505,7 +505,7 @@ namespace Infiniminer
             msgBuffer.Write(playerCamera.GetLookVector());
             msgBuffer.Write((byte)PlayerTools.Detonator);
             msgBuffer.Write((byte)BlockType.None);
-            netClient.SendMessage(msgBuffer, NetChannel.ReliableUnordered); 
+            netClient.SendMessage(msgBuffer, NetChannel.ReliableUnordered);
         }
 
         public void ToggleRadar()
@@ -520,7 +520,7 @@ namespace Infiniminer
             distanceReading = 30;
 
             // Scan out along the camera axis for 30 meters.
-            for (int i=-3;i<=3; i++)
+            for (int i = -3; i <= 3; i++)
                 for (int j = -3; j <= 3; j++)
                 {
                     Matrix rotation = Matrix.CreateRotationX((float)(i * Math.PI / 128)) * Matrix.CreateRotationY((float)(j * Math.PI / 128));

@@ -39,8 +39,8 @@ namespace Infiniminer.States
         bool canCancel = false;
 
         ClickRegion[] clkTeamMenu = new ClickRegion[2] {
-	        new ClickRegion(new Rectangle(229,156,572,190), "red"), 
-	        new ClickRegion(new Rectangle(135,424,761,181), "blue")
+            new ClickRegion(new Rectangle(229,156,572,190), "red"),
+            new ClickRegion(new Rectangle(135,424,761,181), "blue")
         };
 
         public override void OnEnter(string oldState)
