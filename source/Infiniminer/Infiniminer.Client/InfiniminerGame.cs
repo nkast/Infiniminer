@@ -2,17 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.IO;
-using System.Windows.Forms;
 using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using Microsoft.Xna.Framework.Net;
-using Microsoft.Xna.Framework.Storage;
 using Lidgren.Network;
 using Lidgren.Network.Xna;
 
@@ -134,9 +130,15 @@ namespace Infiniminer
                         {
                             string[] reason = msgBuffer.ReadString().Split(";".ToCharArray());
                             if (reason.Length < 2 || reason[0] == "VER")
-                                MessageBox.Show("Error: client/server version incompability!\r\nServer: " + msgBuffer.ReadString() + "\r\nClient: " + Defines.INFINIMINER_VERSION);
+                            {
+                                //  [MG_PORT_NOTE] System.Windows.Forms is Windows Only
+                                // MessageBox.Show("Error: client/server version incompability!\r\nServer: " + msgBuffer.ReadString() + "\r\nClient: " + Defines.INFINIMINER_VERSION);
+                            }
                             else
-                                MessageBox.Show("Error: you are banned from this server!");
+                            {
+                                //  [MG_PORT_NOTE] System.Windows.Forms is Windows Only
+                                // MessageBox.Show("Error: you are banned from this server!");
+                            }
                             ChangeState("Infiniminer.States.ServerBrowserState");
                         }
                         break;
