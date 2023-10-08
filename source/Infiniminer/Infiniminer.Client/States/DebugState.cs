@@ -7,12 +7,9 @@ using StateMasher;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using Microsoft.Xna.Framework.Net;
-using Microsoft.Xna.Framework.Storage;
 
 namespace Infiniminer.States
 {
@@ -36,16 +33,16 @@ namespace Infiniminer.States
             return null;
         }
 
-        public override void OnRenderAtEnter(GraphicsDeviceManager graphicsDevice)
+        public override void OnRenderAtEnter(GraphicsDevice graphicsDevice)
         {
         }
 
-        public override void OnRenderAtUpdate(GraphicsDeviceManager graphicsDevice)
+        public override void OnRenderAtUpdate(GraphicsDevice graphicsDevice, GameTime gameTime)
         {
             if (flashCounter < 0.25)
-                graphicsDevice.GraphicsDevice.Clear(Color.Blue);
+                graphicsDevice.Clear(Color.Blue);
             else
-                graphicsDevice.GraphicsDevice.Clear(Color.Red);
+                graphicsDevice.Clear(Color.Red);
         }
 
         public override void OnKeyDown(Keys key)
