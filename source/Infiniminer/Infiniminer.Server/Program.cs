@@ -31,7 +31,7 @@ namespace Infiniminer.Server
                 }
                 catch (Exception e)
                 {
-                    System.Windows.Forms.MessageBox.Show(e.Message + "\r\n\r\n" + e.StackTrace);
+                    Console.WriteLine(e.Message + "\r\n\r\n" + e.StackTrace);
                 }
             }
         }

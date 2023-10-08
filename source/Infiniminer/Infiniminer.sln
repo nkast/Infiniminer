@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infiniminer.Client", "Infin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infiniminer.Server", "Infiniminer.Server\Infiniminer.Server.csproj", "{EC49B9A7-6552-4D8B-B4E8-B96BEBF2CF8D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infiniminer.Shared", "Infiniminer.Shared\Infiniminer.Shared.csproj", "{93F635FF-83C3-4D03-A638-071F4976EE43}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{EC49B9A7-6552-4D8B-B4E8-B96BEBF2CF8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC49B9A7-6552-4D8B-B4E8-B96BEBF2CF8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC49B9A7-6552-4D8B-B4E8-B96BEBF2CF8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93F635FF-83C3-4D03-A638-071F4976EE43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93F635FF-83C3-4D03-A638-071F4976EE43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93F635FF-83C3-4D03-A638-071F4976EE43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93F635FF-83C3-4D03-A638-071F4976EE43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

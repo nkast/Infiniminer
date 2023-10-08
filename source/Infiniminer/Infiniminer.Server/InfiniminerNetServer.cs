@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Threading;
-using Lidgren.Network;
-using Lidgren.Network.Xna;
-using Microsoft.Xna.Framework;
+﻿using Lidgren.Network;
 
 namespace Infiniminer
 {

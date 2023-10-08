@@ -303,7 +303,7 @@ namespace Infiniminer
         public void ConsoleRedraw()
         {
             Console.Clear();
-            ConsoleDrawCentered("INFINIMINER SERVER " + InfiniminerGame.INFINIMINER_VERSION, 0);
+            ConsoleDrawCentered("INFINIMINER SERVER " + Defines.INFINIMINER_VERSION, 0);
             ConsoleDraw("================================================================================", 0, 1);
             for (int i = 0; i < consoleText.Count; i++)
                 ConsoleDraw(consoleText[i], 0, i + 2);
@@ -458,7 +458,7 @@ namespace Infiniminer
                         case NetMessageType.ConnectionApproval:
                             {
                                 Player newPlayer = new Player(msgSender, null);
-                                newPlayer.Handle = InfiniminerGame.Sanitize(msgBuffer.ReadString()).Trim();
+                                newPlayer.Handle = msgBuffer.ReadString().Sanitize().Trim();
                                 if (newPlayer.Handle.Length == 0 || newPlayer.Handle.Length > 20)
                                 {
                                     newPlayer.Handle = "Player";
@@ -475,9 +475,9 @@ namespace Infiniminer
                                 }
 
                                 string clientVersion = msgBuffer.ReadString();
-                                if (clientVersion != InfiniminerGame.INFINIMINER_VERSION)
+                                if (clientVersion != Defines.INFINIMINER_VERSION)
                                 {
-                                    msgSender.Disapprove("VER;" + InfiniminerGame.INFINIMINER_VERSION);
+                                    msgSender.Disapprove("VER;" + Defines.INFINIMINER_VERSION);
                                 }
                                 else if (banList.Contains(newPlayer.IP))
                                 {
@@ -535,7 +535,7 @@ namespace Infiniminer
                                         {
                                             // Read the data from the packet.
                                             ChatMessageType chatType = (ChatMessageType)msgBuffer.ReadByte();
-                                            string chatString = InfiniminerGame.Sanitize(msgBuffer.ReadString());
+                                            string chatString = msgBuffer.ReadString().Sanitize();
                                             ConsoleWrite("CHAT: (" + player.Handle + ") " + chatString);
 
                                             // Append identifier information.
@@ -628,7 +628,7 @@ namespace Infiniminer
 
                                     case InfiniminerMessage.PlayerDead:
                                         {
-                                            string deathMessage = InfiniminerGame.Sanitize(msgBuffer.ReadString());
+                                            string deathMessage = msgBuffer.ReadString().Sanitize();
                                             ConsoleWrite("PLAYER_DEAD: " + player.Handle + " " + deathMessage);
 
                                             player.Ore = 0;
@@ -775,7 +775,7 @@ namespace Infiniminer
         {
             foreach (Player p in playerList.Values)
             {
-                if (p.Position.Y > 64 - InfiniminerGame.GROUND_LEVEL)
+                if (p.Position.Y > 64 - Defines.GROUND_LEVEL)
                     DepositCash(p);
             }
 

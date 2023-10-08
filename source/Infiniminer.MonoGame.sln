@@ -15,13 +15,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lidgren.Network", "Lidgren\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lidgren.Network.Xna", "Lidgren\Lidgren.Network.Xna\Lidgren.Network.Xna.csproj", "{D4DE2095-1255-457D-A957-BC11617D4040}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infiniminer.Shared", "Infiniminer\Infiniminer.Shared\Infiniminer.Shared.csproj", "{6667B57A-32D3-4CCA-9D19-0EB0C39F52B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{6008460C-A21C-488E-B568-F4FC05039DB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -40,11 +39,19 @@ Global
 		{D4DE2095-1255-457D-A957-BC11617D4040}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4DE2095-1255-457D-A957-BC11617D4040}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4DE2095-1255-457D-A957-BC11617D4040}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6667B57A-32D3-4CCA-9D19-0EB0C39F52B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6667B57A-32D3-4CCA-9D19-0EB0C39F52B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6667B57A-32D3-4CCA-9D19-0EB0C39F52B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6667B57A-32D3-4CCA-9D19-0EB0C39F52B8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6008460C-A21C-488E-B568-F4FC05039DB0} = {6EAF3110-B7A4-414A-80AC-13AD549F95D7}
 		{C7426E74-1DD3-4C83-80B7-B76D2242D27C} = {6EAF3110-B7A4-414A-80AC-13AD549F95D7}
 		{1859C13A-E5CB-4341-8C77-BB5E5A8170B9} = {A90020D7-9F5A-4968-B9AE-EDB29C852EF6}
 		{D4DE2095-1255-457D-A957-BC11617D4040} = {A90020D7-9F5A-4968-B9AE-EDB29C852EF6}
+		{6667B57A-32D3-4CCA-9D19-0EB0C39F52B8} = {6EAF3110-B7A4-414A-80AC-13AD549F95D7}
 	EndGlobalSection
 EndGlobal

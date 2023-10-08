@@ -31,25 +31,8 @@ namespace Infiniminer
         public bool InvertMouseYAxis = false;
         public bool NoSound = false;
 
-        public const string INFINIMINER_VERSION = "v1.5";
-        public const int GROUND_LEVEL = 8;
-        public static Color IM_BLUE = new Color(80, 150, 255);
-        public static Color IM_RED = new Color(222, 24, 24);
-
         public InfiniminerGame(string[] args)
         {
-        }
-
-        public static string Sanitize(string input)
-        {
-            string output = "";
-            for (int i = 0; i < input.Length; i++)
-            {
-                char c = (char)input[i];
-                if (c >= 32 && c <= 126)
-                    output += c;
-            }
-            return output;
         }
 
         public void JoinGame(IPEndPoint serverEndPoint)
@@ -63,7 +46,7 @@ namespace Infiniminer
             // Create our connect message.
             NetBuffer connectBuffer = propertyBag.netClient.CreateBuffer();
             connectBuffer.Write(propertyBag.playerHandle);
-            connectBuffer.Write(INFINIMINER_VERSION);
+            connectBuffer.Write(Defines.INFINIMINER_VERSION);
 
             // Connect to the server.
             propertyBag.netClient.Connect(serverEndPoint, connectBuffer.ToArray());
@@ -151,7 +134,7 @@ namespace Infiniminer
                         {
                             string[] reason = msgBuffer.ReadString().Split(";".ToCharArray());
                             if (reason.Length < 2 || reason[0] == "VER")
-                                MessageBox.Show("Error: client/server version incompability!\r\nServer: " + msgBuffer.ReadString() + "\r\nClient: " + INFINIMINER_VERSION);
+                                MessageBox.Show("Error: client/server version incompability!\r\nServer: " + msgBuffer.ReadString() + "\r\nClient: " + Defines.INFINIMINER_VERSION);
                             else
                                 MessageBox.Show("Error: you are banned from this server!");
                             ChangeState("Infiniminer.States.ServerBrowserState");

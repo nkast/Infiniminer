@@ -22,4 +22,10 @@
     <PackageReference Include="MonoGame.Framework.DesktopGl" Version="3.8.1.303" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Infiniminer.Shared\Infiniminer.Shared.csproj" />
+    <ProjectReference Include="..\..\Lidgren\Lidgren.Network\Lidgren.Network.csproj" />
+    <ProjectReference Include="..\..\Lidgren\Lidgren.Network.Xna\Lidgren.Network.Xna.csproj" />
+  </ItemGroup>
+
 </Project>

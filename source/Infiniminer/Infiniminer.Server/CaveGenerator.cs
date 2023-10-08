@@ -1,17 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
+﻿/* ----------------------------------------------------------------------------
+MIT License
 
-using System.Text;
+Copyright (c) 2009 Zach Barth
+Copyright (c) 2023 Christopher Whitley
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+---------------------------------------------------------------------------- */
+
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
-using Microsoft.Xna.Framework.Net;
-using Microsoft.Xna.Framework.Storage;
 
 namespace Infiniminer
 {
@@ -41,8 +55,8 @@ namespace Infiniminer
             mountainNoise = InterpolateData(ref mountainNoise, 32, size);
             for (int x = 0; x < size; x++)
                 for (int y = 0; y < size; y++)
-                    for (int z = 0; z <= InfiniminerGame.GROUND_LEVEL*2; z++)
-                        mountainNoise[x, y, z] = z < 3 ? 0 : Math.Min(1, z / (InfiniminerGame.GROUND_LEVEL * 2));
+                    for (int z = 0; z <= Defines.GROUND_LEVEL*2; z++)
+                        mountainNoise[x, y, z] = z < 3 ? 0 : Math.Min(1, z / (Defines.GROUND_LEVEL * 2));
             float[, ,] gradient = CaveGenerator.GenerateGradient(size);
             CaveGenerator.AddDataTo(ref mountainNoise, ref gradient, size, 0.1f, 0.9f);
             BlockType[, ,] mountainData = CaveGenerator.GenerateConstant(size, BlockType.None);
@@ -51,7 +65,7 @@ namespace Infiniminer
                 CaveGenerator.PaintWithRandomWalk(ref mountainData, ref mountainNoise, size, randGen.Next(2, 3), BlockType.Dirt, false);
             for (int x = 0; x < size; x++)
                 for (int y = 0; y < size; y++)
-                    for (int z = 0; z <= InfiniminerGame.GROUND_LEVEL; z++)
+                    for (int z = 0; z <= Defines.GROUND_LEVEL; z++)
                         if (mountainData[x, y, z] == BlockType.None)
                             caveData[x, y, z] = BlockType.None;
             
