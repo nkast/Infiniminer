@@ -13,4 +13,9 @@
     <Copyright>Copyright (c) 2009 Zach Barth</Copyright>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="../config/server.config.txt" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../config/banlist.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
