@@ -1,3 +1,12 @@
+#if OPENGL
+	#define SV_POSITION POSITION
+	#define VS_SHADERMODEL vs_3_0
+	#define PS_SHADERMODEL ps_3_0
+#else
+	#define VS_SHADERMODEL vs_4_0_level_9_1
+	#define PS_SHADERMODEL ps_4_0_level_9_1
+#endif
+
 struct VertexToPixel
 {
     float4 Position   	: POSITION;    
@@ -64,8 +73,8 @@ technique Block
 {
 	pass Pass0
 	{   
-		VertexShader = compile vs_2_0 BlockVS();
-		PixelShader  = compile ps_2_0 BlockPS();
+		VertexShader = compile VS_SHADERMODEL BlockVS();
+		PixelShader  = compile PS_SHADERMODEL BlockPS();
 	}
 }
 
@@ -97,7 +106,7 @@ technique LavaBlock
 {
 	pass Pass0
 	{   
-		VertexShader = compile vs_2_0 LavaBlockVS();
-		PixelShader  = compile ps_2_0 LavaBlockPS();
+		VertexShader = compile VS_SHADERMODEL LavaBlockVS();
+		PixelShader  = compile PS_SHADERMODEL LavaBlockPS();
 	}
 }
