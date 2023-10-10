@@ -392,7 +392,7 @@ namespace Infiniminer
                 BuildFaceVertices(ref vertexList, vertexPointer, faceInfo, texture == (int)BlockTexture.Spikes);
                 vertexPointer += 6;
             }
-            DynamicVertexBuffer vertexBuffer = new DynamicVertexBuffer(gameInstance.GraphicsDevice, typeof(VertexPositionTextureShade), vertexList.Length * VertexPositionTextureShade.SizeInBytes, BufferUsage.WriteOnly);
+            DynamicVertexBuffer vertexBuffer = new DynamicVertexBuffer(gameInstance.GraphicsDevice, typeof(VertexPositionTextureShade), vertexList.Length, BufferUsage.WriteOnly);
             //  [MG_PORT_NOTES] .ContentLost is not part of MonoGame. Need to find some other way to support this
             // vertexBuffer.ContentLost += new EventHandler(vertexBuffer_ContentLost);
             vertexBuffer.Tag = new DynamicVertexBufferTag(this, texture, region);
