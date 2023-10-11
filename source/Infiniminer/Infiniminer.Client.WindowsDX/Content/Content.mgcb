@@ -802,18 +802,6 @@
 /processorParam:TextureFormat=Color
 /build:../../Infiniminer.Client.Shared/Content/menus/tex_menu_team.png;menus/tex_menu_team.png
 
-#begin ../../Infiniminer.Client.Shared/Content/menus/tex_menu_title_old.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../../Infiniminer.Client.Shared/Content/menus/tex_menu_title_old.png;menus/tex_menu_title_old.png
-
 #begin ../../Infiniminer.Client.Shared/Content/menus/tex_menu_title.png
 /importer:TextureImporter
 /processor:TextureProcessor
