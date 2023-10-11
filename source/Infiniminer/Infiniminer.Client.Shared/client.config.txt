@@ -1,8 +1,8 @@
 # This value specifies your name - please change it to something unique!
 handle = Player
 
-width = 1024
-height = 768
+width = 1280
+height = 720
 fullscreen = false
 
 # If this flag is set to true, pretty mode will be enabled, which turns on bloom lighting!
