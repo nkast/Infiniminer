@@ -38,6 +38,8 @@ This repository consists of several parts, each of which have their own license 
 - Lidgren is licensed under the MIT License.  You can find the license text for Lidgren in the [Lidgren License](./source/Lidgren/LICENSE) file.
 - The font `04B_03B_.TTF` is distributed as freeware according to the original freeware file included.  You can find this information in the [04B_03B_.TTF About](./source/Infiniminer/Infiniminer.Client/Content/04b_03b/about.gif) file.
 - The font `04B_08__.TTF` is distributed as freeware according to the original freeware file included.  You can find this information in the [04B_08__.TTF About](./source/Infiniminer/Infiniminer.Client/Content/04b_08/about.gif) file.
+- Artwork by Chris Gengler (tayrtahn@gmail.com)
+- Music "Can't Hide Your Love" by Kola Kid that was part of the original source code was acquired from [http://www.8bitcollective.com/music/Kola+Kid/can%27t+hide+your+love/](https://web.archive.org/web/20090210071601/http://www.8bitcollective.com/music/Kola+Kid/can't+hide+your+love/), which at the time was distributed under the [Creative Commons BY-NC-SA License](https://creativecommons.org/licenses/by-nc-sa/2.5/)
 
 
 ## Acknowledgements
