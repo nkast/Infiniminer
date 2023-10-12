@@ -1,11 +1,4 @@
-#if OPENGL
-	#define SV_POSITION POSITION
-	#define VS_SHADERMODEL vs_3_0
-	#define PS_SHADERMODEL ps_3_0
-#else
-	#define VS_SHADERMODEL vs_4_0_level_9_1
-	#define PS_SHADERMODEL ps_4_0_level_9_1
-#endif
+
 
 struct VertexToPixel
 {
@@ -72,7 +65,7 @@ technique Skyplane
 {
 	pass Pass0
 	{   
-		VertexShader = compile VS_SHADERMODEL TexturedVS();
-		PixelShader  = compile PS_SHADERMODEL TexturedPS();
+		VertexShader = compile vs_2_0 TexturedVS();
+		PixelShader  = compile ps_2_0 TexturedPS();
 	}
 }
