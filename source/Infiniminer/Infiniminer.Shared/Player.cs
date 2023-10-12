@@ -53,8 +53,8 @@ namespace Infiniminer
         public bool QueueAnimationBreak = false;
 
         // Things that affect animation.
-        public SpriteModel SpriteModel;
-        private Game gameInstance;
+        public SpriteModel? SpriteModel;
+        private Game? gameInstance;
 
         private bool idleAnimation = false;
         public bool IdleAnimation
@@ -68,9 +68,9 @@ namespace Infiniminer
                     if (gameInstance != null)
                     {
                         if (idleAnimation)
-                            SpriteModel.SetPassiveAnimation("1,0.2");
+                            SpriteModel?.SetPassiveAnimation("1,0.2");
                         else
-                            SpriteModel.SetPassiveAnimation("0,0.2;1,0.2;2,0.2;1,0.2");
+                            SpriteModel?.SetPassiveAnimation("0,0.2;1,0.2;2,0.2;1,0.2");
                     }
                 }
             }
@@ -168,7 +168,7 @@ namespace Infiniminer
                 {
                     usingTool = value;
                     if (usingTool == true && gameInstance != null)
-                        SpriteModel.StartActiveAnimation("3,0.15");
+                        SpriteModel?.StartActiveAnimation("3,0.15");
                 }
             }
         }
@@ -184,10 +184,46 @@ namespace Infiniminer
 
             if (gameInstance != null)
             {
-                this.SpriteModel = new SpriteModel(gameInstance, 4);
-                UpdateSpriteTexture();
+                Texture2D tex = gameInstance.Content.Load<Texture2D>(GenerateTextureName());
+                this.SpriteModel = new SpriteModel(gameInstance, 4, tex);
                 this.IdleAnimation = true;
             }
+        }
+
+        private string GenerateTextureName()
+        {
+            string name = "sprites/tex_sprite_";
+
+            if (team == PlayerTeam.Red)
+            {
+                name += "red_";
+            }
+            else
+            {
+                name += "blue_";
+            }
+
+            switch (tool)
+            {
+                case PlayerTools.ConstructionGun:
+                case PlayerTools.DeconstructionGun:
+                    name += "construction";
+                    break;
+                case PlayerTools.Detonator:
+                    name += "detonator";
+                    break;
+                case PlayerTools.Pickaxe:
+                    name += "pickaxe";
+                    break;
+                case PlayerTools.ProspectingRadar:
+                    name += "radar";
+                    break;
+                default:
+                    name += "pickaxe";
+                    break;
+            }
+
+            return name;
         }
 
         private void UpdateSpriteTexture()
@@ -195,31 +231,9 @@ namespace Infiniminer
             if (gameInstance == null)
                 return;
 
-            string textureName = "sprites/tex_sprite_";
-            if (team == PlayerTeam.Red)
-                textureName += "red_";
-            else
-                textureName += "blue_";
-            switch (tool)
-            {
-                case PlayerTools.ConstructionGun:
-                case PlayerTools.DeconstructionGun:
-                    textureName += "construction";
-                    break;
-                case PlayerTools.Detonator:
-                    textureName += "detonator";
-                    break;
-                case PlayerTools.Pickaxe:
-                    textureName += "pickaxe";
-                    break;
-                case PlayerTools.ProspectingRadar:
-                    textureName += "radar";
-                    break;
-                default:
-                    textureName += "pickaxe";
-                    break;
-            }
-            this.SpriteModel.SetSpriteTexture(gameInstance.Content.Load<Texture2D>(textureName));
+            string contentPath = GenerateTextureName();
+            Texture2D texture = gameInstance.Content.Load<Texture2D>(contentPath);
+            SpriteModel?.SetSpriteTexture(texture);
         }
 
         static uint uniqueId = 0;
