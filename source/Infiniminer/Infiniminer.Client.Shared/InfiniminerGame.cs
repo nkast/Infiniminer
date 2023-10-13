@@ -416,7 +416,7 @@ namespace Infiniminer
             }
 
             // Make sure our network thread actually gets to run.
-            Thread.Sleep(1);
+            Thread.Sleep(0);
         }
 
         private void CheckForStandingInLava()

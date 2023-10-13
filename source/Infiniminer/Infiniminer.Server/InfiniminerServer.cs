@@ -780,7 +780,7 @@ namespace Infiniminer
                 }
 
                 // Pass control over to waiting threads.
-                Thread.Sleep(1);
+                Thread.Sleep(0);
             }
 
             netServer.Shutdown("The server was terminated.");
