@@ -70,6 +70,14 @@ namespace StateMasher
         {
             Content.RootDirectory = "Content";
             graphicsDeviceManager = new GraphicsDeviceManager(this);
+
+            this.Window.AllowUserResizing = true;
+            graphicsDeviceManager.PreferredBackBufferWidth = 1024;
+            graphicsDeviceManager.PreferredBackBufferHeight = 768;
+
+            this.IsFixedTimeStep = false;
+            graphicsDeviceManager.SynchronizeWithVerticalRetrace = false;
+
         }
 
         protected void ChangeState(string newState)
