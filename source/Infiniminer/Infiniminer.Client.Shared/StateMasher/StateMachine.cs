@@ -25,6 +25,7 @@ SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Reflection;
 using Microsoft.Xna.Framework;
@@ -55,6 +56,8 @@ namespace StateMasher
 
         private int frameCount = 0;
         private double frameRate = 0;
+        int prevSecond = 0;
+        Stopwatch _sw = new Stopwatch();
         public double FrameRate
         {
             get { return frameRate; }
@@ -109,9 +112,6 @@ namespace StateMasher
 
         protected override void Update(GameTime gameTime)
         {
-            if (frameCount > 0)
-                frameRate = frameCount / gameTime.TotalGameTime.TotalSeconds;
-
             if (currentState != null && propertyBag != null)
             {
                 // Call OnUpdate.
@@ -167,7 +167,17 @@ namespace StateMasher
             // Call OnRenderAtUpdate.
             if (currentState != null && propertyBag != null)
             {
-                frameCount += 1;
+                if (!_sw.IsRunning)
+                    _sw.Start();
+                int second = (int)_sw.Elapsed.TotalSeconds;
+                if (second > prevSecond)
+                {
+                    frameRate = frameCount / (second - prevSecond);
+                    frameCount = 0;
+                    prevSecond = second;
+                }
+                frameCount++;
+
                 currentState.OnRenderAtUpdate(GraphicsDevice, gameTime);
             }
 
