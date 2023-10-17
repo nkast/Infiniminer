@@ -39,6 +39,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Infiniminer.Client.Shared\Infiniminer.Client.Shared.csproj" />
+    <MonoGameContentReference Include="..\Infiniminer.Client.Shared\Content\Content.Shared.mgcb" Link="Content\Content.Shared.mgcb" />
   </ItemGroup>
   
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
