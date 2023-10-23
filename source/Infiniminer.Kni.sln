@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infiniminer", "Infiniminer"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infiniminer.Client.Shared.Kni", "Infiniminer\Infiniminer.Client.Shared\Infiniminer.Client.Shared.Kni.csproj", "{3372436B-3651-4F4F-BC54-B76A11E5D7F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infiniminer.Client.Kni.BlazorGL", "Infiniminer\Infiniminer.Client.BlazorGL\Infiniminer.Client.Kni.BlazorGL.csproj", "{2F2435CA-77E1-45C3-B0B5-EE70A38DF84A}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infiniminer.Client.Kni.DesktopGL", "Infiniminer\Infiniminer.Client.DesktopGL\Infiniminer.Client.Kni.DesktopGL.csproj", "{75161366-CD03-4C69-B168-A5912E412728}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infiniminer.Client.Kni.WindowsDX", "Infiniminer\Infiniminer.Client.WindowsDX\Infiniminer.Client.Kni.WindowsDX.csproj", "{1C656713-B76A-414F-B567-CC6ED06270E2}"
@@ -36,6 +38,10 @@ Global
 		{3372436B-3651-4F4F-BC54-B76A11E5D7F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3372436B-3651-4F4F-BC54-B76A11E5D7F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3372436B-3651-4F4F-BC54-B76A11E5D7F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F2435CA-77E1-45C3-B0B5-EE70A38DF84A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F2435CA-77E1-45C3-B0B5-EE70A38DF84A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F2435CA-77E1-45C3-B0B5-EE70A38DF84A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F2435CA-77E1-45C3-B0B5-EE70A38DF84A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{75161366-CD03-4C69-B168-A5912E412728}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{75161366-CD03-4C69-B168-A5912E412728}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75161366-CD03-4C69-B168-A5912E412728}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -67,6 +73,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3372436B-3651-4F4F-BC54-B76A11E5D7F7} = {27F428CC-7024-4FB9-BAEB-4C406A52DEEE}
+		{2F2435CA-77E1-45C3-B0B5-EE70A38DF84A} = {27F428CC-7024-4FB9-BAEB-4C406A52DEEE}
 		{75161366-CD03-4C69-B168-A5912E412728} = {27F428CC-7024-4FB9-BAEB-4C406A52DEEE}
 		{1C656713-B76A-414F-B567-CC6ED06270E2} = {27F428CC-7024-4FB9-BAEB-4C406A52DEEE}
 		{58318DA0-88EF-4DD5-A270-9741700F74A6} = {27F428CC-7024-4FB9-BAEB-4C406A52DEEE}
