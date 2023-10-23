@@ -84,6 +84,7 @@ namespace Infiniminer
         VertexDeclaration vertexDeclaration;
         GraphicsDevice graphicsDevice;
         Effect effect;
+        SamplerState pointSamplerState;
         Game gameInstance;
         SpriteFont nameFont;
 
@@ -110,6 +111,9 @@ namespace Infiniminer
             activeAnimation = new List<AnimationFrame>();
             activeAnimation.Add(dummyFrame);
 
+            // Create states.
+            pointSamplerState = new SamplerState() { Filter = TextureFilter.Point };
+
             vertexDeclaration = new VertexDeclaration(VertexPositionTexture.VertexDeclaration.GetVertexElements());
         }
 
@@ -135,7 +139,7 @@ namespace Infiniminer
             effect.Techniques[0].Passes[0].Apply();
 
             graphicsDevice.RasterizerState = RasterizerState.CullNone;
-            graphicsDevice.SamplerStates[0] = new SamplerState() { Filter = TextureFilter.Point };
+            graphicsDevice.SamplerStates[0] = pointSamplerState;
 
             graphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, vertices, 0, vertices.Length / 3);
         }
