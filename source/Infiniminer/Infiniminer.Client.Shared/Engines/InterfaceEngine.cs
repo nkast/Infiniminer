@@ -36,6 +36,7 @@ namespace Infiniminer
         InfiniminerGame gameInstance;
         PropertyBag _P;
         SpriteBatch spriteBatch;
+        SamplerState pointSamplerState;
         SpriteFont uiFont, radarFont;
         Rectangle drawRect;
 
@@ -51,6 +52,9 @@ namespace Infiniminer
         {
             this.gameInstance = gameInstance;
             spriteBatch = new SpriteBatch(gameInstance.GraphicsDevice);
+
+            // Create states.
+            pointSamplerState = new SamplerState() { Filter = TextureFilter.Point };
 
             // Load textures.
             texCrosshairs = gameInstance.Content.Load<Texture2D>("ui/tex_ui_crosshair");
@@ -201,7 +205,7 @@ namespace Infiniminer
         {
             int screenWidth = graphicsDevice.Viewport.Width;
             int screenHeight = graphicsDevice.Viewport.Height;
-            graphicsDevice.SamplerStates[0] = new SamplerState() { Filter = TextureFilter.Point };
+            graphicsDevice.SamplerStates[0] = pointSamplerState;
 
             Texture2D textureToUse;
             if (Mouse.GetState().LeftButton == ButtonState.Pressed || Mouse.GetState().MiddleButton == ButtonState.Pressed || Mouse.GetState().RightButton == ButtonState.Pressed)
@@ -216,7 +220,7 @@ namespace Infiniminer
         {
             int screenWidth = graphicsDevice.Viewport.Width;
             int screenHeight = graphicsDevice.Viewport.Height;
-            graphicsDevice.SamplerStates[0] = new SamplerState() { Filter = TextureFilter.Point };
+            graphicsDevice.SamplerStates[0] = pointSamplerState;
 
             int drawX = screenWidth / 2 - 32 * 3;
             int drawY = screenHeight - 102 * 3;
@@ -242,7 +246,7 @@ namespace Infiniminer
         {
             int screenWidth = graphicsDevice.Viewport.Width;
             int screenHeight = graphicsDevice.Viewport.Height;
-            graphicsDevice.SamplerStates[0] = new SamplerState() { Filter = TextureFilter.Point };
+            graphicsDevice.SamplerStates[0] = pointSamplerState;
 
             int drawX = screenWidth / 2 - 60 * 3;
             int drawY = screenHeight - 91 * 3;

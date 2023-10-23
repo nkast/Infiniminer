@@ -105,6 +105,7 @@ namespace Infiniminer
         BlockTexture[,] blockTextureMap = null;
         IMTexture[] blockTextures = null;
         Effect basicEffect;
+        SamplerState pointSamplerState;
         InfiniminerGame gameInstance;
         DynamicVertexBuffer[,] vertexBuffers = null;
         bool[,] vertexListDirty = null;
@@ -200,6 +201,9 @@ namespace Infiniminer
 
             // Load our effects.
             basicEffect = gameInstance.Content.Load<Effect>("effect_basic");
+
+            // Create states.
+            pointSamplerState = new SamplerState() { Filter = TextureFilter.Point };
 
             // Build vertex lists.
             vertexBuffers = new DynamicVertexBuffer[(byte)BlockTexture.MAXIMUM, NUMREGIONS];
@@ -341,7 +345,7 @@ namespace Infiniminer
                 }
 
                 graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
-                graphicsDevice.SamplerStates[0] = new SamplerState() { Filter = TextureFilter.Point };
+                graphicsDevice.SamplerStates[0] = pointSamplerState;
                 graphicsDevice.SetVertexBuffer(vertexBuffer);
                 graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, vertexBuffer.VertexCount / 3);
                 graphicsDevice.RasterizerState = RasterizerState.CullNone;

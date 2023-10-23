@@ -37,6 +37,7 @@ namespace Infiniminer
         Random randGen;
         VertexPositionTexture[] vertices;
         Effect effect;
+        SamplerState pointSamplerState;
         VertexDeclaration vertexDeclaration;
         float effectTime = 0;
 
@@ -57,6 +58,9 @@ namespace Infiniminer
 
             // Load the effect file.
             effect = gameInstance.Content.Load<Effect>("effect_skyplane");
+
+            // Create states.
+            pointSamplerState = new SamplerState() { Filter = TextureFilter.Point };
 
             // Create our vertices.
             vertexDeclaration = new VertexDeclaration(VertexPositionTexture.VertexDeclaration.GetVertexElements());
@@ -94,7 +98,7 @@ namespace Infiniminer
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                graphicsDevice.SamplerStates[0] = new SamplerState() { Filter = TextureFilter.Point };
+                graphicsDevice.SamplerStates[0] = pointSamplerState;
                 graphicsDevice.RasterizerState = RasterizerState.CullNone;
                 graphicsDevice.DepthStencilState = DepthStencilState.None;
                 graphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, vertices, 0, vertices.Length / 3);
