@@ -252,13 +252,12 @@ namespace Infiniminer.States
                 /// Update the players position
                 ///////////////////////////////////////////////////////////////////
                 UpdatePlayerPosition(gameTime, keyState);
-
-                ///////////////////////////////////////////////////////////////////
-                /// Update the camera regardless of if we"re alive or not.
-                ///////////////////////////////////////////////////////////////////
-                _P.UpdateCamera(gameTime);
-
             }
+
+            ///////////////////////////////////////////////////////////////////
+            /// Update the camera regardless of if we"re alive or not.
+            ///////////////////////////////////////////////////////////////////
+            _P.UpdateCamera(gameTime);
 
             return nextState;
         }
