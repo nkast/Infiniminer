@@ -70,6 +70,7 @@ namespace Infiniminer.States
             _P.playerEngine.Update(gameTime);
             _P.interfaceEngine.Update(gameTime);
             _P.particleEngine.Update(gameTime);
+            _P.inputEngine.Update(gameTime);
 
             // Count down the tool cooldown.
             if (_P.playerToolCooldown > 0)
@@ -84,8 +85,22 @@ namespace Infiniminer.States
             {
                 if (mouseInitialized)
                 {
-                    int dx = mouseState.X - _SM.GraphicsDevice.Viewport.Width / 2;
-                    int dy = mouseState.Y - _SM.GraphicsDevice.Viewport.Height / 2;
+                    //  Because the mouse is clamped to the center of the screen in
+                    //  a moment, we have to determine if the input type is from
+                    //  keyboard/mouse or if it's from gamepad and calculate the
+                    //  delta differently based on which
+                    float dx;
+                    float dy;
+                    if (_P.inputEngine.ControlType == ControlType.KeyboardMouse)
+                    {
+                         dx = InputManager.Mouse.X - _SM.GraphicsDevice.Viewport.Width / 2;
+                         dy = InputManager.Mouse.Y - _SM.GraphicsDevice.Viewport.Height / 2;
+                    }
+                    else
+                    {
+                        dx = _P.inputEngine.Camera.Value.X * 5.0f;
+                        dy = _P.inputEngine.Camera.Value.Y * 5.0f;
+                    }
 
                     if ((_SM as InfiniminerGame).InvertMouseYAxis)
                         dy = -dy;
