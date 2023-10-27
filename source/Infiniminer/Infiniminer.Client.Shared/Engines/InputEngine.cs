@@ -144,6 +144,21 @@ public class InputEngine
     public VirtualButton SelectButton { get; private set; }
 
     ///////////////////////////////////////////////////////////////////////////
+    /// Quit Button
+    ///     This is the command used in conjunction with the Select Button
+    ///     To allow the player to quit the active game (not the entire game
+    ///     client).  
+    ///////////////////////////////////////////////////////////////////////////
+    public VirtualButton QuitButton { get; private set; }
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// Pixelcide Button
+    ///     This is the command used in conjunction with the Select Button
+    ///     to allow the player to commit pixelcide and restart
+    ///////////////////////////////////////////////////////////////////////////
+    public VirtualButton PixelcideButton { get; private set; }
+
+    ///////////////////////////////////////////////////////////////////////////
     /// Menu Navigation
     ///     These commands are used during menu screens to move up, down, left 
     ///     or right on the menu  list, confirm menu choices, or back out
@@ -284,6 +299,20 @@ public class InputEngine
         SelectButton = new VirtualButton();
         SelectButton.Nodes.Add(new VirtualButton.Keyboard.Key(Keys.Escape));
         SelectButton.Nodes.Add(new VirtualButton.GamePad.Button(Buttons.Back));
+
+        //
+        //  Quit Button
+        //
+        QuitButton = new VirtualButton();
+        QuitButton.Nodes.Add(new VirtualButton.Keyboard.Key(Keys.Y));
+        QuitButton.Nodes.Add(new VirtualButton.GamePad.Button(Buttons.Y));
+
+        //
+        //  Pixelcide Button
+        //
+        PixelcideButton = new VirtualButton();
+        PixelcideButton.Nodes.Add(new VirtualButton.Keyboard.Key(Keys.K));
+        PixelcideButton.Nodes.Add(new VirtualButton.GamePad.Button(Buttons.B));
 
         //
         //  Menu Up
