@@ -50,6 +50,19 @@ namespace Infiniminer.States
 
         public override string OnUpdate(GameTime gameTime, KeyboardState keyState, MouseState mouseState)
         {
+            _P.inputEngine.Update(gameTime);
+
+            if(_P.inputEngine.MenuConfirm.Pressed())
+            {
+                _P.inputEngine.MenuConfirm.ConsumePress();
+                nextState = "Infiniminer.States.ServerBrowserState";
+                _P.PlaySound(InfiniminerSound.ClickHigh);
+            }
+            else if(_P.inputEngine.MenuBack.Pressed())
+            {
+                _SM.Exit();
+            }
+            
             return nextState;
         }
 
@@ -59,21 +72,6 @@ namespace Infiniminer.States
             spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred);
             spriteBatch.Draw(texMenu, drawRect, Color.White);
             spriteBatch.End();
-        }
-
-        public override void OnKeyDown(Keys key)
-        {
-            if (key == Keys.Escape)
-            {
-                _SM.Exit();
-            }
-        }
-
-
-        public override void OnMouseDown(MouseButton button, int x, int y)
-        {
-            nextState = "Infiniminer.States.ServerBrowserState";
-            _P.PlaySound(InfiniminerSound.ClickHigh);
         }
     }
 }
