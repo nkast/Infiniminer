@@ -237,6 +237,17 @@ namespace Infiniminer.States
                     }
                 }
 
+                ///////////////////////////////////////////////////////////////////
+                /// Check if player performed a ping
+                ///////////////////////////////////////////////////////////////////
+                if (_P.inputEngine.PingTeam.Pressed())
+                {
+                    NetBuffer msgBuffer = _P.netClient.CreateBuffer();
+                    msgBuffer.Write((byte)InfiniminerMessage.PlayerPing);
+                    msgBuffer.Write(_P.playerMyId);
+                    _P.netClient.SendMessage(msgBuffer, NetChannel.ReliableUnordered);
+                }
+
                 // Update the player"s position.
                 UpdatePlayerPosition(gameTime, keyState);
 
@@ -525,15 +536,6 @@ namespace Infiniminer.States
                         _P.WithdrawOre();
                         _P.PlaySound(InfiniminerSound.ClickHigh);
                     }
-                }
-
-                // Radar pings.
-                if (key == Keys.Q)
-                {
-                    NetBuffer msgBuffer = _P.netClient.CreateBuffer();
-                    msgBuffer.Write((byte)InfiniminerMessage.PlayerPing);
-                    msgBuffer.Write(_P.playerMyId);
-                    _P.netClient.SendMessage(msgBuffer, NetChannel.ReliableUnordered);
                 }
 
                 // Change class.
