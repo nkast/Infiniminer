@@ -275,6 +275,19 @@ namespace Infiniminer.States
                 }
 
                 ///////////////////////////////////////////////////////////////////
+                /// Check if player wants to enter a chat mode
+                ///////////////////////////////////////////////////////////////////
+                if (_P.inputEngine.SayToAll.Pressed())
+                {
+                    _P.chatMode = ChatMessageType.SayAll;
+                }
+
+                if (_P.inputEngine.SayToTeam.Pressed())
+                {
+                    _P.chatMode = _P.playerTeam == PlayerTeam.Red ? ChatMessageType.SayRedTeam : ChatMessageType.SayBlueTeam;
+                }                
+
+                ///////////////////////////////////////////////////////////////////
                 /// Check if player want to quit match or commit pixelcide
                 ///////////////////////////////////////////////////////////////////
                 if (_P.inputEngine.SelectButton.Check())
@@ -285,7 +298,7 @@ namespace Infiniminer.States
                         nextState = "Infiniminer.States.ServerBrowserState";
                     }
 
-                    if(_P.inputEngine.PixelcideButton.Pressed())
+                    if (_P.inputEngine.PixelcideButton.Pressed())
                     {
                         _P.KillPlayer("HAS COMMITTED PIXELCIDE!");
                     }
@@ -558,12 +571,6 @@ namespace Infiniminer.States
                 }
                 return;
             }
-
-            if (key == Keys.Y)
-                _P.chatMode = ChatMessageType.SayAll;
-
-            if (key == Keys.U)
-                _P.chatMode = _P.playerTeam == PlayerTeam.Red ? ChatMessageType.SayRedTeam : ChatMessageType.SayBlueTeam;
         }
 
         public override void OnKeyUp(Keys key)
