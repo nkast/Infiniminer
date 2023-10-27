@@ -459,11 +459,6 @@ namespace Infiniminer.States
             return false;
         }
 
-        public override void OnRenderAtEnter(GraphicsDevice graphicsDevice)
-        {
-
-        }
-
         public override void OnRenderAtUpdate(GraphicsDevice graphicsDevice, GameTime gameTime)
         {
             _P.skyplaneEngine.Render(graphicsDevice);
