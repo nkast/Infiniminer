@@ -364,6 +364,17 @@ namespace Infiniminer.States
                     }
                 }
             }
+            else
+            {
+                ///////////////////////////////////////////////////////////////////
+                /// Player is dead, check for respawn
+                ///////////////////////////////////////////////////////////////////
+                if(_P.screenEffectCounter > 2 && _P.inputEngine.UseTool.Pressed())
+                {
+                    _P.inputEngine.UseTool.ConsumePress();
+                    _P.RespawnPlayer();
+                }
+            }
 
             ///////////////////////////////////////////////////////////////////
             /// Update the camera regardless of if we"re alive or not.
@@ -598,11 +609,7 @@ namespace Infiniminer.States
 
         public override void OnMouseDown(MouseButton button, int x, int y)
         {
-            // If we"re dead, come back to life.
-            if (_P.playerDead && _P.screenEffectCounter > 2)
-            {
-                _P.RespawnPlayer();
-            }
+
         }
 
         public override void OnMouseUp(MouseButton button, int x, int y)
