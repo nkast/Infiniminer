@@ -602,21 +602,6 @@ namespace Infiniminer.States
             }
         }
 
-        public override void OnKeyUp(Keys key)
-        {
-
-        }
-
-        public override void OnMouseDown(MouseButton button, int x, int y)
-        {
-
-        }
-
-        public override void OnMouseUp(MouseButton button, int x, int y)
-        {
-
-        }
-
         public override void OnMouseScroll(int scrollDelta)
         {
             if (_P.playerDead)

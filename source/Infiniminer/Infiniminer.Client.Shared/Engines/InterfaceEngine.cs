@@ -428,7 +428,19 @@ namespace Infiniminer
                 Color drawColor = new Color(1 - (float)_P.screenEffectCounter * 0.5f, 0f, 0f);
                 spriteBatch.Draw(texBlank, new Rectangle(0, 0, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height), drawColor);
                 if (_P.screenEffectCounter >= 2)
-                    RenderMessageCenter(spriteBatch, "You have died. Click to respawn.", new Vector2(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2), Color.White, Color.Black);
+                {
+                    string deathMessage = string.Empty;
+                    if(_P.inputEngine.ControlType == ControlType.KeyboardMouse)
+                    {
+                        deathMessage = "You have died.  Left click to respawn.";
+                    }
+                    else
+                    {
+                        deathMessage = "You have died.  Press Right Trigger to respawn.";
+                    }
+
+                    RenderMessageCenter(spriteBatch, deathMessage, new Vector2(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2), Color.White, Color.Black);
+                }
             }
             if (_P.screenEffect == ScreenEffect.Teleport || _P.screenEffect == ScreenEffect.Explosion)
             {
