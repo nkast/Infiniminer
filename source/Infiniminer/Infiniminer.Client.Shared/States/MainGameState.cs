@@ -128,36 +128,64 @@ namespace Infiniminer.States
             else
                 mouseInitialized = false;
 
-            // Digging like a freaking terrier! Now for everyone!
-            if (mouseInitialized && mouseState.LeftButton == ButtonState.Pressed && !_P.playerDead && _P.playerToolCooldown == 0 && _P.playerTools[_P.playerToolSelected] == PlayerTools.Pickaxe)
-            {
-                _P.FirePickaxe();
-                if (_P.playerClass == PlayerClass.Miner)
-                    _P.playerToolCooldown = _P.GetToolCooldown(PlayerTools.Pickaxe) * 0.4f;
-                else
-                    _P.playerToolCooldown = _P.GetToolCooldown(PlayerTools.Pickaxe);
-            }
-
-            // Prospector radar stuff.
-            if (!_P.playerDead && _P.playerToolCooldown == 0 && _P.playerTools[_P.playerToolSelected] == PlayerTools.ProspectingRadar)
-            {
-                float oldValue = _P.radarValue;
-                _P.ReadRadar(ref _P.radarDistance, ref _P.radarValue);
-                if (_P.radarValue != oldValue)
-                {
-                    if (_P.radarValue == 200)
-                        _P.PlaySound(InfiniminerSound.RadarLow);
-                    if (_P.radarValue == 1000)
-                        _P.PlaySound(InfiniminerSound.RadarHigh);
-                }
-            }
-
-            // Update the player"s position.
+            ///////////////////////////////////////////////////////////////////
+            /// Update Player
+            ///////////////////////////////////////////////////////////////////
             if (!_P.playerDead)
-                UpdatePlayerPosition(gameTime, keyState);
+            {
+                ///////////////////////////////////////////////////////////////////
+                /// Use tool if player can
+                ///////////////////////////////////////////////////////////////////
+                if (_P.playerToolCooldown == 0 && _P.inputEngine.UseTool.Check())
+                {
+                    switch (_P.playerTools[_P.playerToolSelected])
+                    {
+                        case PlayerTools.ConstructionGun:
+                            _P.FireConstructionGun(_P.playerBlocks[_P.playerBlockSelected]);
+                            break;
+                        case PlayerTools.DeconstructionGun:
+                            _P.FireDeconstructionGun();
+                            break;
+                        case PlayerTools.Detonator:
+                            _P.PlaySound(InfiniminerSound.ClickHigh);
+                            _P.FireDetonator();
+                            break;
+                        case PlayerTools.Pickaxe:
+                            _P.FirePickaxe();
+                            _P.playerToolCooldown = _P.playerClass == PlayerClass.Miner
+                                                     ? _P.GetToolCooldown(PlayerTools.Pickaxe) * 0.4f
+                                                     : _P.GetToolCooldown(PlayerTools.Pickaxe);
+                            break;
+                        case PlayerTools.ProspectingRadar:
+                            _P.FireRadar();
+                            break;
+                    }
 
-            // Update the camera regardless of if we"re alive or not.
-            _P.UpdateCamera(gameTime);
+
+                    // Prospector radar stuff.
+                    if (_P.playerTools[_P.playerToolSelected] == PlayerTools.ProspectingRadar)
+                    {
+                        float oldValue = _P.radarValue;
+                        _P.ReadRadar(ref _P.radarDistance, ref _P.radarValue);
+                        if (_P.radarValue != oldValue)
+                        {
+                            if (_P.radarValue == 200)
+                                _P.PlaySound(InfiniminerSound.RadarLow);
+                            if (_P.radarValue == 1000)
+                                _P.PlaySound(InfiniminerSound.RadarHigh);
+                        }
+                    }
+
+
+                }
+
+                // Update the player"s position.
+                UpdatePlayerPosition(gameTime, keyState);
+                
+                // Update the camera regardless of if we"re alive or not.
+                _P.UpdateCamera(gameTime);
+
+            }
 
             return nextState;
         }
@@ -497,36 +525,6 @@ namespace Infiniminer.States
 
         public override void OnMouseDown(MouseButton button, int x, int y)
         {
-            // If we"re alive, use our currently selected tool!
-            if (!_P.playerDead && _P.playerToolCooldown == 0)
-            {
-                switch (_P.playerTools[_P.playerToolSelected])
-                {
-                    // Disabled as everyone speed-mines now.
-                    //case PlayerTools.Pickaxe:
-                    //    if (_P.playerClass != PlayerClass.Miner)
-                    //        _P.FirePickaxe();
-                    //    break;
-
-                    case PlayerTools.ConstructionGun:
-                        _P.FireConstructionGun(_P.playerBlocks[_P.playerBlockSelected]);
-                        break;
-
-                    case PlayerTools.DeconstructionGun:
-                        _P.FireDeconstructionGun();
-                        break;
-
-                    case PlayerTools.Detonator:
-                        _P.PlaySound(InfiniminerSound.ClickHigh);
-                        _P.FireDetonator();
-                        break;
-
-                    case PlayerTools.ProspectingRadar:
-                        _P.FireRadar();
-                        break;
-                }
-            }
-
             // If we"re dead, come back to life.
             if (_P.playerDead && _P.screenEffectCounter > 2)
             {
