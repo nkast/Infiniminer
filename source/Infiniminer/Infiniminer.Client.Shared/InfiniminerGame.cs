@@ -408,6 +408,13 @@ namespace Infiniminer
                                             propertyBag.PlaySound(sound);
                                     }
                                     break;
+                                case InfiniminerMessage.VibrateGamePad:
+                                    {
+                                        float strength = msgBuffer.ReadSingle();
+                                        uint ms = msgBuffer.ReadUInt32();
+                                        propertyBag.inputEngine.VibrateGamepad(strength, TimeSpan.FromMilliseconds(ms));
+                                    }
+                                    break;
                             }
                         }
                         break;
