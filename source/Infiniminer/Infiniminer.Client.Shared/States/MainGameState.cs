@@ -368,13 +368,14 @@ namespace Infiniminer.States
 
             if (_P.chatMode == ChatMessageType.None)
             {
-                if (keyState.IsKeyDown(Keys.W))
+                Vector2 direction = _P.inputEngine.Move.Value;
+                if (direction.Y < 0)
                     moveVector += _P.playerCamera.GetLookVector();
-                if (keyState.IsKeyDown(Keys.S))
+                if (direction.Y > 0)
                     moveVector -= _P.playerCamera.GetLookVector();
-                if (keyState.IsKeyDown(Keys.D))
+                if (direction.X > 0)
                     moveVector += _P.playerCamera.GetRightVector();
-                if (keyState.IsKeyDown(Keys.A))
+                if (direction.X < 0)
                     moveVector -= _P.playerCamera.GetRightVector();
             }
 
