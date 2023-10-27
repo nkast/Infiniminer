@@ -144,13 +144,6 @@ public class InputEngine
     public VirtualButton SelectButton { get; private set; }
 
     ///////////////////////////////////////////////////////////////////////////
-    /// Title Start
-    ///     This command is specifically only used on the title screen to go
-    ///     to the next screen
-    ///////////////////////////////////////////////////////////////////////////
-    public VirtualButton TitleStart { get; private set; }
-
-    ///////////////////////////////////////////////////////////////////////////
     /// Menu Navigation
     ///     These commands are used during menu screens to move up, down, left 
     ///     or right on the menu  list, confirm menu choices, or back out
@@ -293,13 +286,6 @@ public class InputEngine
         SelectButton.Nodes.Add(new VirtualButton.GamePad.Button(Buttons.Back));
 
         //
-        //  Title Start
-        //
-        TitleStart = new VirtualButton();
-        TitleStart.Nodes.Add(new VirtualButton.Mouse.LeftButton());
-        TitleStart.Nodes.Add(new VirtualButton.GamePad.Button(Buttons.Start));
-
-        //
         //  Menu Up
         //
         MenuUp = new VirtualButton();
@@ -387,7 +373,6 @@ public class InputEngine
         SayToTeam.Register();
         SayToAll.Register();
         SelectButton.Register();
-        TitleStart.Register();
         MenuUp.Register();
         MenuDown.Register();
         MenuLeft.Register();
@@ -416,7 +401,6 @@ public class InputEngine
         SayToTeam.Unregister();
         SayToAll.Unregister();
         SelectButton.Unregister();
-        TitleStart.Unregister();
         MenuUp.Unregister();
         MenuDown.Unregister();
         MenuLeft.Unregister();
