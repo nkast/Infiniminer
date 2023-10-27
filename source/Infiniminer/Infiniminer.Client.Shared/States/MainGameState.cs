@@ -175,13 +175,25 @@ namespace Infiniminer.States
                                 _P.PlaySound(InfiniminerSound.RadarHigh);
                         }
                     }
+                }
 
-
+                ///////////////////////////////////////////////////////////////////
+                /// Check if player jumped
+                ///////////////////////////////////////////////////////////////////
+                if (_P.inputEngine.Jump.Pressed())
+                {
+                    Vector3 footPosition = _P.playerPosition + new Vector3(0f, -1.5f, 0f);
+                    if (_P.blockEngine.SolidAtPointForPlayer(footPosition) && _P.playerVelocity.Y == 0)
+                    {
+                        _P.playerVelocity.Y = JUMPVELOCITY;
+                        float amountBelowSurface = ((ushort)footPosition.Y) + 1 - footPosition.Y;
+                        _P.playerPosition.Y += amountBelowSurface + 0.01f;
+                    }
                 }
 
                 // Update the player"s position.
                 UpdatePlayerPosition(gameTime, keyState);
-                
+
                 // Update the camera regardless of if we"re alive or not.
                 _P.UpdateCamera(gameTime);
 
@@ -454,18 +466,6 @@ namespace Infiniminer.States
 
             if (!_P.playerDead)
             {
-                // Jump!
-                if (key == Keys.Space)
-                {
-                    Vector3 footPosition = _P.playerPosition + new Vector3(0f, -1.5f, 0f);
-                    if (_P.blockEngine.SolidAtPointForPlayer(footPosition) && _P.playerVelocity.Y == 0)
-                    {
-                        _P.playerVelocity.Y = JUMPVELOCITY;
-                        float amountBelowSurface = ((ushort)footPosition.Y) + 1 - footPosition.Y;
-                        _P.playerPosition.Y += amountBelowSurface + 0.01f;
-                    }
-                }
-
                 // Change weapon!
                 if (key == Keys.E)
                 {
