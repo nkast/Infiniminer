@@ -249,6 +249,24 @@ namespace Infiniminer.States
                 }
 
                 ///////////////////////////////////////////////////////////////////
+                /// Check if player is depositing or withdrawing from a bank
+                ///////////////////////////////////////////////////////////////////
+                if (_P.AtBankTerminal())
+                {
+                    if (_P.inputEngine.DepositOre.Pressed())
+                    {
+                        _P.DepositOre();
+                        _P.PlaySound(InfiniminerSound.ClickHigh);
+                    }
+
+                    if (_P.inputEngine.WithdrawOre.Pressed())
+                    {
+                        _P.WithdrawOre();
+                        _P.PlaySound(InfiniminerSound.ClickHigh);
+                    }
+                }
+
+                ///////////////////////////////////////////////////////////////////
                 /// Check if player wants to change class
                 ///////////////////////////////////////////////////////////////////
                 if (_P.inputEngine.ChangeClass.Pressed())
@@ -542,24 +560,6 @@ namespace Infiniminer.States
 
             if (key == Keys.U)
                 _P.chatMode = _P.playerTeam == PlayerTeam.Red ? ChatMessageType.SayRedTeam : ChatMessageType.SayBlueTeam;
-
-            if (!_P.playerDead)
-            {
-                // Deposit and withdraw from a bank.
-                if (_P.AtBankTerminal())
-                {
-                    if (key == Keys.D1)
-                    {
-                        _P.DepositOre();
-                        _P.PlaySound(InfiniminerSound.ClickHigh);
-                    }
-                    if (key == Keys.D2)
-                    {
-                        _P.WithdrawOre();
-                        _P.PlaySound(InfiniminerSound.ClickHigh);
-                    }
-                }
-            }
         }
 
         public override void OnKeyUp(Keys key)
