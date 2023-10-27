@@ -59,20 +59,28 @@ namespace Infiniminer.States
 
         public override string OnUpdate(GameTime gameTime, KeyboardState keyState, MouseState mouseState)
         {
-            // Update network stuff.
+            ///////////////////////////////////////////////////////////////////
+            /// Update Network stuff
+            ///////////////////////////////////////////////////////////////////
             (_SM as InfiniminerGame).UpdateNetwork(gameTime);
 
-            // Update the current screen effect.
+            ///////////////////////////////////////////////////////////////////
+            /// Update the current screen effect.
+            ///////////////////////////////////////////////////////////////////
             _P.screenEffectCounter += gameTime.ElapsedGameTime.TotalSeconds;
 
-            // Update engines.
+            ///////////////////////////////////////////////////////////////////
+            /// Update engines
+            ///////////////////////////////////////////////////////////////////
             _P.skyplaneEngine.Update(gameTime);
             _P.playerEngine.Update(gameTime);
             _P.interfaceEngine.Update(gameTime);
             _P.particleEngine.Update(gameTime);
             _P.inputEngine.Update(gameTime);
 
-            // Count down the tool cooldown.
+            ///////////////////////////////////////////////////////////////////
+            /// Count down the tool cool down
+            ///////////////////////////////////////////////////////////////////
             if (_P.playerToolCooldown > 0)
             {
                 _P.playerToolCooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -80,7 +88,10 @@ namespace Infiniminer.States
                     _P.playerToolCooldown = 0;
             }
 
-            // Moving the mouse changes where we look.
+            ///////////////////////////////////////////////////////////////////
+            /// Update the camera
+            ///     Only update if the window has focus
+            ///////////////////////////////////////////////////////////////////
             if (_SM.WindowHasFocus())
             {
                 if (mouseInitialized)
@@ -93,8 +104,8 @@ namespace Infiniminer.States
                     float dy;
                     if (_P.inputEngine.ControlType == ControlType.KeyboardMouse)
                     {
-                         dx = InputManager.Mouse.X - _SM.GraphicsDevice.Viewport.Width / 2;
-                         dy = InputManager.Mouse.Y - _SM.GraphicsDevice.Viewport.Height / 2;
+                        dx = InputManager.Mouse.X - _SM.GraphicsDevice.Viewport.Width / 2;
+                        dy = InputManager.Mouse.Y - _SM.GraphicsDevice.Viewport.Height / 2;
                     }
                     else
                     {
