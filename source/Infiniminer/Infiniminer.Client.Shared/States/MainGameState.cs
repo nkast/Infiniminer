@@ -384,6 +384,13 @@ namespace Infiniminer.States
                 // "Flatten" the movement vector so that we don"t move up/down.
                 moveVector.Y = 0;
                 moveVector.Normalize();
+
+                //  Check if sprinting
+                if (_P.inputEngine.Sprint.Check())
+                {
+                    moveVector *= 1.5f;
+                }
+
                 moveVector *= MOVESPEED * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 if (movingOnRoad)
                     moveVector *= 2;
