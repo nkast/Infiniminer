@@ -248,10 +248,14 @@ namespace Infiniminer.States
                     _P.netClient.SendMessage(msgBuffer, NetChannel.ReliableUnordered);
                 }
 
-                // Update the player"s position.
+                ///////////////////////////////////////////////////////////////////
+                /// Update the players position
+                ///////////////////////////////////////////////////////////////////
                 UpdatePlayerPosition(gameTime, keyState);
 
-                // Update the camera regardless of if we"re alive or not.
+                ///////////////////////////////////////////////////////////////////
+                /// Update the camera regardless of if we"re alive or not.
+                ///////////////////////////////////////////////////////////////////
                 _P.UpdateCamera(gameTime);
 
             }
