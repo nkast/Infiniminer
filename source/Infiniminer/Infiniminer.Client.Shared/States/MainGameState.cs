@@ -223,6 +223,20 @@ namespace Infiniminer.States
                     }
                 }
 
+                ///////////////////////////////////////////////////////////////////
+                /// Check if the player is using the construction gun and if they
+                /// want to switch block types
+                ///////////////////////////////////////////////////////////////////
+                if (_P.playerTools[_P.playerToolSelected] == PlayerTools.ConstructionGun && _P.inputEngine.ChangeBlockType.Pressed())
+                {
+                    _P.PlaySound(InfiniminerSound.ClickLow);
+                    _P.playerBlockSelected += 1;
+                    if (_P.playerBlockSelected >= _P.playerBlocks.Length)
+                    {
+                        _P.playerBlockSelected = 0;
+                    }
+                }
+
                 // Update the player"s position.
                 UpdatePlayerPosition(gameTime, keyState);
 
@@ -498,15 +512,6 @@ namespace Infiniminer.States
 
             if (!_P.playerDead)
             {
-                // Change block type!
-                if (key == Keys.R && _P.playerTools[_P.playerToolSelected] == PlayerTools.ConstructionGun)
-                {
-                    _P.PlaySound(InfiniminerSound.ClickLow);
-                    _P.playerBlockSelected += 1;
-                    if (_P.playerBlockSelected >= _P.playerBlocks.Length)
-                        _P.playerBlockSelected = 0;
-                }
-
                 // Deposit and withdraw from a bank.
                 if (_P.AtBankTerminal())
                 {
