@@ -275,6 +275,23 @@ namespace Infiniminer.States
                 }
 
                 ///////////////////////////////////////////////////////////////////
+                /// Check if player want to quit match or commit pixelcide
+                ///////////////////////////////////////////////////////////////////
+                if (_P.inputEngine.SelectButton.Check())
+                {
+                    if (_P.inputEngine.QuitButton.Pressed())
+                    {
+                        _P.netClient.Disconnect("Client disconnected.");
+                        nextState = "Infiniminer.States.ServerBrowserState";
+                    }
+
+                    if(_P.inputEngine.PixelcideButton.Pressed())
+                    {
+                        _P.KillPlayer("HAS COMMMITTED PIXELCIDE!");
+                    }
+                }
+
+                ///////////////////////////////////////////////////////////////////
                 /// Check if player wants to change team
                 ///////////////////////////////////////////////////////////////////
                 if (_P.inputEngine.ChangeTeam.Pressed())
@@ -507,19 +524,6 @@ namespace Infiniminer.States
 
         public override void OnKeyDown(Keys key)
         {
-            // Exit!
-            if (key == Keys.Y && Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {
-                _P.netClient.Disconnect("Client disconnected.");
-                nextState = "Infiniminer.States.ServerBrowserState";
-            }
-
-            // Pixelcide!
-            if (key == Keys.K && Keyboard.GetState().IsKeyDown(Keys.Escape) && !_P.playerDead)
-            {
-                _P.KillPlayer("HAS COMMMITTED PIXELCIDE!");
-            }
-
             if (_P.chatMode != ChatMessageType.None)
             {
                 // Put the characters in the chat buffer.
