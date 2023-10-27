@@ -29,7 +29,7 @@ namespace Infiniminer;
 
 public class Defines
 {
-    public const string INFINIMINER_VERSION = "v1.5";
+    public const string INFINIMINER_VERSION = "v1.6";
     public const int GROUND_LEVEL = 8;
 
     public const string DEATH_BY_LAVA = "WAS INCINERATED BY LAVA!";
