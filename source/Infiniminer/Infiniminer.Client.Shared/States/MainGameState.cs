@@ -287,7 +287,7 @@ namespace Infiniminer.States
 
                     if(_P.inputEngine.PixelcideButton.Pressed())
                     {
-                        _P.KillPlayer("HAS COMMMITTED PIXELCIDE!");
+                        _P.KillPlayer("HAS COMMITTED PIXELCIDE!");
                     }
                 }
 
