@@ -51,5 +51,5 @@ public enum InfiniminerMessage : byte
     TriggerConstructionGunAnimation,
     SetBeacon,              // vector3 position, string text ("" means remove)
 
-    VibrateGamepad,         //  float strength, uint milliseconds
+    VibrateGamePad,         //  float strength, uint milliseconds
 }
