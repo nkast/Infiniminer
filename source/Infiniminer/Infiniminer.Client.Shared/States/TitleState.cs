@@ -48,22 +48,12 @@ namespace Infiniminer.States
                                      1024);
         }
 
-        public override void OnLeave(string newState)
-        {
-
-        }
-
         public override string OnUpdate(GameTime gameTime, KeyboardState keyState, MouseState mouseState)
         {
             // Do network stuff.
             //(_SM as InfiniminerGame).UpdateNetwork(gameTime);
 
             return nextState;
-        }
-
-        public override void OnRenderAtEnter(GraphicsDevice graphicsDevice)
-        {
-
         }
 
         public override void OnRenderAtUpdate(GraphicsDevice graphicsDevice, GameTime gameTime)
@@ -82,25 +72,11 @@ namespace Infiniminer.States
             }
         }
 
-        public override void OnKeyUp(Keys key)
-        {
-
-        }
 
         public override void OnMouseDown(MouseButton button, int x, int y)
         {
             nextState = "Infiniminer.States.ServerBrowserState";
             _P.PlaySound(InfiniminerSound.ClickHigh);
-        }
-
-        public override void OnMouseUp(MouseButton button, int x, int y)
-        {
-
-        }
-
-        public override void OnMouseScroll(int scrollDelta)
-        {
-
         }
     }
 }
