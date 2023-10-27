@@ -50,9 +50,6 @@ namespace Infiniminer.States
 
         public override string OnUpdate(GameTime gameTime, KeyboardState keyState, MouseState mouseState)
         {
-            // Do network stuff.
-            //(_SM as InfiniminerGame).UpdateNetwork(gameTime);
-
             return nextState;
         }
 
