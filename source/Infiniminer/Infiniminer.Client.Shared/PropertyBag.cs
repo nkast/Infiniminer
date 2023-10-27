@@ -63,6 +63,7 @@ namespace Infiniminer
         public PlayerEngine playerEngine = null;
         public SkyplaneEngine skyplaneEngine = null;
         public ParticleEngine particleEngine = null;
+        public InputEngine inputEngine = null;
 
         // Network stuff.
         public NetClient netClient = null;
@@ -135,6 +136,8 @@ namespace Infiniminer
             playerEngine = new PlayerEngine(gameInstance);
             skyplaneEngine = new SkyplaneEngine(gameInstance);
             particleEngine = new ParticleEngine(gameInstance);
+            inputEngine = new InputEngine();
+            inputEngine.Register();
 
             // Create a camera.
             playerCamera = new Camera(gameInstance.GraphicsDevice);
