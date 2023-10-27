@@ -286,7 +286,12 @@ namespace Infiniminer
                                                 propertyBag.screenEffectCounter = 2;
                                             }
                                             // If this bomb would result in a bigger shake, use its value.
-                                            propertyBag.screenEffectCounter = Math.Min(propertyBag.screenEffectCounter, (distFromExplosive - 2) / 5);
+                                            double effectValue = Math.Min(propertyBag.screenEffectCounter, (distFromExplosive - 2) / 5);
+                                            propertyBag.screenEffectCounter = effectValue;
+
+                                            //  TODO: Move this to server message being sent, but need to calcualte
+                                            //  the same distance/effect value on server to do that.
+                                            propertyBag.inputEngine.VibrateGamepad((float)effectValue, TimeSpan.FromSeconds(effectValue));
                                         }
                                     }
                                     break;
