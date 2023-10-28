@@ -12,7 +12,13 @@
 // This is the final step in applying a bloom postprocess.
 
 sampler BloomSampler : register(s0);
-sampler BaseSampler : register(s1);
+sampler BaseSampler : register(s1) = sampler_state
+{
+    Texture = <BaseTexture>;
+    Filter = LINEAR;
+    AddressU = clamp;
+    AddressV = clamp;
+};
 
 float BloomIntensity;
 float BaseIntensity;

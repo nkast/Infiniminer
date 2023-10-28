@@ -163,7 +163,7 @@ namespace Infiniminer
             parameters["BloomSaturation"].SetValue(Settings.BloomSaturation);
             parameters["BaseSaturation"].SetValue(Settings.BaseSaturation);
 
-            GraphicsDevice.Textures[1] = resolveTarget;
+            parameters["BaseTexture"].SetValue(resolveTarget);
 
             Viewport viewport = GraphicsDevice.Viewport;
 
