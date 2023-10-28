@@ -19,7 +19,10 @@ float2 SampleOffsets[SAMPLE_COUNT];
 float SampleWeights[SAMPLE_COUNT];
 
 
-float4 PixelShaderFunction(float2 texCoord : TEXCOORD0) : COLOR0
+float4 PixelShaderFunction(
+    float4 position : SV_POSITION,
+    float4 color : COLOR0,
+    float2 texCoord : TEXCOORD0) : COLOR0
 {
     float4 c = 0;
     
