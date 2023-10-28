@@ -50,4 +50,6 @@ public enum InfiniminerMessage : byte
     PlaySound,              // byte sound, bool isPositional, ?Vector3 location : ReliableUnordered
     TriggerConstructionGunAnimation,
     SetBeacon,              // vector3 position, string text ("" means remove)
+
+    VibrateGamePad,         //  float strength, uint milliseconds
 }

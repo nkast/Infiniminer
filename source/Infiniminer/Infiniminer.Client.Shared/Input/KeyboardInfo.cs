@@ -23,22 +23,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ---------------------------------------------------------------------------- */
 
-using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace Infiniminer;
 
-public class Defines
+public sealed class KeyboardInfo
 {
-    public const string INFINIMINER_VERSION = "v1.6";
-    public const int GROUND_LEVEL = 8;
+    public KeyboardState PreviousState { get; private set; }
+    public KeyboardState CurrentState { get; private set; }
 
-    public const string DEATH_BY_LAVA = "WAS INCINERATED BY LAVA!";
-    public const string DEATH_BY_ELEC = "WAS ELECTROCUTED!";
-    public const string DEATH_BY_EXPL = "WAS KILLED IN AN EXPLOSION!";
-    public const string DEATH_BY_FALL = "WAS KILLED BY GRAVITY!";
-    public const string DEATH_BY_MISS = "WAS KILLED BY MISADVENTURE!";
-    public const string DEATH_BY_SUIC = "HAS COMMITED PIXELCIDE!";
+    public bool AnyKeyCheck => CurrentState.GetPressedKeyCount() > 0;
+    public bool AnyKeyPressed => CurrentState.GetPressedKeyCount() > PreviousState.GetPressedKeyCount();
+    public bool AnyKeyReleased => CurrentState.GetPressedKeyCount() < PreviousState.GetPressedKeyCount();
 
-    public static Color IM_BLUE = new Color(80, 150, 255);
-    public static Color IM_RED = new Color(222, 24, 24);
+    public KeyboardInfo()
+    {
+        PreviousState = new KeyboardState();
+        CurrentState = Keyboard.GetState();
+    }
+
+    public void Update()
+    {
+        PreviousState = CurrentState;
+        CurrentState = Keyboard.GetState();
+    }
+
+    public bool Check(Keys key) => CurrentState.IsKeyDown(key);
+    public bool Pressed(Keys key) => CurrentState.IsKeyDown(key) && PreviousState.IsKeyUp(key);
+    public bool Released(Keys key) => CurrentState.IsKeyUp(key) && PreviousState.IsKeyDown(key);
 }

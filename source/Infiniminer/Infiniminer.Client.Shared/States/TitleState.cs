@@ -48,22 +48,22 @@ namespace Infiniminer.States
                                      1024);
         }
 
-        public override void OnLeave(string newState)
-        {
-
-        }
-
         public override string OnUpdate(GameTime gameTime, KeyboardState keyState, MouseState mouseState)
         {
-            // Do network stuff.
-            //(_SM as InfiniminerGame).UpdateNetwork(gameTime);
+            _P.inputEngine.Update(gameTime);
 
+            if(_P.inputEngine.MenuConfirm.Pressed())
+            {
+                _P.inputEngine.MenuConfirm.ConsumePress();
+                nextState = "Infiniminer.States.ServerBrowserState";
+                _P.PlaySound(InfiniminerSound.ClickHigh);
+            }
+            else if(_P.inputEngine.MenuBack.Pressed())
+            {
+                _SM.Exit();
+            }
+            
             return nextState;
-        }
-
-        public override void OnRenderAtEnter(GraphicsDevice graphicsDevice)
-        {
-
         }
 
         public override void OnRenderAtUpdate(GraphicsDevice graphicsDevice, GameTime gameTime)
@@ -72,35 +72,6 @@ namespace Infiniminer.States
             spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred);
             spriteBatch.Draw(texMenu, drawRect, Color.White);
             spriteBatch.End();
-        }
-
-        public override void OnKeyDown(Keys key)
-        {
-            if (key == Keys.Escape)
-            {
-                _SM.Exit();
-            }
-        }
-
-        public override void OnKeyUp(Keys key)
-        {
-
-        }
-
-        public override void OnMouseDown(MouseButton button, int x, int y)
-        {
-            nextState = "Infiniminer.States.ServerBrowserState";
-            _P.PlaySound(InfiniminerSound.ClickHigh);
-        }
-
-        public override void OnMouseUp(MouseButton button, int x, int y)
-        {
-
-        }
-
-        public override void OnMouseScroll(int scrollDelta)
-        {
-
         }
     }
 }

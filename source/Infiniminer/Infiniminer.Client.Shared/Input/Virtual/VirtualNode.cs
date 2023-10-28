@@ -23,22 +23,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ---------------------------------------------------------------------------- */
 
-using Microsoft.Xna.Framework;
-
 namespace Infiniminer;
 
-public class Defines
+public abstract class VirtualNode
 {
-    public const string INFINIMINER_VERSION = "v1.6";
-    public const int GROUND_LEVEL = 8;
-
-    public const string DEATH_BY_LAVA = "WAS INCINERATED BY LAVA!";
-    public const string DEATH_BY_ELEC = "WAS ELECTROCUTED!";
-    public const string DEATH_BY_EXPL = "WAS KILLED IN AN EXPLOSION!";
-    public const string DEATH_BY_FALL = "WAS KILLED BY GRAVITY!";
-    public const string DEATH_BY_MISS = "WAS KILLED BY MISADVENTURE!";
-    public const string DEATH_BY_SUIC = "HAS COMMITED PIXELCIDE!";
-
-    public static Color IM_BLUE = new Color(80, 150, 255);
-    public static Color IM_RED = new Color(222, 24, 24);
+    public virtual void Update() { }
 }

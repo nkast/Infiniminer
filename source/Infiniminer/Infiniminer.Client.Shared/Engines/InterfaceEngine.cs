@@ -401,10 +401,25 @@ namespace Infiniminer
             spriteBatch.Draw(texRadarForeground, new Vector2(10, 30), Color.White);
 
             // Draw escape message.
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (_P.inputEngine.SelectButton.Check())
             {
-                RenderMessageCenter(spriteBatch, "PRESS Y TO CONFIRM THAT YOU WANT TO QUIT.", new Vector2(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2 + 30), Color.White, Color.Black);
-                RenderMessageCenter(spriteBatch, "PRESS K TO COMMIT PIXELCIDE.", new Vector2(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2 + 80), Color.White, Color.Black);
+                string quitMessage = string.Empty;
+                string pixelcideMessage = string.Empty;
+
+                if (_P.inputEngine.ControlType == ControlType.KeyboardMouse)
+                {
+                    quitMessage = "PRESS Y TO CONFIRM THAT YOU WANT TO QUIT.";
+                    pixelcideMessage = "PRESS K TO COMMIT PIXELCIDE.";
+                }
+                else
+                {
+                    quitMessage = "PRESS (Y) Button TO CONFIRM THAT YOU WANT TO QUIT.";
+                    pixelcideMessage = "PRESS (B) Button TO COMMIT PIXELCIDE.";
+                }
+
+                RenderMessageCenter(spriteBatch, quitMessage, new Vector2(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2 + 30), Color.White, Color.Black);
+                RenderMessageCenter(spriteBatch, pixelcideMessage, new Vector2(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2 + 80), Color.White, Color.Black);
+
             }
 
             // Draw the current screen effect.
@@ -413,7 +428,19 @@ namespace Infiniminer
                 Color drawColor = new Color(1 - (float)_P.screenEffectCounter * 0.5f, 0f, 0f);
                 spriteBatch.Draw(texBlank, new Rectangle(0, 0, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height), drawColor);
                 if (_P.screenEffectCounter >= 2)
-                    RenderMessageCenter(spriteBatch, "You have died. Click to respawn.", new Vector2(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2), Color.White, Color.Black);
+                {
+                    string deathMessage = string.Empty;
+                    if(_P.inputEngine.ControlType == ControlType.KeyboardMouse)
+                    {
+                        deathMessage = "You have died.  Left click to respawn.";
+                    }
+                    else
+                    {
+                        deathMessage = "You have died.  Press Right Trigger to respawn.";
+                    }
+
+                    RenderMessageCenter(spriteBatch, deathMessage, new Vector2(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2), Color.White, Color.Black);
+                }
             }
             if (_P.screenEffect == ScreenEffect.Teleport || _P.screenEffect == ScreenEffect.Explosion)
             {

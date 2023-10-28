@@ -23,22 +23,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ---------------------------------------------------------------------------- */
 
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace Infiniminer;
 
-public class Defines
+public static class InputManager
 {
-    public const string INFINIMINER_VERSION = "v1.6";
-    public const int GROUND_LEVEL = 8;
+    internal static List<VirtualInput> VirtualInputs { get; private set; }
+    public static KeyboardInfo Keyboard { get; private set; }
+    public static MouseInfo Mouse { get; private set; }
+    public static GamePadInfo GamePad { get; private set; }
 
-    public const string DEATH_BY_LAVA = "WAS INCINERATED BY LAVA!";
-    public const string DEATH_BY_ELEC = "WAS ELECTROCUTED!";
-    public const string DEATH_BY_EXPL = "WAS KILLED IN AN EXPLOSION!";
-    public const string DEATH_BY_FALL = "WAS KILLED BY GRAVITY!";
-    public const string DEATH_BY_MISS = "WAS KILLED BY MISADVENTURE!";
-    public const string DEATH_BY_SUIC = "HAS COMMITED PIXELCIDE!";
+    static  InputManager()
+    {
+        Keyboard = new();
+        Mouse = new();
+        GamePad = new(PlayerIndex.One);
+        VirtualInputs = new List<VirtualInput>();
+    }
 
-    public static Color IM_BLUE = new Color(80, 150, 255);
-    public static Color IM_RED = new Color(222, 24, 24);
+    public static void Update(GameTime gameTime)
+    {
+        Keyboard.Update();
+        Mouse.Update();
+        GamePad.Update(gameTime);
+
+        for (int i = 0; i < VirtualInputs.Count; i++)
+        {
+            VirtualInputs[i].Update();
+        }
+    }
 }
