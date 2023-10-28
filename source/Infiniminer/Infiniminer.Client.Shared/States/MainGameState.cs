@@ -292,7 +292,7 @@ namespace Infiniminer.States
                     ///////////////////////////////////////////////////////////////////
                     /// Check if player want to quit match or commit pixelcide
                     ///////////////////////////////////////////////////////////////////
-                    if (_P.inputEngine.SelectButton.Check())
+                    if (_P.inputEngine.ShowHelpButton.Check())
                     {
                         if (_P.inputEngine.QuitButton.Pressed())
                         {
