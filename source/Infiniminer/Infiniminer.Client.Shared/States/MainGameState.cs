@@ -597,10 +597,19 @@ namespace Infiniminer.States
 
         public override void OnRenderAtUpdate(GraphicsDevice graphicsDevice, GameTime gameTime)
         {
+            // Set posteffects target.
+            if (_P.blockEngine.bloomPosteffect != null)
+                _P.blockEngine.bloomPosteffect.SetRenderTarget(graphicsDevice);
+
             _P.skyplaneEngine.Render(graphicsDevice);
             _P.particleEngine.Render(graphicsDevice);
             _P.playerEngine.Render(graphicsDevice);
             _P.blockEngine.Render(graphicsDevice, gameTime);
+            
+            // Apply posteffects.
+            if (_P.blockEngine.bloomPosteffect != null)
+                _P.blockEngine.bloomPosteffect.Draw(graphicsDevice);
+
             _P.playerEngine.RenderPlayerNames(graphicsDevice);
             _P.interfaceEngine.Render(graphicsDevice);
 

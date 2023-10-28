@@ -118,15 +118,22 @@ namespace Infiniminer
 
 
         /// <summary>
+        /// Resolve the scene into a texture, so we can
+        /// use it as input data for the bloom processing.
+        /// </summary>
+        /// <param name="graphicsDevice"></param>
+        internal void SetRenderTarget(GraphicsDevice graphicsDevice)
+        {
+            GraphicsDevice.SetRenderTarget(resolveTarget);
+            GraphicsDevice.Clear(Color.Transparent);
+        }
+
+        /// <summary>
         /// This is where it all happens. Grabs a scene that has already been rendered,
         /// and uses postprocess magic to add a glowing bloom effect over the top of it.
         /// </summary>
         public void Draw(GraphicsDevice device)
         {
-            // Resolve the scene into a texture, so we can
-            // use it as input data for the bloom processing.
-            GraphicsDevice.SetRenderTarget(resolveTarget);
-
             // Pass 1: draw the scene into rendertarget 1, using a
             // shader that extracts only the brightest parts of the image.
             bloomExtractEffect.Parameters["BloomThreshold"].SetValue(Settings.BloomThreshold);
