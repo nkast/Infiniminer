@@ -270,10 +270,20 @@ namespace Infiniminer.States
 
                     ///////////////////////////////////////////////////////////////////
                     /// Check if player wants to change class
+                    /// (Keyboard only, gamepad check is during options section below)
                     ///////////////////////////////////////////////////////////////////
-                    if (_P.inputEngine.ChangeClass.Pressed())
+                    if (_P.inputEngine.ChangeClass.Pressed() && _P.inputEngine.ControlType == ControlType.KeyboardMouse)
                     {
                         nextState = "Infiniminer.States.ClassSelectionState";
+                    }
+
+                    ///////////////////////////////////////////////////////////////////
+                    /// Check if player wants to change team
+                    /// (Keyboard only, gamepad check is during options section below)
+                    ///////////////////////////////////////////////////////////////////
+                    if (_P.inputEngine.ChangeTeam.Pressed() && _P.inputEngine.ControlType == ControlType.KeyboardMouse)
+                    {
+                        nextState = "Infiniminer.States.TeamSelectionState";
                     }
 
                     ///////////////////////////////////////////////////////////////////
@@ -292,7 +302,7 @@ namespace Infiniminer.States
                     ///////////////////////////////////////////////////////////////////
                     /// Check if player want to quit match or commit pixelcide
                     ///////////////////////////////////////////////////////////////////
-                    if (_P.inputEngine.SelectButton.Check())
+                    if (_P.inputEngine.ShowOptionsButton.Check())
                     {
                         if (_P.inputEngine.QuitButton.Pressed())
                         {
@@ -304,15 +314,19 @@ namespace Infiniminer.States
                         {
                             _P.KillPlayer("HAS COMMITTED PIXELCIDE!");
                         }
+
+                        if (_P.inputEngine.ChangeTeam.Pressed())
+                        {
+                            nextState = "Infiniminer.States.TeamSelectionState";
+                        }
+
+                        if (_P.inputEngine.ChangeClass.Pressed())
+                        {
+                            nextState = "Infiniminer.States.ClassSelectionState";
+                        }
                     }
 
-                    ///////////////////////////////////////////////////////////////////
-                    /// Check if player wants to change team
-                    ///////////////////////////////////////////////////////////////////
-                    if (_P.inputEngine.ChangeTeam.Pressed())
-                    {
-                        nextState = "Infiniminer.States.TeamSelectionState";
-                    }
+
 
                     ///////////////////////////////////////////////////////////////////
                     /// Update the players position
@@ -369,7 +383,7 @@ namespace Infiniminer.States
                 ///////////////////////////////////////////////////////////////////
                 /// Player is dead, check for respawn
                 ///////////////////////////////////////////////////////////////////
-                if(_P.screenEffectCounter > 2 && _P.inputEngine.UseTool.Pressed())
+                if (_P.screenEffectCounter > 2 && _P.inputEngine.UseTool.Pressed())
                 {
                     _P.inputEngine.UseTool.ConsumePress();
                     _P.RespawnPlayer();

@@ -40,7 +40,7 @@ namespace Infiniminer
         SpriteFont uiFont, radarFont;
         Rectangle drawRect;
 
-        Texture2D texCrosshairs, texBlank, texHelp;
+        Texture2D texCrosshairs, texBlank, texHelpKeyboardMouse, texHelpGamePad;
         Texture2D texRadarBackground, texRadarForeground, texRadarPlayerSame, texRadarPlayerAbove, texRadarPlayerBelow, texRadarPlayerPing, texRadarNorth;
         Texture2D texToolRadarRed, texToolRadarBlue, texToolRadarGold, texToolRadarDiamond, texToolRadarLED, texToolRadarPointer, texToolRadarFlash;
         Texture2D texToolDetonatorDownRed, texToolDetonatorUpRed, texToolDetonatorDownBlue, texToolDetonatorUpBlue;
@@ -67,7 +67,8 @@ namespace Infiniminer
             texRadarPlayerBelow = gameInstance.Content.Load<Texture2D>("ui/tex_radar_player_below");
             texRadarPlayerPing = gameInstance.Content.Load<Texture2D>("ui/tex_radar_player_ping");
             texRadarNorth = gameInstance.Content.Load<Texture2D>("ui/tex_radar_north");
-            texHelp = gameInstance.Content.Load<Texture2D>("menus/tex_menu_help");
+            texHelpKeyboardMouse = gameInstance.Content.Load<Texture2D>("menus/tex_menu_help_keyboard_mouse");
+            texHelpGamePad = gameInstance.Content.Load<Texture2D>("menus/tex_menu_help_gamepad");
 
             texToolRadarRed = gameInstance.Content.Load<Texture2D>("tools/tex_tool_radar_red");
             texToolRadarBlue = gameInstance.Content.Load<Texture2D>("tools/tex_tool_radar_blue");
@@ -401,24 +402,35 @@ namespace Infiniminer
             spriteBatch.Draw(texRadarForeground, new Vector2(10, 30), Color.White);
 
             // Draw escape message.
-            if (_P.inputEngine.SelectButton.Check())
+            if (_P.inputEngine.ShowOptionsButton.Check())
             {
                 string quitMessage = string.Empty;
                 string pixelcideMessage = string.Empty;
+                string changeTeamMessage = string.Empty;
+                string changeClassMessage = string.Empty;
 
                 if (_P.inputEngine.ControlType == ControlType.KeyboardMouse)
                 {
                     quitMessage = "PRESS Y TO CONFIRM THAT YOU WANT TO QUIT.";
                     pixelcideMessage = "PRESS K TO COMMIT PIXELCIDE.";
+                    changeClassMessage = "PRESS M TO CHANGE CLASS";
+                    changeTeamMessage = "PRESS N TO CHANGE TEAMS";
                 }
                 else
                 {
-                    quitMessage = "PRESS (Y) Button TO CONFIRM THAT YOU WANT TO QUIT.";
-                    pixelcideMessage = "PRESS (B) Button TO COMMIT PIXELCIDE.";
+                    quitMessage = "PRESS (Y) BUTTON TO CONFIRM THAT YOU WANT TO QUIT.";
+                    pixelcideMessage = "PRESS (B) BUTTON TO COMMIT PIXELCIDE.";
+                    changeClassMessage = "PRESS (A) BUTTON TO CHANGE CLASS";
+                    changeTeamMessage = "PRESS (X) BUTTON TO CHANGE TEAM";
                 }
 
-                RenderMessageCenter(spriteBatch, quitMessage, new Vector2(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2 + 30), Color.White, Color.Black);
-                RenderMessageCenter(spriteBatch, pixelcideMessage, new Vector2(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2 + 80), Color.White, Color.Black);
+                if (_P.inputEngine.ControlType == ControlType.GamePad)
+                {
+                    RenderMessageCenter(spriteBatch, changeClassMessage, new Vector2(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2 - 80), Color.White, Color.Black);
+                    RenderMessageCenter(spriteBatch, changeTeamMessage, new Vector2(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2 + 30), Color.White, Color.Black);
+                }
+                RenderMessageCenter(spriteBatch, pixelcideMessage, new Vector2(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2 - 30), Color.White, Color.Black);
+                RenderMessageCenter(spriteBatch, quitMessage, new Vector2(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2 + +80), Color.White, Color.Black);
 
             }
 
@@ -430,7 +442,7 @@ namespace Infiniminer
                 if (_P.screenEffectCounter >= 2)
                 {
                     string deathMessage = string.Empty;
-                    if(_P.inputEngine.ControlType == ControlType.KeyboardMouse)
+                    if (_P.inputEngine.ControlType == ControlType.KeyboardMouse)
                     {
                         deathMessage = "You have died.  Left click to respawn.";
                     }
@@ -458,10 +470,18 @@ namespace Infiniminer
             }
 
             // Draw the help screen.
-            if (Keyboard.GetState().IsKeyDown(Keys.F1))
+            if (_P.inputEngine.ShowHelpButton.Check())
             {
                 spriteBatch.Draw(texBlank, new Rectangle(0, 0, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height), Color.Black);
-                spriteBatch.Draw(texHelp, drawRect, Color.White);
+
+                if (_P.inputEngine.ControlType == ControlType.KeyboardMouse)
+                {
+                    spriteBatch.Draw(texHelpKeyboardMouse, drawRect, Color.White);
+                }
+                else
+                {
+                    spriteBatch.Draw(texHelpGamePad, drawRect, Color.White);
+                }
             }
 
             spriteBatch.End();

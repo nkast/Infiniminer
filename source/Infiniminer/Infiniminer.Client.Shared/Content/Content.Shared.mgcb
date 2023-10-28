@@ -3,6 +3,7 @@
 
 /outputDir:bin/$(Platform)
 /intermediateDir:obj/$(Platform)
+/platform:Windows
 /config:
 /profile:Reach
 /compress:False
@@ -11,7 +12,6 @@
 
 
 #---------------------------------- Content ---------------------------------#
-
 
 #begin blocks/tex_block_bank_back_blue.png
 /importer:TextureImporter
@@ -753,7 +753,7 @@
 /processorParam:TextureFormat=Color
 /build:menus/tex_menu_class_red.png
 
-#begin menus/tex_menu_help.png
+#begin menus/tex_menu_help_gamepad.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -763,7 +763,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:menus/tex_menu_help.png
+/build:menus/tex_menu_help_gamepad.png
+
+#begin menus/tex_menu_help_keyboard_mouse.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:menus/tex_menu_help_keyboard_mouse.png
 
 #begin menus/tex_menu_loading.png
 /importer:TextureImporter

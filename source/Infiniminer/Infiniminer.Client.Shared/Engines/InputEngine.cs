@@ -136,12 +136,19 @@ public class InputEngine
     public VirtualButton SayToAll { get; private set; }
 
     ///////////////////////////////////////////////////////////////////////////
-    /// Select Button (don't know what else to call this)
-    ///     This is the command that was used by the ESC key to bring up
-    ///     the screen asking if the player wanted to pixelcide or quite
-    ///     This is only available for keyboards
+    /// Show Help Button
+    ///     This is the command that brings up the overlay screen showing the
+    ///     help information and keyboard/controller bindings
     ///////////////////////////////////////////////////////////////////////////
-    public VirtualButton SelectButton { get; private set; }
+    public VirtualButton ShowHelpButton { get; private set; }
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// Show Options Button
+    ///     This is the command that brings up the overlay text showing the
+    ///     options to quit or pixelcide.  For Gamepad it also displays the
+    ///     options for changing team or changing class.
+    ///////////////////////////////////////////////////////////////////////////
+    public VirtualButton ShowOptionsButton { get; private set; }
 
     ///////////////////////////////////////////////////////////////////////////
     /// Quit Button
@@ -274,12 +281,14 @@ public class InputEngine
         //
         ChangeTeam = new VirtualButton();
         ChangeTeam.Nodes.Add(new VirtualButton.Keyboard.Key(Keys.N));
+        ChangeTeam.Nodes.Add(new VirtualButton.GamePad.Button(Buttons.X));
 
         //
         //  Change Class
         //
         ChangeClass = new VirtualButton();
         ChangeClass.Nodes.Add(new VirtualButton.Keyboard.Key(Keys.M));
+        ChangeClass.Nodes.Add(new VirtualButton.GamePad.Button(Buttons.A));
 
         //
         //  Say To Team
@@ -294,11 +303,18 @@ public class InputEngine
         SayToAll.Nodes.Add(new VirtualButton.Keyboard.Key(Keys.Y));
 
         //
-        //  Select Button
+        //  Show Help Button
         //
-        SelectButton = new VirtualButton();
-        SelectButton.Nodes.Add(new VirtualButton.Keyboard.Key(Keys.Escape));
-        SelectButton.Nodes.Add(new VirtualButton.GamePad.Button(Buttons.Back));
+        ShowHelpButton = new VirtualButton();
+        ShowHelpButton.Nodes.Add(new VirtualButton.Keyboard.Key(Keys.F1));
+        ShowHelpButton.Nodes.Add(new VirtualButton.GamePad.Button(Buttons.Back));
+
+        //
+        //  Show Options Button
+        //
+        ShowOptionsButton = new VirtualButton();
+        ShowOptionsButton.Nodes.Add(new VirtualButton.Keyboard.Key(Keys.Escape));
+        ShowOptionsButton.Nodes.Add(new VirtualButton.GamePad.Button(Buttons.Start));
 
         //
         //  Quit Button
@@ -401,7 +417,7 @@ public class InputEngine
         ChangeClass.Register();
         SayToTeam.Register();
         SayToAll.Register();
-        SelectButton.Register();
+        ShowHelpButton.Register();
         MenuUp.Register();
         MenuDown.Register();
         MenuLeft.Register();
@@ -429,7 +445,7 @@ public class InputEngine
         ChangeClass.Unregister();
         SayToTeam.Unregister();
         SayToAll.Unregister();
-        SelectButton.Unregister();
+        ShowHelpButton.Unregister();
         MenuUp.Unregister();
         MenuDown.Unregister();
         MenuLeft.Unregister();
