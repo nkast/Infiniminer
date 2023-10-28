@@ -402,24 +402,35 @@ namespace Infiniminer
             spriteBatch.Draw(texRadarForeground, new Vector2(10, 30), Color.White);
 
             // Draw escape message.
-            if (_P.inputEngine.ShowHelpButton.Check())
+            if (_P.inputEngine.ShowOptionsButton.Check())
             {
                 string quitMessage = string.Empty;
                 string pixelcideMessage = string.Empty;
+                string changeTeamMessage = string.Empty;
+                string changeClassMessage = string.Empty;
 
                 if (_P.inputEngine.ControlType == ControlType.KeyboardMouse)
                 {
                     quitMessage = "PRESS Y TO CONFIRM THAT YOU WANT TO QUIT.";
                     pixelcideMessage = "PRESS K TO COMMIT PIXELCIDE.";
+                    changeClassMessage = "PRESS M TO CHANGE CLASS";
+                    changeTeamMessage = "PRESS N TO CHANGE TEAMS";
                 }
                 else
                 {
-                    quitMessage = "PRESS (Y) Button TO CONFIRM THAT YOU WANT TO QUIT.";
-                    pixelcideMessage = "PRESS (B) Button TO COMMIT PIXELCIDE.";
+                    quitMessage = "PRESS (Y) BUTTON TO CONFIRM THAT YOU WANT TO QUIT.";
+                    pixelcideMessage = "PRESS (B) BUTTON TO COMMIT PIXELCIDE.";
+                    changeClassMessage = "PRESS (A) BUTTON TO CHANGE CLASS";
+                    changeTeamMessage = "PRESS (X) BUTTON TO CHANGE TEAM";
                 }
 
-                RenderMessageCenter(spriteBatch, quitMessage, new Vector2(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2 + 30), Color.White, Color.Black);
-                RenderMessageCenter(spriteBatch, pixelcideMessage, new Vector2(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2 + 80), Color.White, Color.Black);
+                if (_P.inputEngine.ControlType == ControlType.GamePad)
+                {
+                    RenderMessageCenter(spriteBatch, changeClassMessage, new Vector2(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2 - 80), Color.White, Color.Black);
+                    RenderMessageCenter(spriteBatch, changeTeamMessage, new Vector2(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2 + 30), Color.White, Color.Black);
+                }
+                RenderMessageCenter(spriteBatch, pixelcideMessage, new Vector2(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2 - 30), Color.White, Color.Black);
+                RenderMessageCenter(spriteBatch, quitMessage, new Vector2(graphicsDevice.Viewport.Width / 2, graphicsDevice.Viewport.Height / 2 + +80), Color.White, Color.Black);
 
             }
 
