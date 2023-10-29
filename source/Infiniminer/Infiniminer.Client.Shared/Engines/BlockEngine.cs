@@ -110,7 +110,7 @@ namespace Infiniminer
         DynamicVertexBuffer[,] vertexBuffers = null;
         bool[,] vertexListDirty = null;
         VertexDeclaration vertexDeclaration;
-        BloomComponent bloomPosteffect;
+        public BloomComponent bloomPosteffect;
 
         public void MakeRegionDirty(int texture, int region)
         {
@@ -306,11 +306,6 @@ namespace Infiniminer
                     // Actually render.
                     RenderVertexList(graphicsDevice, regionBuffer, blockTextures[(byte)blockTexture].Texture, blockTextures[(byte)blockTexture].LODColor, renderTranslucent, blockTexture == BlockTexture.Lava, (float)gameTime.ElapsedGameTime.TotalSeconds);
                 }
-
-            //  [MG_PORT_NOTES] Bloom not working, disabling globally for now
-            // Apply posteffects.
-            // if (bloomPosteffect != null)
-            //     bloomPosteffect.Draw(graphicsDevice);
         }
 
         private void RenderVertexList(GraphicsDevice graphicsDevice, DynamicVertexBuffer vertexBuffer, Texture2D blockTexture, Color lodColor, bool renderTranslucent, bool renderLava, float elapsedTime)
