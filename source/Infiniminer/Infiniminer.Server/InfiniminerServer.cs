@@ -45,7 +45,7 @@ namespace Infiniminer
 
         const int CONSOLE_SIZE = 30;
         List<string> consoleText = new List<string>();
-        string consoleInput = "";
+        string consoleInput = string.Empty;
 
         bool keepRunning = true;
 
@@ -110,7 +110,9 @@ namespace Infiniminer
         {
             consoleText.Add(text);
             if (consoleText.Count > CONSOLE_SIZE)
+            {
                 consoleText.RemoveAt(0);
+            }
             ConsoleRedraw();
         }
 
@@ -181,7 +183,8 @@ namespace Infiniminer
 
         public void ConsoleProcessInput()
         {
-            string[] args = consoleInput.Split(" ".ToCharArray());
+            string[] args = consoleInput.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+            if (args.Length == 0) { return; }
 
             ConsoleWrite("> " + consoleInput);
 
@@ -320,25 +323,16 @@ namespace Infiniminer
         public void ConsoleRedraw()
         {
             Console.Clear();
-            ConsoleDrawCentered("INFINIMINER SERVER " + Defines.INFINIMINER_VERSION, 0);
-            ConsoleDraw("================================================================================", 0, 1);
+            Console.WriteLine("INFINIMINER SERVER " + Defines.INFINIMINER_VERSION);
+            Console.WriteLine(new string('=', Console.BufferWidth - 1), 0, 1);
             for (int i = 0; i < consoleText.Count; i++)
-                ConsoleDraw(consoleText[i], 0, i + 2);
-            ConsoleDraw("================================================================================", 0, CONSOLE_SIZE + 2);
-            ConsoleDraw("> " + consoleInput, 0, CONSOLE_SIZE + 3);
+            {
+                Console.WriteLine(consoleText[i], 0, i + 2);
+            }
+            Console.WriteLine(new string('=', Console.BufferWidth - 1));
+            Console.Write("> " + consoleInput);
         }
 
-        public void ConsoleDraw(string text, int x, int y)
-        {
-            Console.SetCursorPosition(x, y);
-            Console.Write(text);
-        }
-
-        public void ConsoleDrawCentered(string text, int y)
-        {
-            Console.SetCursorPosition(40 - text.Length / 2, y);
-            Console.Write(text);
-        }
 
         List<string> beaconIDList = new List<string>();
         Dictionary<Vector3, Beacon> beaconList = new Dictionary<Vector3, Beacon>();
