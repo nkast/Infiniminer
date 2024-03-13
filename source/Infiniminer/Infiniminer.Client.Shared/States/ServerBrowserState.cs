@@ -35,6 +35,7 @@ namespace Infiniminer.States
 {
     public class ServerBrowserState : State
     {
+        SpriteBatch spriteBatch;
         Texture2D texMenu;
         Rectangle drawRect;
         string nextState = null;
@@ -56,6 +57,7 @@ namespace Infiniminer.States
             (_SM as InfiniminerGame).ResetPropertyBag();
             _P = _SM.propertyBag;
 
+            spriteBatch = new SpriteBatch(_SM.GraphicsDevice);
             texMenu = _SM.Content.Load<Texture2D>("menus/tex_menu_server");
             UpdateUIViewport(_SM.GraphicsDevice.Viewport);
 
@@ -91,7 +93,6 @@ namespace Infiniminer.States
         public override void OnRenderAtUpdate(GraphicsDevice graphicsDevice, GameTime gameTime)
         {
             descWidths = new List<int>();
-            SpriteBatch spriteBatch = new SpriteBatch(graphicsDevice);
             spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred);
             spriteBatch.Draw(texMenu, drawRect, Color.White);
 
