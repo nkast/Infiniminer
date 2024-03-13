@@ -33,6 +33,8 @@ namespace Infiniminer.States
 {
     public class LoadingState : State
     {
+        SpriteBatch spriteBatch;
+        BasicEffect uiEffect;
         Texture2D texMenu;
         Rectangle drawRect;
         string nextState = null;
@@ -65,18 +67,37 @@ namespace Infiniminer.States
         {
             _SM.IsMouseVisible = false;
 
+            spriteBatch = new SpriteBatch(_SM.GraphicsDevice);
+            uiEffect = new BasicEffect(_SM.GraphicsDevice);
+            uiEffect.TextureEnabled = true;
+            uiEffect.VertexColorEnabled = true;
             texMenu = _SM.Content.Load<Texture2D>("menus/tex_menu_loading");
-
-            drawRect = new Rectangle(_SM.GraphicsDevice.Viewport.Width / 2 - 1024 / 2,
-                                     _SM.GraphicsDevice.Viewport.Height / 2 - 768 / 2,
-                                     1024,
-                                     1024);
+            UpdateUIViewport(_SM.GraphicsDevice.Viewport);
 
             uiFont = _SM.Content.Load<SpriteFont>("font_04b08");
 
             // Pick a random hint.
             Random randGen = new Random();
             currentHint = HINTS[randGen.Next(0, HINTS.Length)].Split("\n".ToCharArray());
+        }
+
+        const int VWidth = 1024;
+        const int VHeight = 768;
+        const float VAspect = (float)VWidth / (float)VHeight;
+        private void UpdateUIViewport(Viewport viewport)
+        {
+            // calculate virtual resolution
+            float vWidth = (viewport.AspectRatio > VAspect) ? (VHeight * viewport.AspectRatio) : VWidth;
+            float vHeight = (viewport.AspectRatio < VAspect) ? (VWidth / viewport.AspectRatio) : VHeight;
+
+            uiEffect.World = Matrix.Identity;
+            uiEffect.View = Matrix.Identity;
+            uiEffect.Projection = Matrix.CreateOrthographicOffCenter(0, vWidth, vHeight, 0, 0, -1);
+
+            drawRect = new Rectangle((int)vWidth / 2 - VWidth / 2,
+                                     (int)vHeight / 2 - VHeight / 2,
+                                     1024,
+                                     1024);
         }
 
         public override void OnLeave(string newState)
@@ -99,6 +120,8 @@ namespace Infiniminer.States
 
         public override void OnRenderAtUpdate(GraphicsDevice graphicsDevice, GameTime gameTime)
         {
+            UpdateUIViewport(graphicsDevice.Viewport);
+
             uint dataPacketsRecieved = 0;
             for (int x = 0; x < 64; x++)
                 for (int y = 0; y < 64; y += 16)
@@ -106,12 +129,11 @@ namespace Infiniminer.States
                         dataPacketsRecieved += 1;
             string progressText = String.Format("{0:00}% LOADED", dataPacketsRecieved / 256.0f * 100);
 
-            SpriteBatch spriteBatch = new SpriteBatch(graphicsDevice);
-            spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred);
+            spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred, effect: uiEffect);
             spriteBatch.Draw(texMenu, drawRect, Color.White);
-            spriteBatch.DrawString(uiFont, progressText, new Vector2(((int)(_SM.GraphicsDevice.Viewport.Width / 2 - uiFont.MeasureString(progressText).X / 2)), drawRect.Y + 430), Color.White);
+            spriteBatch.DrawString(uiFont, progressText, new Vector2(((int)(drawRect.X + VWidth / 2 - uiFont.MeasureString(progressText).X / 2)), drawRect.Y + 430), Color.White);
             for (int i = 0; i < currentHint.Length; i++)
-                spriteBatch.DrawString(uiFont, currentHint[i], new Vector2(((int)(_SM.GraphicsDevice.Viewport.Width / 2 - uiFont.MeasureString(currentHint[i]).X / 2)), drawRect.Y + 600 + 25 * i), Color.White);
+                spriteBatch.DrawString(uiFont, currentHint[i], new Vector2(((int)(drawRect.X + VWidth / 2 - uiFont.MeasureString(currentHint[i]).X / 2)), drawRect.Y + 600 + 25 * i), Color.White);
             spriteBatch.End();
         }
 

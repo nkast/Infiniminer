@@ -32,6 +32,8 @@ namespace Infiniminer.States
 {
     public class ClassSelectionState : State
     {
+        SpriteBatch spriteBatch;
+        BasicEffect uiEffect;
         Texture2D texMenuRed, texMenuBlue;
         Rectangle drawRect;
         string nextState = null;
@@ -47,15 +49,35 @@ namespace Infiniminer.States
         {
             _SM.IsMouseVisible = true;
 
+            spriteBatch = new SpriteBatch(_SM.GraphicsDevice);
+            uiEffect = new BasicEffect(_SM.GraphicsDevice);
+            uiEffect.TextureEnabled = true;
+            uiEffect.VertexColorEnabled = true;
             texMenuRed = _SM.Content.Load<Texture2D>("menus/tex_menu_class_red");
             texMenuBlue = _SM.Content.Load<Texture2D>("menus/tex_menu_class_blue");
+            UpdateUIViewport(_SM.GraphicsDevice.Viewport);
 
-            drawRect = new Rectangle(_SM.GraphicsDevice.Viewport.Width / 2 - 1024 / 2,
-                                     _SM.GraphicsDevice.Viewport.Height / 2 - 768 / 2,
+            _P.KillPlayer("");
+        }
+
+        const int VWidth = 1024;
+        const int VHeight = 768;
+        const float VAspect = (float)VWidth / (float)VHeight;
+        private void UpdateUIViewport(Viewport viewport)
+        {
+            // calculate virtual resolution
+            float vWidth = (viewport.AspectRatio > VAspect) ? (VHeight * viewport.AspectRatio) : VWidth;
+            float vHeight = (viewport.AspectRatio < VAspect) ? (VWidth / viewport.AspectRatio) : VHeight;
+
+            uiEffect.World = Matrix.Identity;
+            uiEffect.View = Matrix.Identity;
+            uiEffect.Projection = Matrix.CreateOrthographicOffCenter(0, vWidth, vHeight, 0, 0, -1);
+
+            drawRect = new Rectangle((int)vWidth / 2 - VWidth / 2,
+                                     (int)vHeight / 2 - VHeight / 2,
                                      1024,
                                      1024);
 
-            _P.KillPlayer("");
         }
 
         public override void OnLeave(string newState)
@@ -83,8 +105,8 @@ namespace Infiniminer.States
 
         public override void OnRenderAtUpdate(GraphicsDevice graphicsDevice, GameTime gameTime)
         {
-            SpriteBatch spriteBatch = new SpriteBatch(graphicsDevice);
-            spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred);
+            UpdateUIViewport(graphicsDevice.Viewport);
+            spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred, effect: uiEffect);
             spriteBatch.Draw((_P.playerTeam == PlayerTeam.Red) ? texMenuRed : texMenuBlue, drawRect, Color.White);
             spriteBatch.End();
         }
@@ -101,6 +123,8 @@ namespace Infiniminer.States
 
         public override void OnMouseDown(MouseButton button, int x, int y)
         {
+            ScreenToUI(uiEffect, ref x, ref y);
+
             x -= drawRect.X;
             y -= drawRect.Y;
             switch (ClickRegion.HitTest(clkClassMenu, new Point(x, y)))
@@ -130,12 +154,28 @@ namespace Infiniminer.States
 
         public override void OnMouseUp(MouseButton button, int x, int y)
         {
+            ScreenToUI(uiEffect, ref x, ref y);
 
         }
 
         public override void OnMouseScroll(int scrollDelta)
         {
 
+        }
+
+        // convert mouse screen position to UI world position
+        private void ScreenToUI(IEffectMatrices matrices, ref int x, ref int y)
+        {
+            Viewport vp = _SM.GraphicsDevice.Viewport;
+
+            Vector3 position3 = vp.Unproject(
+                            new Vector3(x, y, 0),
+                            matrices.Projection,
+                            matrices.View,
+                            matrices.World);
+
+            x = (int)position3.X;
+            y = (int)position3.Y;
         }
     }
 }

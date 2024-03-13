@@ -35,6 +35,8 @@ namespace Infiniminer.States
 {
     public class ServerBrowserState : State
     {
+        SpriteBatch spriteBatch;
+        BasicEffect uiEffect;
         Texture2D texMenu;
         Rectangle drawRect;
         string nextState = null;
@@ -56,17 +58,36 @@ namespace Infiniminer.States
             (_SM as InfiniminerGame).ResetPropertyBag();
             _P = _SM.propertyBag;
 
+            spriteBatch = new SpriteBatch(_SM.GraphicsDevice);
+            uiEffect = new BasicEffect(_SM.GraphicsDevice);
+            uiEffect.TextureEnabled = true;
+            uiEffect.VertexColorEnabled = true;
             texMenu = _SM.Content.Load<Texture2D>("menus/tex_menu_server");
-
-            drawRect = new Rectangle(_SM.GraphicsDevice.Viewport.Width / 2 - 1024 / 2,
-                                     _SM.GraphicsDevice.Viewport.Height / 2 - 768 / 2,
-                                     1024,
-                                     1024);
+            UpdateUIViewport(_SM.GraphicsDevice.Viewport);
 
             uiFont = _SM.Content.Load<SpriteFont>("font_04b08");
             keyMap = new KeyMap();
 
             serverList = (_SM as InfiniminerGame).EnumerateServers(0.5f);
+        }
+
+        const int VWidth = 1024;
+        const int VHeight = 768;
+        const float VAspect = (float)VWidth / (float)VHeight;
+        private void UpdateUIViewport(Viewport viewport)
+        {
+            // calculate virtual resolution
+            float vWidth = (viewport.AspectRatio > VAspect) ? (VHeight * viewport.AspectRatio) : VWidth;
+            float vHeight = (viewport.AspectRatio < VAspect) ? (VWidth / viewport.AspectRatio) : VHeight;
+
+            uiEffect.World = Matrix.Identity;
+            uiEffect.View = Matrix.Identity;
+            uiEffect.Projection = Matrix.CreateOrthographicOffCenter(0, vWidth, vHeight, 0, 0, -1);
+
+            drawRect = new Rectangle((int)vWidth / 2 - VWidth / 2,
+                                     (int)vHeight / 2 - VHeight / 2,
+                                     1024,
+                                     1024);
         }
 
         public override void OnLeave(string newState)
@@ -86,9 +107,10 @@ namespace Infiniminer.States
 
         public override void OnRenderAtUpdate(GraphicsDevice graphicsDevice, GameTime gameTime)
         {
+            UpdateUIViewport(graphicsDevice.Viewport);
+
             descWidths = new List<int>();
-            SpriteBatch spriteBatch = new SpriteBatch(graphicsDevice);
-            spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred);
+            spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred, effect: uiEffect);
             spriteBatch.Draw(texMenu, drawRect, Color.White);
 
             int drawY = 80;
@@ -98,12 +120,12 @@ namespace Infiniminer.States
                 {
                     int textWidth = (int)(uiFont.MeasureString(server.GetServerDesc()).X);
                     descWidths.Add(textWidth + 30);
-                    spriteBatch.DrawString(uiFont, server.GetServerDesc(), new Vector2(_SM.GraphicsDevice.Viewport.Width / 2 - textWidth / 2, drawRect.Y + drawY), Color.White);
+                    spriteBatch.DrawString(uiFont, server.GetServerDesc(), new Vector2(drawRect.X + VWidth / 2 - textWidth / 2, drawRect.Y + drawY), Color.White);
                     drawY += 25;
                 }
             }
 
-            spriteBatch.DrawString(uiFont, Defines.INFINIMINER_VERSION, new Vector2(10, _SM.GraphicsDevice.Viewport.Height - 20), Color.White);
+            spriteBatch.DrawString(uiFont, Defines.INFINIMINER_VERSION, new Vector2(10, drawRect.Y * 2 + VHeight - 20), Color.White);
 
             if (directConnectIPEnter)
                 spriteBatch.DrawString(uiFont, "ENTER IP: " + directConnectIP, new Vector2(drawRect.X + 30, drawRect.Y + 690), Color.White);
@@ -190,12 +212,14 @@ namespace Infiniminer.States
 
         public override void OnMouseDown(MouseButton button, int x, int y)
         {
+            ScreenToUI(uiEffect, ref x, ref y);
+
             if (directConnectIPEnter == false)
             {
                 int serverIndex = (y - drawRect.Y - 75) / 25;
                 if (serverIndex >= 0 && serverIndex < serverList.Count)
                 {
-                    int distanceFromCenter = Math.Abs(_SM.GraphicsDevice.Viewport.Width / 2 - x);
+                    int distanceFromCenter = Math.Abs(drawRect.X + VWidth / 2 - x);
                     if (distanceFromCenter < descWidths[serverIndex] / 2)
                     {
                         (_SM as InfiniminerGame).JoinGame(serverList[serverIndex].ipEndPoint);
@@ -223,12 +247,28 @@ namespace Infiniminer.States
 
         public override void OnMouseUp(MouseButton button, int x, int y)
         {
+            ScreenToUI(uiEffect, ref x, ref y);
 
         }
 
         public override void OnMouseScroll(int scrollDelta)
         {
 
+        }
+
+        // convert mouse screen position to UI world position
+        private void ScreenToUI(IEffectMatrices matrices, ref int x, ref int y)
+        {
+            Viewport vp = _SM.GraphicsDevice.Viewport;
+
+            Vector3 position3 = vp.Unproject(
+                            new Vector3(x, y, 0),
+                            matrices.Projection,
+                            matrices.View,
+                            matrices.World);
+
+            x = (int)position3.X;
+            y = (int)position3.Y;
         }
     }
 }

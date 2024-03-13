@@ -85,6 +85,11 @@ namespace Infiniminer
             int width = pp.BackBufferWidth;
             int height = pp.BackBufferHeight;
 
+            InitializeRenderTargets(width, height, pp);
+        }
+
+        private void InitializeRenderTargets(int width, int height, PresentationParameters pp)
+        {
             SurfaceFormat format = pp.BackBufferFormat;
 
             // Create a texture for reading back the backbuffer contents.
@@ -94,8 +99,8 @@ namespace Infiniminer
             // size of the backbuffer, in order to minimize fillrate costs. Reducing
             // the resolution in this way doesn't hurt quality, because we are going
             // to be blurring the bloom images in any case.
-            width /= 4;
-            height /= 4;
+            width = Math.Max(width /4, 1);
+            height = Math.Max(height /4, 1);
 
             renderTarget1 = new RenderTarget2D(GraphicsDevice, width, height, false, format, DepthFormat.None);
             renderTarget2 = new RenderTarget2D(GraphicsDevice, width, height, false, format, DepthFormat.None);
@@ -124,6 +129,21 @@ namespace Infiniminer
         /// <param name="graphicsDevice"></param>
         internal void SetRenderTarget(GraphicsDevice graphicsDevice)
         {
+            // Look up the resolution and format of our main backbuffer.
+            PresentationParameters pp = GraphicsDevice.PresentationParameters;
+
+            int width = Math.Max(pp.BackBufferWidth, 1);
+            int height = Math.Max(pp.BackBufferHeight, 1);
+
+            if (resolveTarget.Width != width || resolveTarget.Height != height)
+            {
+                resolveTarget.Dispose();
+                renderTarget1.Dispose();
+                renderTarget2.Dispose();
+
+                InitializeRenderTargets(width, height, pp);
+            }
+
             GraphicsDevice.SetRenderTarget(resolveTarget);
             GraphicsDevice.Clear(Color.Transparent);
         }
