@@ -33,6 +33,7 @@ namespace Infiniminer.States
     public class TitleState : State
     {
         SpriteBatch spriteBatch;
+        BasicEffect uiEffect;
         Texture2D texMenu;
         Rectangle drawRect;
         string nextState = null;
@@ -42,15 +43,29 @@ namespace Infiniminer.States
             _SM.IsMouseVisible = true;
 
             spriteBatch = new SpriteBatch(_SM.GraphicsDevice);
+            uiEffect = new BasicEffect(_SM.GraphicsDevice);
+            uiEffect.TextureEnabled = true;
+            uiEffect.VertexColorEnabled = true;
             texMenu = _SM.Content.Load<Texture2D>("menus/tex_menu_title");
 
             UpdateUIViewport(_SM.GraphicsDevice.Viewport);
         }
 
+        const int VWidth = 1024;
+        const int VHeight = 768;
+        const float VAspect = (float)VWidth / (float)VHeight;
         private void UpdateUIViewport(Viewport viewport)
         {
-            drawRect = new Rectangle(viewport.Width / 2 - 1024 / 2,
-                                     viewport.Height / 2 - 768 / 2,
+            // calculate virtual resolution
+            float vWidth = (viewport.AspectRatio > VAspect) ? (VHeight * viewport.AspectRatio) : VWidth;
+            float vHeight = (viewport.AspectRatio < VAspect) ? (VWidth / viewport.AspectRatio) : VHeight;
+
+            uiEffect.World = Matrix.Identity;
+            uiEffect.View = Matrix.Identity;
+            uiEffect.Projection = Matrix.CreateOrthographicOffCenter(0, vWidth, vHeight, 0, 0, -1);
+
+            drawRect = new Rectangle((int)vWidth / 2 - VWidth / 2,
+                                     (int)vHeight / 2 - VHeight / 2,
                                      1024,
                                      1024);
         }
@@ -77,7 +92,7 @@ namespace Infiniminer.States
         {
             UpdateUIViewport(graphicsDevice.Viewport);
 
-            spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred);
+            spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred, effect: uiEffect);
             spriteBatch.Draw(texMenu, drawRect, Color.White);
             spriteBatch.End();
         }

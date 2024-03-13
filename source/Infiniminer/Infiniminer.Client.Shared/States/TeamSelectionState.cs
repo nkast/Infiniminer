@@ -33,6 +33,7 @@ namespace Infiniminer.States
     public class TeamSelectionState : State
     {
         SpriteBatch spriteBatch;
+        BasicEffect uiEffect;
         Texture2D texMenu;
         Rectangle drawRect;
         string nextState = null;
@@ -49,6 +50,9 @@ namespace Infiniminer.States
             _SM.IsMouseVisible = true;
 
             spriteBatch = new SpriteBatch(_SM.GraphicsDevice);
+            uiEffect = new BasicEffect(_SM.GraphicsDevice);
+            uiEffect.TextureEnabled = true;
+            uiEffect.VertexColorEnabled = true;
             texMenu = _SM.Content.Load<Texture2D>("menus/tex_menu_team");
 
             UpdateUIViewport(_SM.GraphicsDevice.Viewport);
@@ -59,10 +63,21 @@ namespace Infiniminer.States
                 canCancel = true;
         }
 
+        const int VWidth = 1024;
+        const int VHeight = 768;
+        const float VAspect = (float)VWidth / (float)VHeight;
         private void UpdateUIViewport(Viewport viewport)
         {
-            drawRect = new Rectangle(viewport.Width / 2 - 1024 / 2,
-                                     viewport.Height / 2 - 768 / 2,
+            // calculate virtual resolution
+            float vWidth = (viewport.AspectRatio > VAspect) ? (VHeight * viewport.AspectRatio) : VWidth;
+            float vHeight = (viewport.AspectRatio < VAspect) ? (VWidth / viewport.AspectRatio) : VHeight;
+
+            uiEffect.World = Matrix.Identity;
+            uiEffect.View = Matrix.Identity;
+            uiEffect.Projection = Matrix.CreateOrthographicOffCenter(0, vWidth, vHeight, 0, 0, -1);
+
+            drawRect = new Rectangle((int)vWidth / 2 - VWidth / 2,
+                                     (int)vHeight / 2 - VHeight / 2,
                                      1024,
                                      1024);
         }
@@ -87,7 +102,7 @@ namespace Infiniminer.States
 
         public void QuickDrawText(SpriteBatch spriteBatch, string text, int y, Color color)
         {
-            spriteBatch.DrawString(uiFont, text, new Vector2(_SM.GraphicsDevice.Viewport.Width / 2 - uiFont.MeasureString(text).X / 2, drawRect.Y + y), color);
+            spriteBatch.DrawString(uiFont, text, new Vector2(drawRect.X + VWidth / 2 - uiFont.MeasureString(text).X / 2, drawRect.Y + y), color);
         }
 
         public override void OnRenderAtUpdate(GraphicsDevice graphicsDevice, GameTime gameTime)
@@ -103,7 +118,7 @@ namespace Infiniminer.States
                     blueTeamCount += 1;
             }
 
-            spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred);
+            spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred, effect: uiEffect);
             spriteBatch.Draw(texMenu, drawRect, Color.White);
             QuickDrawText(spriteBatch, "" + redTeamCount + " PLAYERS", 360, Defines.IM_RED);
             QuickDrawText(spriteBatch, "" + blueTeamCount + " PLAYERS", 620, Defines.IM_BLUE);
@@ -123,6 +138,8 @@ namespace Infiniminer.States
 
         public override void OnMouseDown(MouseButton button, int x, int y)
         {
+            ScreenToUI(uiEffect, ref x, ref y);
+
             x -= drawRect.X;
             y -= drawRect.Y;
             switch (ClickRegion.HitTest(clkTeamMenu, new Point(x, y)))
@@ -152,12 +169,28 @@ namespace Infiniminer.States
 
         public override void OnMouseUp(MouseButton button, int x, int y)
         {
+            ScreenToUI(uiEffect, ref x, ref y);
 
         }
 
         public override void OnMouseScroll(int scrollDelta)
         {
 
+        }
+
+        // convert mouse screen position to UI world position
+        private void ScreenToUI(IEffectMatrices matrices, ref int x, ref int y)
+        {
+            Viewport vp = _SM.GraphicsDevice.Viewport;
+
+            Vector3 position3 = vp.Unproject(
+                            new Vector3(x, y, 0),
+                            matrices.Projection,
+                            matrices.View,
+                            matrices.World);
+
+            x = (int)position3.X;
+            y = (int)position3.Y;
         }
     }
 }
