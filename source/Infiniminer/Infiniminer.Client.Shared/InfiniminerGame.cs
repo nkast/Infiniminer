@@ -473,6 +473,10 @@ namespace Infiniminer
                             graphicsDeviceManager.IsFullScreen = bool.Parse(item.Value);
                             break;
 
+                        case "resizing":
+                            Window.AllowUserResizing = bool.Parse(item.Value);
+                            break;
+
                         case "handle":
                             playerHandle = item.Value;
                             break;
