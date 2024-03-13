@@ -42,8 +42,13 @@ namespace Infiniminer.States
 
             texMenu = _SM.Content.Load<Texture2D>("menus/tex_menu_title");
 
-            drawRect = new Rectangle(_SM.GraphicsDevice.Viewport.Width / 2 - 1024 / 2,
-                                     _SM.GraphicsDevice.Viewport.Height / 2 - 768 / 2,
+            UpdateUIViewport(_SM.GraphicsDevice.Viewport);
+        }
+
+        private void UpdateUIViewport(Viewport viewport)
+        {
+            drawRect = new Rectangle(viewport.Width / 2 - 1024 / 2,
+                                     viewport.Height / 2 - 768 / 2,
                                      1024,
                                      1024);
         }

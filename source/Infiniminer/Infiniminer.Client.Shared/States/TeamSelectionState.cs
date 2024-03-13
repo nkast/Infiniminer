@@ -49,15 +49,20 @@ namespace Infiniminer.States
 
             texMenu = _SM.Content.Load<Texture2D>("menus/tex_menu_team");
 
-            drawRect = new Rectangle(_SM.GraphicsDevice.Viewport.Width / 2 - 1024 / 2,
-                                     _SM.GraphicsDevice.Viewport.Height / 2 - 768 / 2,
-                                     1024,
-                                     1024);
+            UpdateUIViewport(_SM.GraphicsDevice.Viewport);
 
             uiFont = _SM.Content.Load<SpriteFont>("font_04b08");
 
             if (oldState == "Infiniminer.States.MainGameState")
                 canCancel = true;
+        }
+
+        private void UpdateUIViewport(Viewport viewport)
+        {
+            drawRect = new Rectangle(viewport.Width / 2 - 1024 / 2,
+                                     viewport.Height / 2 - 768 / 2,
+                                     1024,
+                                     1024);
         }
 
         public override void OnLeave(string newState)

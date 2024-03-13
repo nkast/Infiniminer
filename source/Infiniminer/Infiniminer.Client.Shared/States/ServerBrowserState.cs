@@ -57,16 +57,20 @@ namespace Infiniminer.States
             _P = _SM.propertyBag;
 
             texMenu = _SM.Content.Load<Texture2D>("menus/tex_menu_server");
-
-            drawRect = new Rectangle(_SM.GraphicsDevice.Viewport.Width / 2 - 1024 / 2,
-                                     _SM.GraphicsDevice.Viewport.Height / 2 - 768 / 2,
-                                     1024,
-                                     1024);
+            UpdateUIViewport(_SM.GraphicsDevice.Viewport);
 
             uiFont = _SM.Content.Load<SpriteFont>("font_04b08");
             keyMap = new KeyMap();
 
             serverList = (_SM as InfiniminerGame).EnumerateServers(0.5f);
+        }
+
+        private void UpdateUIViewport(Viewport viewport)
+        {
+            drawRect = new Rectangle(viewport.Width / 2 - 1024 / 2,
+                                     viewport.Height / 2 - 768 / 2,
+                                     1024,
+                                     1024);
         }
 
         public override void OnLeave(string newState)

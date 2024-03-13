@@ -66,17 +66,21 @@ namespace Infiniminer.States
             _SM.IsMouseVisible = false;
 
             texMenu = _SM.Content.Load<Texture2D>("menus/tex_menu_loading");
-
-            drawRect = new Rectangle(_SM.GraphicsDevice.Viewport.Width / 2 - 1024 / 2,
-                                     _SM.GraphicsDevice.Viewport.Height / 2 - 768 / 2,
-                                     1024,
-                                     1024);
+            UpdateUIViewport(_SM.GraphicsDevice.Viewport);
 
             uiFont = _SM.Content.Load<SpriteFont>("font_04b08");
 
             // Pick a random hint.
             Random randGen = new Random();
             currentHint = HINTS[randGen.Next(0, HINTS.Length)].Split("\n".ToCharArray());
+        }
+
+        private void UpdateUIViewport(Viewport viewport)
+        {
+            drawRect = new Rectangle(viewport.Width / 2 - 1024 / 2,
+                                     viewport.Height / 2 - 768 / 2,
+                                     1024,
+                                     1024);
         }
 
         public override void OnLeave(string newState)
