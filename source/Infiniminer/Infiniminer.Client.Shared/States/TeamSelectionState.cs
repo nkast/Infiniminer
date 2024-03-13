@@ -32,6 +32,7 @@ namespace Infiniminer.States
 {
     public class TeamSelectionState : State
     {
+        SpriteBatch spriteBatch;
         Texture2D texMenu;
         Rectangle drawRect;
         string nextState = null;
@@ -47,6 +48,7 @@ namespace Infiniminer.States
         {
             _SM.IsMouseVisible = true;
 
+            spriteBatch = new SpriteBatch(_SM.GraphicsDevice);
             texMenu = _SM.Content.Load<Texture2D>("menus/tex_menu_team");
 
             drawRect = new Rectangle(_SM.GraphicsDevice.Viewport.Width / 2 - 1024 / 2,
@@ -94,7 +96,6 @@ namespace Infiniminer.States
                     blueTeamCount += 1;
             }
 
-            SpriteBatch spriteBatch = new SpriteBatch(graphicsDevice);
             spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred);
             spriteBatch.Draw(texMenu, drawRect, Color.White);
             QuickDrawText(spriteBatch, "" + redTeamCount + " PLAYERS", 360, Defines.IM_RED);

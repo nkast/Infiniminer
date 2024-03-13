@@ -33,6 +33,7 @@ namespace Infiniminer.States
 {
     public class LoadingState : State
     {
+        SpriteBatch spriteBatch;
         Texture2D texMenu;
         Rectangle drawRect;
         string nextState = null;
@@ -65,6 +66,7 @@ namespace Infiniminer.States
         {
             _SM.IsMouseVisible = false;
 
+            spriteBatch = new SpriteBatch(_SM.GraphicsDevice);
             texMenu = _SM.Content.Load<Texture2D>("menus/tex_menu_loading");
 
             drawRect = new Rectangle(_SM.GraphicsDevice.Viewport.Width / 2 - 1024 / 2,
@@ -106,7 +108,6 @@ namespace Infiniminer.States
                         dataPacketsRecieved += 1;
             string progressText = String.Format("{0:00}% LOADED", dataPacketsRecieved / 256.0f * 100);
 
-            SpriteBatch spriteBatch = new SpriteBatch(graphicsDevice);
             spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred);
             spriteBatch.Draw(texMenu, drawRect, Color.White);
             spriteBatch.DrawString(uiFont, progressText, new Vector2(((int)(_SM.GraphicsDevice.Viewport.Width / 2 - uiFont.MeasureString(progressText).X / 2)), drawRect.Y + 430), Color.White);
