@@ -86,7 +86,7 @@ namespace Infiniminer.States
         public override void OnRenderAtUpdate(GraphicsDevice graphicsDevice, GameTime gameTime)
         {
             int redTeamCount = 0, blueTeamCount = 0;
-            foreach (Player p in _P.playerList.Values)
+            foreach (ClientPlayer p in _P.playerList.Values)
             {
                 if (p.Team == PlayerTeam.Red)
                     redTeamCount += 1;

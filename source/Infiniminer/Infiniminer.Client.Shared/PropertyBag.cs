@@ -67,7 +67,7 @@ namespace Infiniminer
 
         // Network stuff.
         public NetClient netClient = null;
-        public Dictionary<uint, Player> playerList = new Dictionary<uint, Player>();
+        public Dictionary<uint, ClientPlayer> playerList = new Dictionary<uint, ClientPlayer>();
         public bool[,] mapLoadProgress = null;
 
         // Player variables.
