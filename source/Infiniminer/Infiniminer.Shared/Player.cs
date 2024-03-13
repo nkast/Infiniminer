@@ -27,7 +27,7 @@ using Microsoft.Xna.Framework;
 
 namespace Infiniminer
 {
-    public class Player
+    public abstract class Player
     {
         public bool Kicked = false; // set to true when a player is kicked to let other clients know they were kicked
         public string Handle = "";
