@@ -23,13 +23,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ---------------------------------------------------------------------------- */
 
-using Lidgren.Network;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Infiniminer
 {
-    public class Player
+    public abstract class Player
     {
         public bool Kicked = false; // set to true when a player is kicked to let other clients know they were kicked
         public string Handle = "";
@@ -42,38 +40,19 @@ namespace Infiniminer
         public List<Vector3> ExplosiveList = new List<Vector3>();
         public uint ID;
         public Vector3 Heading = Vector3.Zero;
-        public NetConnection NetConn;
         public float TimeIdle = 0;
         public uint Score = 0;
         public float Ping = 0;
-        public string IP = "";
 
         // This is used to force an update that says the player is not using their tool, thus causing a break
         // in their tool usage animation.
         public bool QueueAnimationBreak = false;
 
-        // Things that affect animation.
-        public SpriteModel? SpriteModel;
-        private Game? gameInstance;
-
         private bool idleAnimation = false;
-        public bool IdleAnimation
+        public virtual bool IdleAnimation
         {
             get { return idleAnimation; }
-            set
-            {
-                if (idleAnimation != value)
-                {
-                    idleAnimation = value;
-                    if (gameInstance != null)
-                    {
-                        if (idleAnimation)
-                            SpriteModel?.SetPassiveAnimation("1,0.2");
-                        else
-                            SpriteModel?.SetPassiveAnimation("0,0.2;1,0.2;2,0.2;1,0.2");
-                    }
-                }
-            }
+            set { idleAnimation = value; }
         }
 
         private Vector3 position = Vector3.Zero;
@@ -133,107 +112,27 @@ namespace Infiniminer
         }
 
         private PlayerTeam team = PlayerTeam.None;
-        public PlayerTeam Team
+        public virtual PlayerTeam Team
         {
             get { return team; }
-            set
-            {
-                if (value != team)
-                {
-                    team = value;
-                    UpdateSpriteTexture();
-                }
-            }
+            set { team = value; }
         }
         private PlayerTools tool = PlayerTools.Pickaxe;
-        public PlayerTools Tool
+        public virtual PlayerTools Tool
         {
             get { return tool; }
-            set
-            {
-                if (value != tool)
-                {
-                    tool = value;
-                    UpdateSpriteTexture();
-                }
-            }
+            set { tool = value; }
         }
         private bool usingTool = false;
-        public bool UsingTool
+        public virtual bool UsingTool
         {
             get { return usingTool; }
-            set
-            {
-                if (value != usingTool)
-                {
-                    usingTool = value;
-                    if (usingTool == true && gameInstance != null)
-                        SpriteModel?.StartActiveAnimation("3,0.15");
-                }
-            }
+            set { usingTool = value; }
         }
 
-        public Player(NetConnection netConn, Game? gameInstance)
+        public Player()
         {
-            this.gameInstance = gameInstance;
-            this.NetConn = netConn;
             this.ID = Player.GetUniqueId();
-
-            if (netConn != null)
-                this.IP = netConn.RemoteEndpoint.Address.ToString();
-
-            if (gameInstance != null)
-            {
-                Texture2D tex = gameInstance.Content.Load<Texture2D>(GenerateTextureName());
-                this.SpriteModel = new SpriteModel(gameInstance, 4, tex);
-                this.IdleAnimation = true;
-            }
-        }
-
-        private string GenerateTextureName()
-        {
-            string name = "sprites/tex_sprite_";
-
-            if (team == PlayerTeam.Red)
-            {
-                name += "red_";
-            }
-            else
-            {
-                name += "blue_";
-            }
-
-            switch (tool)
-            {
-                case PlayerTools.ConstructionGun:
-                case PlayerTools.DeconstructionGun:
-                    name += "construction";
-                    break;
-                case PlayerTools.Detonator:
-                    name += "detonator";
-                    break;
-                case PlayerTools.Pickaxe:
-                    name += "pickaxe";
-                    break;
-                case PlayerTools.ProspectingRadar:
-                    name += "radar";
-                    break;
-                default:
-                    name += "pickaxe";
-                    break;
-            }
-
-            return name;
-        }
-
-        private void UpdateSpriteTexture()
-        {
-            if (gameInstance == null)
-                return;
-
-            string contentPath = GenerateTextureName();
-            Texture2D texture = gameInstance.Content.Load<Texture2D>(contentPath);
-            SpriteModel?.SetSpriteTexture(texture);
         }
 
         static uint uniqueId = 0;

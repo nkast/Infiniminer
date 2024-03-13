@@ -37,7 +37,7 @@ namespace Infiniminer
         InfiniminerNetServer? netServer;
         BlockType[,,] blockList;    // In game coordinates, where Y points up.
         PlayerTeam[,,] blockCreatorTeam;
-        Dictionary<NetConnection, Player> playerList = new Dictionary<NetConnection, Player>();
+        Dictionary<NetConnection, ServerPlayer> playerList = new Dictionary<NetConnection, ServerPlayer>();
         ServerConfig config;
         int lavaBlockCount = 0;
         DateTime lastServerListUpdate = DateTime.Now;
@@ -158,13 +158,13 @@ namespace Infiniminer
 
         public void KickPlayer(string ip)
         {
-            List<Player> playersToKick = new List<Player>();
-            foreach (Player p in playerList.Values)
+            List<ServerPlayer> playersToKick = new List<ServerPlayer>();
+            foreach (ServerPlayer p in playerList.Values)
             {
                 if (p.IP == ip)
                     playersToKick.Add(p);
             }
-            foreach (Player p in playersToKick)
+            foreach (ServerPlayer p in playersToKick)
             {
                 p.NetConn.Disconnect("", 0);
                 p.Kicked = true;
@@ -206,7 +206,7 @@ namespace Infiniminer
 
                 case "players":
                     {
-                        foreach (Player p in playerList.Values)
+                        foreach (ServerPlayer p in playerList.Values)
                         {
                             string teamIdent = "";
                             if (p.Team == PlayerTeam.Red)
@@ -504,14 +504,14 @@ namespace Infiniminer
                     {
                         case NetMessageType.ConnectionApproval:
                             {
-                                Player newPlayer = new Player(msgSender, null);
+                                ServerPlayer newPlayer = new ServerPlayer(msgSender);
                                 newPlayer.Handle = msgBuffer.ReadString().Sanitize().Trim();
                                 if (newPlayer.Handle.Length == 0 || newPlayer.Handle.Length > 20)
                                 {
                                     newPlayer.Handle = "Player";
                                 }
 
-                                foreach (Player oldPlayer in this.playerList.Values)
+                                foreach (ServerPlayer oldPlayer in this.playerList.Values)
                                 {
                                     if (newPlayer.Handle == oldPlayer.Handle)
                                     {
@@ -546,7 +546,7 @@ namespace Infiniminer
                                     break;
                                 }
 
-                                Player player = playerList[msgSender];
+                                ServerPlayer player = playerList[msgSender];
 
                                 if (msgSender.Status == NetConnectionStatus.Connected)
                                 {
@@ -574,7 +574,7 @@ namespace Infiniminer
                                     break;
                                 }
 
-                                Player player = playerList[msgSender];
+                                ServerPlayer player = playerList[msgSender];
                                 InfiniminerMessage dataType = (InfiniminerMessage)msgBuffer.ReadByte();
                                 switch (dataType)
                                 {
@@ -598,7 +598,7 @@ namespace Infiniminer
                                             chatPacket.Write(chatString);
 
                                             // Send the packet to people who should recieve it.
-                                            foreach (Player p in playerList.Values)
+                                            foreach (ServerPlayer p in playerList.Values)
                                             {
                                                 if (chatType == ChatMessageType.SayAll ||
                                                     chatType == ChatMessageType.SayBlueTeam && p.Team == PlayerTeam.Blue ||
@@ -727,7 +727,7 @@ namespace Infiniminer
                                     case InfiniminerMessage.DepositOre:
                                         {
                                             DepositOre(player);
-                                            foreach (Player p in playerList.Values)
+                                            foreach (ServerPlayer p in playerList.Values)
                                                 SendResourceUpdate(p);
                                         }
                                         break;
@@ -735,7 +735,7 @@ namespace Infiniminer
                                     case InfiniminerMessage.WithdrawOre:
                                         {
                                             WithdrawOre(player);
-                                            foreach (Player p in playerList.Values)
+                                            foreach (ServerPlayer p in playerList.Values)
                                                 SendResourceUpdate(p);
                                         }
                                         break;
@@ -820,7 +820,7 @@ namespace Infiniminer
 
         public void DepositForPlayers()
         {
-            foreach (Player p in playerList.Values)
+            foreach (ServerPlayer p in playerList.Values)
             {
                 if (p.Position.Y > 64 - Defines.GROUND_LEVEL)
                     DepositCash(p);
@@ -916,7 +916,7 @@ namespace Infiniminer
             return false;
         }
 
-        public void UsePickaxe(Player player, Vector3 playerPosition, Vector3 playerHeading)
+        public void UsePickaxe(ServerPlayer player, Vector3 playerPosition, Vector3 playerHeading)
         {
             player.QueueAnimationBreak = true;
 
@@ -1008,7 +1008,7 @@ namespace Infiniminer
         //    return false;
         //}
 
-        public void UseConstructionGun(Player player, Vector3 playerPosition, Vector3 playerHeading, BlockType blockType)
+        public void UseConstructionGun(ServerPlayer player, Vector3 playerPosition, Vector3 playerHeading, BlockType blockType)
         {
             bool actionFailed = false;
 
@@ -1029,7 +1029,7 @@ namespace Infiniminer
             ushort x = (ushort)buildPoint.X;
             ushort y = (ushort)buildPoint.Y;
             ushort z = (ushort)buildPoint.Z;
-            foreach (Player p in playerList.Values)
+            foreach (ServerPlayer p in playerList.Values)
             {
                 if ((int)p.Position.X == x && (int)p.Position.Z == z && ((int)p.Position.Y == y || (int)p.Position.Y - 1 == y))
                     actionFailed = true;
@@ -1072,7 +1072,7 @@ namespace Infiniminer
             }
         }
 
-        public void UseDeconstructionGun(Player player, Vector3 playerPosition, Vector3 playerHeading)
+        public void UseDeconstructionGun(ServerPlayer player, Vector3 playerPosition, Vector3 playerHeading)
         {
             bool actionFailed = false;
 
@@ -1121,7 +1121,7 @@ namespace Infiniminer
             }
         }
 
-        public void TriggerConstructionGunAnimation(Player player, float animationValue)
+        public void TriggerConstructionGunAnimation(ServerPlayer player, float animationValue)
         {
             if (player.NetConn.Status != NetConnectionStatus.Connected)
                 return;
@@ -1133,7 +1133,7 @@ namespace Infiniminer
             netServer?.SendMessage(msgBuffer, player.NetConn, NetChannel.ReliableInOrder1);
         }
 
-        public void UseSignPainter(Player player, Vector3 playerPosition, Vector3 playerHeading)
+        public void UseSignPainter(ServerPlayer player, Vector3 playerPosition, Vector3 playerHeading)
         {
             // If there's no surface within range, bail.
             Vector3 hitPoint = Vector3.Zero;
@@ -1164,7 +1164,7 @@ namespace Infiniminer
             SetBlock((ushort)(x), (ushort)(y), (ushort)(z), BlockType.None, PlayerTeam.None);
 
             // Remove this from any explosive lists it may be in.
-            foreach (Player p in playerList.Values)
+            foreach (ServerPlayer p in playerList.Values)
                 p.ExplosiveList.Remove(new Vector3(x, y, z));
 
             // Detonate the block.
@@ -1214,7 +1214,7 @@ namespace Infiniminer
                     netServer?.SendMessage(msgBuffer, netConn, NetChannel.ReliableUnordered);
         }
 
-        public void UseDetonator(Player player)
+        public void UseDetonator(ServerPlayer player)
         {
             while (player.ExplosiveList.Count > 0)
             {
@@ -1230,7 +1230,7 @@ namespace Infiniminer
             }
         }
 
-        public void DepositOre(Player player)
+        public void DepositOre(ServerPlayer player)
         {
             uint depositAmount = Math.Min(50, player.Ore);
             player.Ore -= depositAmount;
@@ -1240,7 +1240,7 @@ namespace Infiniminer
                 teamOreBlue = Math.Min(teamOreBlue + depositAmount, 9999);
         }
 
-        public void WithdrawOre(Player player)
+        public void WithdrawOre(ServerPlayer player)
         {
             if (player.Team == PlayerTeam.Red)
             {
@@ -1256,7 +1256,7 @@ namespace Infiniminer
             }
         }
 
-        public void DepositCash(Player player)
+        public void DepositCash(ServerPlayer player)
         {
             if (player.Cash <= 0)
                 return;
@@ -1278,7 +1278,7 @@ namespace Infiniminer
             player.Cash = 0;
             player.Weight = 0;
 
-            foreach (Player p in playerList.Values)
+            foreach (ServerPlayer p in playerList.Values)
                 SendResourceUpdate(p);
         }
 
@@ -1307,7 +1307,7 @@ namespace Infiniminer
         }
 
         // Lets a player know about their resources.
-        public void SendResourceUpdate(Player player)
+        public void SendResourceUpdate(ServerPlayer player)
         {
             if (player.NetConn.Status != NetConnectionStatus.Connected)
                 return;
@@ -1356,7 +1356,7 @@ namespace Infiniminer
                     netServer?.SendMessage(msgBuffer, netConn, NetChannel.ReliableUnordered);
         }
 
-        public void SendPlayerUpdate(Player player)
+        public void SendPlayerUpdate(ServerPlayer player)
         {
             NetBuffer? msgBuffer = netServer?.CreateBuffer();
             msgBuffer?.Write((byte)InfiniminerMessage.PlayerUpdate);
@@ -1392,12 +1392,12 @@ namespace Infiniminer
                     netServer?.SendMessage(msgBuffer, netConn, NetChannel.ReliableInOrder2);
         }
 
-        public void SendPlayerJoined(Player player)
+        public void SendPlayerJoined(ServerPlayer player)
         {
             NetBuffer? msgBuffer;
 
             // Let this player know about other players.
-            foreach (Player p in playerList.Values)
+            foreach (ServerPlayer p in playerList.Values)
             {
                 msgBuffer = netServer?.CreateBuffer();
                 msgBuffer?.Write((byte)InfiniminerMessage.PlayerJoined);
@@ -1465,7 +1465,7 @@ namespace Infiniminer
                     netServer?.SendMessage(msgBuffer, netConn, NetChannel.ReliableUnordered);
         }
 
-        public void SendPlayerLeft(Player player, string reason)
+        public void SendPlayerLeft(ServerPlayer player, string reason)
         {
             NetBuffer? msgBuffer = netServer?.CreateBuffer();
             msgBuffer?.Write((byte)InfiniminerMessage.PlayerLeft);
@@ -1484,7 +1484,7 @@ namespace Infiniminer
                     netServer?.SendMessage(msgBuffer, netConn, NetChannel.ReliableInOrder3);
         }
 
-        public void SendPlayerSetTeam(Player player)
+        public void SendPlayerSetTeam(ServerPlayer player)
         {
             NetBuffer? msgBuffer = netServer?.CreateBuffer();
             msgBuffer?.Write((byte)InfiniminerMessage.PlayerSetTeam);
@@ -1495,7 +1495,7 @@ namespace Infiniminer
                     netServer?.SendMessage(msgBuffer, netConn, NetChannel.ReliableInOrder2);
         }
 
-        public void SendPlayerDead(Player player)
+        public void SendPlayerDead(ServerPlayer player)
         {
             NetBuffer? msgBuffer = netServer?.CreateBuffer();
             msgBuffer?.Write((byte)InfiniminerMessage.PlayerDead);
@@ -1505,7 +1505,7 @@ namespace Infiniminer
                     netServer?.SendMessage(msgBuffer, netConn, NetChannel.ReliableInOrder2);
         }
 
-        public void SendPlayerAlive(Player player)
+        public void SendPlayerAlive(ServerPlayer player)
         {
             NetBuffer? msgBuffer = netServer?.CreateBuffer();
             msgBuffer?.Write((byte)InfiniminerMessage.PlayerAlive);
@@ -1527,7 +1527,7 @@ namespace Infiniminer
                     netServer?.SendMessage(msgBuffer, netConn, NetChannel.ReliableUnordered);
         }
 
-        public void VibrateGamePad(Player player, float strength, uint ms)
+        public void VibrateGamePad(ServerPlayer player, float strength, uint ms)
         {
             NetBuffer? msgBuffer = netServer?.CreateBuffer();
             msgBuffer?.Write((byte)InfiniminerMessage.VibrateGamePad);

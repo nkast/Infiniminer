@@ -43,7 +43,7 @@ namespace Infiniminer
             if (_P == null)
                 return;
 
-            foreach (Player p in _P.playerList.Values)
+            foreach (ClientPlayer p in _P.playerList.Values)
             {
                 p.StepInterpolation(gameTime.TotalGameTime.TotalSeconds);
 
@@ -65,7 +65,7 @@ namespace Infiniminer
             if (_P == null)
                 _P = gameInstance.propertyBag;
 
-            foreach (Player p in _P.playerList.Values)
+            foreach (ClientPlayer p in _P.playerList.Values)
             {
                 if (p.Alive && p.ID != _P.playerMyId)
                 {
@@ -87,7 +87,7 @@ namespace Infiniminer
             if (_P == null)
                 _P = gameInstance.propertyBag;
 
-            foreach (Player p in _P.playerList.Values)
+            foreach (ClientPlayer p in _P.playerList.Values)
             {
                 if (p.Alive && p.ID != _P.playerMyId)
                 {
