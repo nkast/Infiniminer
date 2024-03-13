@@ -23,7 +23,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ---------------------------------------------------------------------------- */
 
-using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -42,11 +41,9 @@ namespace Infiniminer
         public List<Vector3> ExplosiveList = new List<Vector3>();
         public uint ID;
         public Vector3 Heading = Vector3.Zero;
-        public NetConnection NetConn;
         public float TimeIdle = 0;
         public uint Score = 0;
         public float Ping = 0;
-        public string IP = "";
 
         // This is used to force an update that says the player is not using their tool, thus causing a break
         // in their tool usage animation.
@@ -171,14 +168,6 @@ namespace Infiniminer
                         SpriteModel?.StartActiveAnimation("3,0.15");
                 }
             }
-        }
-
-        public Player(NetConnection netConn) : this()
-        {
-            System.Diagnostics.Debug.Assert(netConn != null);
-            this.NetConn = netConn;
-
-            this.IP = netConn.RemoteEndpoint.Address.ToString();
         }
 
         public Player(Game gameInstance) : this()
