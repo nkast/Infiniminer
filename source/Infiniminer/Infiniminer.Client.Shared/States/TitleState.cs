@@ -75,6 +75,8 @@ namespace Infiniminer.States
 
         public override void OnRenderAtUpdate(GraphicsDevice graphicsDevice, GameTime gameTime)
         {
+            UpdateUIViewport(graphicsDevice.Viewport);
+
             spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred);
             spriteBatch.Draw(texMenu, drawRect, Color.White);
             spriteBatch.End();

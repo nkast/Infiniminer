@@ -92,6 +92,8 @@ namespace Infiniminer.States
 
         public override void OnRenderAtUpdate(GraphicsDevice graphicsDevice, GameTime gameTime)
         {
+            UpdateUIViewport(graphicsDevice.Viewport);
+
             descWidths = new List<int>();
             spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred);
             spriteBatch.Draw(texMenu, drawRect, Color.White);

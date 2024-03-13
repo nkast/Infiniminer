@@ -105,6 +105,8 @@ namespace Infiniminer.States
 
         public override void OnRenderAtUpdate(GraphicsDevice graphicsDevice, GameTime gameTime)
         {
+            UpdateUIViewport(graphicsDevice.Viewport);
+
             uint dataPacketsRecieved = 0;
             for (int x = 0; x < 64; x++)
                 for (int y = 0; y < 64; y += 16)
