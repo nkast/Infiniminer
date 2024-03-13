@@ -173,21 +173,27 @@ namespace Infiniminer
             }
         }
 
-        public Player(NetConnection netConn, Game? gameInstance)
+        public Player(NetConnection netConn) : this()
         {
-            this.gameInstance = gameInstance;
+            System.Diagnostics.Debug.Assert(netConn != null);
             this.NetConn = netConn;
+
+            this.IP = netConn.RemoteEndpoint.Address.ToString();
+        }
+
+        public Player(Game gameInstance) : this()
+        {
+            System.Diagnostics.Debug.Assert(gameInstance != null);
+            this.gameInstance = gameInstance;
+
+            Texture2D tex = gameInstance.Content.Load<Texture2D>(GenerateTextureName());
+            this.SpriteModel = new SpriteModel(gameInstance, 4, tex);
+            this.IdleAnimation = true;
+        }
+
+        public Player()
+        {
             this.ID = Player.GetUniqueId();
-
-            if (netConn != null)
-                this.IP = netConn.RemoteEndpoint.Address.ToString();
-
-            if (gameInstance != null)
-            {
-                Texture2D tex = gameInstance.Content.Load<Texture2D>(GenerateTextureName());
-                this.SpriteModel = new SpriteModel(gameInstance, 4, tex);
-                this.IdleAnimation = true;
-            }
         }
 
         private string GenerateTextureName()

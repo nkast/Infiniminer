@@ -313,7 +313,7 @@ namespace Infiniminer
                                         string playerName = msgBuffer.ReadString();
                                         bool thisIsMe = msgBuffer.ReadBoolean();
                                         bool playerAlive = msgBuffer.ReadBoolean();
-                                        propertyBag.playerList[playerId] = new Player(null, (Game)this);
+                                        propertyBag.playerList[playerId] = new Player(this);
                                         propertyBag.playerList[playerId].Handle = playerName;
                                         propertyBag.playerList[playerId].ID = playerId;
                                         propertyBag.playerList[playerId].Alive = playerAlive;

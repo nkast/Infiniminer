@@ -504,7 +504,7 @@ namespace Infiniminer
                     {
                         case NetMessageType.ConnectionApproval:
                             {
-                                Player newPlayer = new Player(msgSender, null);
+                                Player newPlayer = new Player(msgSender);
                                 newPlayer.Handle = msgBuffer.ReadString().Sanitize().Trim();
                                 if (newPlayer.Handle.Length == 0 || newPlayer.Handle.Length > 20)
                                 {
