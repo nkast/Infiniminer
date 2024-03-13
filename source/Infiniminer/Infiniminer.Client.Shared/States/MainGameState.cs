@@ -91,42 +91,52 @@ namespace Infiniminer.States
             ///////////////////////////////////////////////////////////////////
             /// Update the camera
             ///     Only update if the window has focus
+            ///     Unlock mouse with Ctrl key
             ///////////////////////////////////////////////////////////////////
-            if (_SM.WindowHasFocus())
+            bool isCtrlDown = InputManager.Keyboard.CurrentState.IsKeyDown(Keys.LeftControl) || InputManager.Keyboard.CurrentState.IsKeyDown(Keys.RightControl);
+            if (!isCtrlDown)
             {
-                if (mouseInitialized)
+                if (_SM.WindowHasFocus())
                 {
-                    //  Because the mouse is clamped to the center of the screen in
-                    //  a moment, we have to determine if the input type is from
-                    //  keyboard/mouse or if it's from gamepad and calculate the
-                    //  delta differently based on which
-                    float dx;
-                    float dy;
-                    if (_P.inputEngine.ControlType == ControlType.KeyboardMouse)
+                    Rectangle clientBounds = _SM.Window.ClientBounds;
+                    if (mouseInitialized)
                     {
-                        dx = InputManager.Mouse.X - _SM.GraphicsDevice.Viewport.Width / 2;
-                        dy = InputManager.Mouse.Y - _SM.GraphicsDevice.Viewport.Height / 2;
+                        //  Because the mouse is clamped to the center of the screen in
+                        //  a moment, we have to determine if the input type is from
+                        //  keyboard/mouse or if it's from gamepad and calculate the
+                        //  delta differently based on which
+                        float dx;
+                        float dy;
+                        if (_P.inputEngine.ControlType == ControlType.KeyboardMouse)
+                        {
+                            dx = InputManager.Mouse.X - clientBounds.Width / 2;
+                            dy = InputManager.Mouse.Y - clientBounds.Height / 2;
+                        }
+                        else
+                        {
+                            dx = _P.inputEngine.Camera.Value.X * 5.0f;
+                            dy = _P.inputEngine.Camera.Value.Y * 5.0f;
+                        }
+
+                        if ((_SM as InfiniminerGame).InvertMouseYAxis)
+                            dy = -dy;
+
+                        _P.playerCamera.Yaw -= dx * 0.005f;
+                        _P.playerCamera.Pitch = (float)Math.Min(Math.PI * 0.49, Math.Max(-Math.PI * 0.49, _P.playerCamera.Pitch - dy * 0.005f));
                     }
                     else
                     {
-                        dx = _P.inputEngine.Camera.Value.X * 5.0f;
-                        dy = _P.inputEngine.Camera.Value.Y * 5.0f;
+                        Rectangle windowBounds = new Rectangle(0, 0, clientBounds.Width, clientBounds.Height);
+                        if (windowBounds.Contains(InputManager.Mouse.X, InputManager.Mouse.Y) && InputManager.Mouse.LeftButtonPressed())
+                            mouseInitialized = true;
                     }
-
-                    if ((_SM as InfiniminerGame).InvertMouseYAxis)
-                        dy = -dy;
-
-                    _P.playerCamera.Yaw -= dx * 0.005f;
-                    _P.playerCamera.Pitch = (float)Math.Min(Math.PI * 0.49, Math.Max(-Math.PI * 0.49, _P.playerCamera.Pitch - dy * 0.005f));
+                    if (mouseInitialized)
+                        Mouse.SetPosition(clientBounds.Width / 2, clientBounds.Height / 2);
                 }
                 else
-                {
-                    mouseInitialized = true;
-                }
-                Mouse.SetPosition(_SM.GraphicsDevice.Viewport.Width / 2, _SM.GraphicsDevice.Viewport.Height / 2);
+                    mouseInitialized = false;
             }
-            else
-                mouseInitialized = false;
+            _SM.IsMouseVisible = !mouseInitialized || isCtrlDown;
 
             ///////////////////////////////////////////////////////////////////
             /// Update Player
