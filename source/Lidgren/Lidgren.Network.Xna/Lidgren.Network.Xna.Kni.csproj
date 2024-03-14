@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <PackageReference Include="nkast.Xna.Framework" Version="3.11.9002" />
-    <PackageReference Include="nkast.Xna.Framework.Graphics" Version="3.11.9002" />
   </ItemGroup>
 
   <ItemGroup>
