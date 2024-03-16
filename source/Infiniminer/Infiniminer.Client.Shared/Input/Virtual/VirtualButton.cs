@@ -423,4 +423,214 @@ public sealed class VirtualButton : VirtualInput
     }
 
     #endregion Mouse
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// TouchController
+    ///////////////////////////////////////////////////////////////////////////
+    #region TouchController
+#if KNI
+    public sealed class TouchController
+    {
+        ///////////////////////////////////////////////////////////////////////////
+        /// Button
+        ///////////////////////////////////////////////////////////////////////////
+        #region Button
+
+        public sealed class Button : Node
+        {
+            private readonly Buttons _button;
+
+            public override bool Check() => InputManager.TouchController.ButtonCheck(_button);
+            public override bool Pressed() => InputManager.TouchController.ButtonPressed(_button);
+            public override bool Released() => InputManager.TouchController.ButtonReleased(_button);
+
+            public Button(Buttons button) => _button = button;
+        }
+
+        #endregion Button
+
+        ///////////////////////////////////////////////////////////////////////////
+        /// Left Stick Up
+        ///////////////////////////////////////////////////////////////////////////
+        #region Left Stick Up
+
+        public class LeftStickUp : Node
+        {
+            public float DeadZone;
+            public bool UseGlobalDeadZone;
+
+            public override bool Check() => UseGlobalDeadZone ? InputManager.TouchController.LeftStickUpCheck() : InputManager.TouchController.LeftStickUpCheck(DeadZone);
+            public override bool Pressed() => UseGlobalDeadZone ? InputManager.TouchController.LeftStickUpPressed() : InputManager.TouchController.LeftStickUpPressed(DeadZone);
+            public override bool Released() => UseGlobalDeadZone ? InputManager.TouchController.LeftStickUpReleased() : InputManager.TouchController.LeftStickUpReleased(DeadZone);
+
+        }
+
+        #endregion Left Stick Down        
+
+        ///////////////////////////////////////////////////////////////////////////
+        /// Left Stick Down
+        ///////////////////////////////////////////////////////////////////////////
+        #region Left Stick Down
+
+        public class LeftStickDown : Node
+        {
+            public float DeadZone;
+            public bool UseGlobalDeadZone;
+
+            public override bool Check() => UseGlobalDeadZone ? InputManager.TouchController.LeftStickDownCheck() : InputManager.TouchController.LeftStickDownCheck(DeadZone);
+            public override bool Pressed() => UseGlobalDeadZone ? InputManager.TouchController.LeftStickDownPressed() : InputManager.TouchController.LeftStickDownPressed(DeadZone);
+            public override bool Released() => UseGlobalDeadZone ? InputManager.TouchController.LeftStickDownReleased() : InputManager.TouchController.LeftStickDownReleased(DeadZone);
+
+        }
+
+        #endregion Left Stick Down
+
+        ///////////////////////////////////////////////////////////////////////////
+        /// Left Stick Left
+        ///////////////////////////////////////////////////////////////////////////
+        #region Left Stick Left
+
+        public class LeftStickLeft : Node
+        {
+            public float DeadZone;
+            public bool UseGlobalDeadZone;
+
+            public override bool Check() => UseGlobalDeadZone ? InputManager.TouchController.LeftStickLeftCheck() : InputManager.TouchController.LeftStickLeftCheck(DeadZone);
+            public override bool Pressed() => UseGlobalDeadZone ? InputManager.TouchController.LeftStickLeftPressed() : InputManager.TouchController.LeftStickLeftPressed(DeadZone);
+            public override bool Released() => UseGlobalDeadZone ? InputManager.TouchController.LeftStickLeftReleased() : InputManager.TouchController.LeftStickLeftReleased(DeadZone);
+
+        }
+
+        #endregion Left Stick Left    
+
+        ///////////////////////////////////////////////////////////////////////////
+        /// Left Stick Right
+        ///////////////////////////////////////////////////////////////////////////
+        #region Left Stick Right
+
+        public class LeftStickRight : Node
+        {
+            public float DeadZone;
+            public bool UseGlobalDeadZone;
+
+            public override bool Check() => UseGlobalDeadZone ? InputManager.TouchController.LeftStickRightCheck() : InputManager.TouchController.LeftStickRightCheck(DeadZone);
+            public override bool Pressed() => UseGlobalDeadZone ? InputManager.TouchController.LeftStickRightPressed() : InputManager.TouchController.LeftStickRightPressed(DeadZone);
+            public override bool Released() => UseGlobalDeadZone ? InputManager.TouchController.LeftStickRightReleased() : InputManager.TouchController.LeftStickRightReleased(DeadZone);
+
+        }
+
+        #endregion Left Stick Right     
+
+        ///////////////////////////////////////////////////////////////////////////
+        /// Right Stick Up
+        ///////////////////////////////////////////////////////////////////////////
+        #region Right Stick Up
+
+        public class RightStickUp : Node
+        {
+            public float DeadZone;
+            public bool UseGlobalDeadZone;
+
+            public override bool Check() => UseGlobalDeadZone ? InputManager.TouchController.RightStickUpCheck() : InputManager.TouchController.RightStickUpCheck(DeadZone);
+            public override bool Pressed() => UseGlobalDeadZone ? InputManager.TouchController.RightStickUpPressed() : InputManager.TouchController.RightStickUpPressed(DeadZone);
+            public override bool Released() => UseGlobalDeadZone ? InputManager.TouchController.RightStickUpReleased() : InputManager.TouchController.RightStickUpReleased(DeadZone);
+
+        }
+
+        #endregion Right Stick Down        
+
+        ///////////////////////////////////////////////////////////////////////////
+        /// Right Stick Down
+        ///////////////////////////////////////////////////////////////////////////
+        #region Right Stick Down
+
+        public class RightStickDown : Node
+        {
+            public float DeadZone;
+            public bool UseGlobalDeadZone;
+
+            public override bool Check() => UseGlobalDeadZone ? InputManager.TouchController.RightStickDownCheck() : InputManager.TouchController.RightStickDownCheck(DeadZone);
+            public override bool Pressed() => UseGlobalDeadZone ? InputManager.TouchController.RightStickDownPressed() : InputManager.TouchController.RightStickDownPressed(DeadZone);
+            public override bool Released() => UseGlobalDeadZone ? InputManager.TouchController.RightStickDownReleased() : InputManager.TouchController.RightStickDownReleased(DeadZone);
+
+        }
+
+        #endregion Right Stick Down
+
+        ///////////////////////////////////////////////////////////////////////////
+        /// Right Stick Left
+        ///////////////////////////////////////////////////////////////////////////
+        #region Right Stick Left
+
+        public class RightStickLeft : Node
+        {
+            public float DeadZone;
+            public bool UseGlobalDeadZone;
+
+            public override bool Check() => UseGlobalDeadZone ? InputManager.TouchController.RightStickLeftCheck() : InputManager.TouchController.RightStickLeftCheck(DeadZone);
+            public override bool Pressed() => UseGlobalDeadZone ? InputManager.TouchController.RightStickLeftPressed() : InputManager.TouchController.RightStickPressed(DeadZone);
+            public override bool Released() => UseGlobalDeadZone ? InputManager.TouchController.RightStickReleased() : InputManager.TouchController.RightStickReleased(DeadZone);
+
+        }
+
+        #endregion Right Stick Left    
+
+        ///////////////////////////////////////////////////////////////////////////
+        /// Right Stick Right
+        ///////////////////////////////////////////////////////////////////////////
+        #region Right Stick Right
+
+        public class RightStickRight : Node
+        {
+            public float DeadZone;
+            public bool UseGlobalDeadZone;
+
+            public override bool Check() => UseGlobalDeadZone ? InputManager.TouchController.RightStickRightCheck() : InputManager.TouchController.RightStickRightCheck(DeadZone);
+            public override bool Pressed() => UseGlobalDeadZone ? InputManager.TouchController.RightStickRightPressed() : InputManager.TouchController.RightStickRightPressed(DeadZone);
+            public override bool Released() => UseGlobalDeadZone ? InputManager.TouchController.RightStickRightReleased() : InputManager.TouchController.RightStickRightReleased(DeadZone);
+
+        }
+
+        #endregion Right Stick Right    
+
+
+        ///////////////////////////////////////////////////////////////////////////
+        /// Left Trigger
+        ///////////////////////////////////////////////////////////////////////////
+        #region Left Trigger
+
+        public class LeftTrigger : Node
+        {
+            public float DeadZone;
+            public bool UseGlobalDeadZone;
+
+            public override bool Check() => UseGlobalDeadZone ? InputManager.TouchController.LeftTriggerCheck() : InputManager.TouchController.LeftTriggerCheck(DeadZone);
+            public override bool Pressed() => UseGlobalDeadZone ? InputManager.TouchController.LeftTriggerPressed() : InputManager.TouchController.LeftTriggerPressed(DeadZone);
+            public override bool Released() => UseGlobalDeadZone ? InputManager.TouchController.LeftTriggerReleased() : InputManager.TouchController.LeftTriggerReleased(DeadZone);
+
+        }
+
+        #endregion Left Trigger  
+
+        ///////////////////////////////////////////////////////////////////////////
+        /// Right Trigger
+        ///////////////////////////////////////////////////////////////////////////
+        #region Right Trigger
+
+        public class RightTrigger : Node
+        {
+            public float DeadZone;
+            public bool UseGlobalDeadZone;
+
+            public override bool Check() => UseGlobalDeadZone ? InputManager.TouchController.RightTriggerCheck() : InputManager.TouchController.RightTriggerCheck(DeadZone);
+            public override bool Pressed() => UseGlobalDeadZone ? InputManager.TouchController.RightTriggerPressed() : InputManager.TouchController.RightTriggerPressed(DeadZone);
+            public override bool Released() => UseGlobalDeadZone ? InputManager.TouchController.RightTriggerReleased() : InputManager.TouchController.RightTriggerReleased(DeadZone);
+
+        }
+
+        #endregion Right Trigger          
+    }
+#endif
+    #endregion TouchController
 }

@@ -34,12 +34,20 @@ public static class InputManager
     public static KeyboardInfo Keyboard { get; private set; }
     public static MouseInfo Mouse { get; private set; }
     public static GamePadInfo GamePad { get; private set; }
+#if KNI
+    public static TouchControllerInfo TouchController { get; private set; }
+# endif
 
     static  InputManager()
     {
         Keyboard = new();
         Mouse = new();
         GamePad = new(PlayerIndex.One);
+#if KNI
+        TouchController = new();
+        TouchController.LeftStickThreshold = new Vector2(0.3f);
+        TouchController.RightStickThreshold = new Vector2(0.3f);
+#endif
         VirtualInputs = new List<VirtualInput>();
     }
 
@@ -48,6 +56,9 @@ public static class InputManager
         Keyboard.Update();
         Mouse.Update();
         GamePad.Update(gameTime);
+#if KNI
+        TouchController.Update(gameTime);
+#endif
 
         for (int i = 0; i < VirtualInputs.Count; i++)
         {

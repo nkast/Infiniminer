@@ -452,4 +452,187 @@ public sealed class VirtualJoystick : VirtualInput
         }
     }
     #endregion Mouse
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// TouchController
+    ///////////////////////////////////////////////////////////////////////////
+    #region TouchController
+#if KNI
+    public sealed class TouchController
+    {
+
+        ///////////////////////////////////////////////////////////////////////////
+        /// Button
+        ///////////////////////////////////////////////////////////////////////////
+        #region Button
+
+        public sealed class Button : Node
+        {
+            private Vector2 _value;
+            public override Vector2 Value => _value;
+
+            public OverlapBehavior OverlapBehavior { get; set; }
+
+            public Buttons Up { get; set; }
+            public Buttons Down { get; set; }
+            public Buttons Left { get; set; }
+            public Buttons Right { get; set; }
+
+            public Button(Microsoft.Xna.Framework.Input.Buttons up,
+                          Microsoft.Xna.Framework.Input.Buttons down,
+                          Microsoft.Xna.Framework.Input.Buttons left,
+                          Microsoft.Xna.Framework.Input.Buttons right,
+                          OverlapBehavior behavior)
+            {
+                OverlapBehavior = behavior;
+                Up = up;
+                Down = down;
+                Left = left;
+                Right = right;
+            }
+
+            public override void Update()
+            {
+                bool isUp = InputManager.TouchController.ButtonCheck(Up);
+                bool isDown = InputManager.TouchController.ButtonCheck(Down);
+                bool isLeft = InputManager.TouchController.ButtonCheck(Left);
+                bool isRight = InputManager.TouchController.ButtonCheck(Right);
+
+                if (isUp)
+                {
+                    if (isDown)
+                    {
+                        //  Both Up and Down are pressed so the value is determiend
+                        //  by the overlap behavior.
+                        switch (OverlapBehavior)
+                        {
+                            default:
+                            case OverlapBehavior.Cancel:
+                                _value.Y = 0;
+                                break;
+                            case OverlapBehavior.Positive:
+                                _value.Y = 1;
+                                break;
+                            case OverlapBehavior.Negative:
+                                _value.Y = -1;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        _value.Y = 1;
+                    }
+                }
+                else if (isDown)
+                {
+                    _value.Y = -1;
+                }
+                else
+                {
+                    _value.Y = 0;
+                }
+
+
+                if (isLeft)
+                {
+                    if (isRight)
+                    {
+                        //  Both Left and Right are pressed so the value is determiend
+                        //  by the overlap behavior.
+                        switch (OverlapBehavior)
+                        {
+                            default:
+                            case OverlapBehavior.Cancel:
+                                _value.X = 0;
+                                break;
+                            case OverlapBehavior.Positive:
+                                _value.X = 1;
+                                break;
+                            case OverlapBehavior.Negative:
+                                _value.X = -1;
+                                break;
+
+                        }
+                    }
+                    else
+                    {
+                        _value.X = -1;
+                    }
+                }
+                else if (isRight)
+                {
+                    _value.X = 1;
+                }
+                else
+                {
+                    _value.X = 0;
+                }
+            }
+        }
+
+        #endregion Button
+
+        ///////////////////////////////////////////////////////////////////////////
+        /// Left Stick
+        ///////////////////////////////////////////////////////////////////////////
+        #region Left Stick
+
+        public sealed class LeftStick : Node
+        {
+            public Vector2 Deadzone { get; set; }
+            public bool UseGlobalDeadzone { get; set; }
+
+            public override Vector2 Value => UseGlobalDeadzone ? InputManager.TouchController.LeftStick : InputManager.TouchController.GetLeftStickWithDeadzone(Deadzone);
+
+            public LeftStick()
+            {
+                Deadzone = Vector2.Zero;
+                UseGlobalDeadzone = true;
+            }
+
+            public LeftStick(float deadzone)
+                : this(new Vector2(deadzone, deadzone)) { }
+
+            public LeftStick(Vector2 deadzone)
+            {
+                Deadzone = deadzone;
+                UseGlobalDeadzone = false;
+            }
+        }
+
+        #endregion Left Stick
+
+        ///////////////////////////////////////////////////////////////////////////
+        /// Right Stick
+        ///////////////////////////////////////////////////////////////////////////
+        #region Right Stick
+
+        public sealed class RightStick : Node
+        {
+            public Vector2 Deadzone { get; set; }
+            public bool UseGlobalDeadzone { get; set; }
+
+            public override Vector2 Value => UseGlobalDeadzone ? InputManager.TouchController.RightStick : InputManager.TouchController.GetRightStickWithDeadzone(Deadzone);
+
+            public RightStick()
+            {
+                Deadzone = Vector2.Zero;
+                UseGlobalDeadzone = true;
+            }
+
+            public RightStick(float deadzone)
+                : this(new Vector2(deadzone, deadzone)) { }
+
+            public RightStick(Vector2 deadzone)
+            {
+                Deadzone = deadzone;
+                UseGlobalDeadzone = false;
+            }
+        }
+
+        #endregion Right Stick
+    }
+#endif
+    #endregion TouchController
 }
