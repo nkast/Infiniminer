@@ -12,7 +12,17 @@ namespace Infiniminer
         BasicEffect spriteBatchEffect;
 
         OvrDevice _ovrDevice;
+        HandsState _handsState;
 
+        RasterizerState _wireFrameRasterizerState;
+        Model _pickaxe3d;
+
+
+        //fix model origin, rotation and scale
+        Matrix _pickaxeWorldTransform = Matrix.Identity
+                                      * Matrix.CreateRotationX(MathHelper.ToRadians(-45f))
+                                      * Matrix.CreateTranslation(0f, -0.010f, -0.004f)
+                                      ;
 
         public Infiniminer3DVRGame(string[] args)
             : base(args)
@@ -41,6 +51,11 @@ namespace Infiniminer
             spriteBatchEffect.TextureEnabled = true;
             spriteBatchEffect.VertexColorEnabled = true;
 
+            _wireFrameRasterizerState = new RasterizerState();
+            _wireFrameRasterizerState.FillMode = FillMode.WireFrame;
+            _wireFrameRasterizerState.CullMode = CullMode.None;
+            _pickaxe3d = Content.Load<Model>("tools/pickaxe3d");
+
             base.LoadContent();
         }
 
@@ -62,6 +77,11 @@ namespace Infiniminer
                 {
                     System.Diagnostics.Debug.WriteLine(ovre.Message);
                 }
+            }
+
+            if (_ovrDevice.IsConnected)
+            {
+                _handsState = _ovrDevice.GetHandsState();
             }
 
             base.Update(gameTime);
@@ -115,6 +135,12 @@ namespace Infiniminer
                         this.propertyBag.playerCamera.ProjectionMatrix = projection;
 
                         DrawScene(gameTime, view, projection);
+
+                        // draw Pickaxe on left hand
+                        int handIndex = 1;
+                        Model handModel = _pickaxe3d;
+                        Matrix handWorldTransform = _pickaxeWorldTransform;
+                        DrawHand(gameTime, view, projection, handIndex, handModel, handWorldTransform);
 
                         // Resolve eye rendertarget
                         GraphicsDevice.SetRenderTarget(null);
@@ -178,6 +204,45 @@ namespace Infiniminer
             base.Draw(gameTime);
         }
 
+        private void DrawHand(GameTime gameTime, Matrix view, Matrix proj, int handIndex, Model handModel, Matrix handWorldTransform)
+        {
+            TouchControllerType touchControllerType = (handIndex == 0)
+                                                    ? TouchControllerType.LTouch
+                                                    : TouchControllerType.RTouch;
+
+            if (TouchController.GetCapabilities(touchControllerType).IsConnected)
+            {
+                Matrix world = _handsState.GetHandTransform(handIndex);
+                world = handWorldTransform * world;
+                                
+                GraphicsDevice.BlendState = BlendState.AlphaBlend;
+                GraphicsDevice.DepthStencilState = DepthStencilState.None;
+                GraphicsDevice.RasterizerState = _wireFrameRasterizerState;
+                foreach (var m in handModel.Meshes)
+                {
+                    foreach (var e in m.Effects)
+                    {
+                        ((BasicEffect)e).Alpha = 0.1f;
+                        ((BasicEffect)e).VertexColorEnabled = false;
+
+                    }
+                }
+                handModel.Draw(world, view, proj);
+
+                GraphicsDevice.BlendState = BlendState.Opaque;
+                GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+                GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+                foreach (var m in handModel.Meshes)
+                {
+                    foreach (var e in m.Effects)
+                    {
+                        ((BasicEffect)e).Alpha = 1.0f;
+                        ((BasicEffect)e).VertexColorEnabled = true;
+                    }
+                }
+                handModel.Draw(world, view, proj);
+            }
+        }
     }
 
 
