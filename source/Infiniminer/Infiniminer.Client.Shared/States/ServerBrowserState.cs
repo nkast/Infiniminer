@@ -90,15 +90,30 @@ namespace Infiniminer.States
                          * Matrix.CreateTranslation(-vWidth / 2f, vHeight / 2f, 0f) // offset center
                          * Matrix.CreateScale(1f / vWidth, 1f / vWidth, 1f); // normalize scale
 
-            float fov = MathHelper.ToRadians(70);
-            float uiScale = ((float)Math.Tan(fov * 0.5)) * aspect * 2f; // scale to fit nearPlane
-            world *= Matrix.CreateScale(uiScale, uiScale, 1f);
+            if (_SM.propertyBag.playerCamera.UseVrCamera)
+            {
+                float uiScale = 1f; // scale UI 1meter across.
+                world *= Matrix.CreateScale(uiScale, uiScale, 1f);
 
-            world *= Matrix.CreateTranslation(0.0f, 0.0f, -1.0f); // position to near plane
+                // position UI panel
+                world *= Matrix.CreateTranslation(0.0f, 0.1f, -1.0f);
 
-            uiEffect.World = world;
-            uiEffect.View = Matrix.Identity;
-            uiEffect.Projection = Matrix.CreatePerspectiveFieldOfView(fov, aspect, 1f, 1000.0f);
+                uiEffect.World = world;
+                uiEffect.View = _SM.propertyBag.playerCamera.ViewMatrix;
+                uiEffect.Projection = _SM.propertyBag.playerCamera.ProjectionMatrix;
+            }
+            else
+            {
+                float fov = MathHelper.ToRadians(70);
+                float uiScale = ((float)Math.Tan(fov * 0.5)) * aspect * 2f; // scale to fit nearPlane
+                world *= Matrix.CreateScale(uiScale, uiScale, 1f);
+
+                world *= Matrix.CreateTranslation(0.0f, 0.0f, -1.0f); // position to near plane
+
+                uiEffect.World = world;
+                uiEffect.View = Matrix.Identity;
+                uiEffect.Projection = Matrix.CreatePerspectiveFieldOfView(fov, aspect, 1f, 1000.0f);
+            }
         }
 
         public override void OnLeave(string newState)

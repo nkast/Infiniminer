@@ -161,7 +161,7 @@ namespace Infiniminer
             Vector3 relativePosition = position - _P.playerPosition;
             float relativeAltitude = relativePosition.Y;
             relativePosition.Y = 0;
-            Matrix rotationMatrix = Matrix.CreateRotationY(-_P.playerCamera.Yaw);
+            Matrix rotationMatrix = Matrix.CreateRotationY(-(_P.playerCamera.Yaw+ _P.playerCamera.VrYaw));
             relativePosition = Vector3.Transform(relativePosition, rotationMatrix) * 10;
             float relativeLength = Math.Min(relativePosition.Length(), 93);
             if (relativeLength != 0)
@@ -288,15 +288,53 @@ namespace Infiniminer
                          * Matrix.CreateTranslation(-vWidth / 2f, vHeight / 2f, 0f) // offset center
                          * Matrix.CreateScale(1f / vWidth, 1f / vWidth, 1f); // normalize scale
 
-            float fov = MathHelper.ToRadians(70);
-            float uiScale = ((float)Math.Tan(fov * 0.5)) * aspect * 2f; // scale to fit nearPlane
-            world *= Matrix.CreateScale(uiScale, uiScale, 1f);
+            if (_P.playerCamera.UseVrCamera)
+            {
+                vWidth = 1024;
+                vHeight = 300;
+                aspect = vWidth/ vHeight;
 
-            world *= Matrix.CreateTranslation(0.0f, 0.0f, -1.0f); // position to near plane
+                world = Matrix.CreateScale(1f, -1f, -1f) // Flip Y and Depth
+                      * Matrix.CreateTranslation(-vWidth / 2f, vHeight / 2f, 0f) // offset center
+                      * Matrix.CreateScale(1f / vWidth, 1f / vWidth, 1f); // normalize scale
 
-            uiEffect.World = world;
-            uiEffect.View = Matrix.Identity;
-            uiEffect.Projection = Matrix.CreatePerspectiveFieldOfView(fov, aspect, 1f, 1000.0f);
+                float uiScale = 0.8f; // scale UI 1meter across.
+                world *= Matrix.CreateScale(uiScale, uiScale, 1f);
+
+                // position UI panel
+                var camTransform = Matrix.Invert(_P.playerCamera.ViewMatrix);
+                Vector3 uiPos = camTransform.Translation;
+                uiPos.Y += 0.8f;
+                var camForward = camTransform.Forward;
+                camForward.Y = 0;
+                camForward.Normalize();
+                uiPos += camForward * 0.6f;
+                world *= Matrix.CreateRotationY(MathHelper.ToRadians(180));
+                world *= Matrix.CreateRotationX(MathHelper.ToRadians(-45));
+                world *= Matrix.CreateConstrainedBillboard(
+                    uiPos,
+                    camTransform.Translation,
+                    Vector3.Up,
+                    camTransform.Up,
+                    camTransform.Forward
+                    );
+
+                uiEffect.World = world;
+                uiEffect.View = _P.playerCamera.ViewMatrix;
+                uiEffect.Projection = _P.playerCamera.ProjectionMatrix;
+            }
+            else
+            {
+                float fov = MathHelper.ToRadians(70);
+                float uiScale = ((float)Math.Tan(fov * 0.5)) * aspect * 2f; // scale to fit nearPlane
+                world *= Matrix.CreateScale(uiScale, uiScale, 1f);
+
+                world *= Matrix.CreateTranslation(0.0f, 0.0f, -1.0f); // position to near plane
+
+                uiEffect.World = world;
+                uiEffect.View = Matrix.Identity;
+                uiEffect.Projection = Matrix.CreatePerspectiveFieldOfView(fov, aspect, 1f, 1000.0f);
+            }
         }
 
         public void Render(GraphicsDevice graphicsDevice)
