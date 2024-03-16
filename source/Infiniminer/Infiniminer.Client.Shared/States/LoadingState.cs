@@ -72,6 +72,7 @@ namespace Infiniminer.States
             uiEffect.TextureEnabled = true;
             uiEffect.VertexColorEnabled = true;
             texMenu = _SM.Content.Load<Texture2D>("menus/tex_menu_loading");
+
             UpdateUIViewport(_SM.GraphicsDevice.Viewport);
 
             uiFont = _SM.Content.Load<SpriteFont>("font_04b08");
@@ -87,17 +88,28 @@ namespace Infiniminer.States
         private void UpdateUIViewport(Viewport viewport)
         {
             // calculate virtual resolution
-            float vWidth = (viewport.AspectRatio > VAspect) ? (VHeight * viewport.AspectRatio) : VWidth;
-            float vHeight = (viewport.AspectRatio < VAspect) ? (VWidth / viewport.AspectRatio) : VHeight;
-
-            uiEffect.World = Matrix.Identity;
-            uiEffect.View = Matrix.Identity;
-            uiEffect.Projection = Matrix.CreateOrthographicOffCenter(0, vWidth, vHeight, 0, 0, -1);
+            float aspect = viewport.AspectRatio;
+            float vWidth = (aspect > VAspect) ? (VHeight * aspect) : VWidth;
+            float vHeight = (aspect < VAspect) ? (VWidth / aspect) : VHeight;
 
             drawRect = new Rectangle((int)vWidth / 2 - VWidth / 2,
                                      (int)vHeight / 2 - VHeight / 2,
                                      1024,
                                      1024);
+
+            Matrix world = Matrix.CreateScale(1f, -1f, -1f) // Flip Y and Depth
+                         * Matrix.CreateTranslation(-vWidth / 2f, vHeight / 2f, 0f) // offset center
+                         * Matrix.CreateScale(1f / vWidth, 1f / vWidth, 1f); // normalize scale
+
+            float fov = MathHelper.ToRadians(70);
+            float uiScale = ((float)Math.Tan(fov * 0.5)) * aspect * 2f; // scale to fit nearPlane
+            world *= Matrix.CreateScale(uiScale, uiScale, 1f);
+
+            world *= Matrix.CreateTranslation(0.0f, 0.0f, -1.0f); // position to near plane
+
+            uiEffect.World = world;
+            uiEffect.View = Matrix.Identity;
+            uiEffect.Projection = Matrix.CreatePerspectiveFieldOfView(fov, aspect, 1f, 1000.0f);
         }
 
         public override void OnLeave(string newState)
@@ -153,17 +165,38 @@ namespace Infiniminer.States
 
         public override void OnMouseDown(MouseButton button, int x, int y)
         {
+            ScreenToUI(uiEffect, ref x, ref y);
+            x -= drawRect.X;
+            y -= drawRect.Y;
 
         }
 
         public override void OnMouseUp(MouseButton button, int x, int y)
         {
+            ScreenToUI(uiEffect, ref x, ref y);
+            x -= drawRect.X;
+            y -= drawRect.Y;
 
         }
 
         public override void OnMouseScroll(int scrollDelta)
         {
 
+        }
+
+        // convert mouse screen position to UI world position
+        private void ScreenToUI(IEffectMatrices matrices, ref int x, ref int y)
+        {
+            Viewport vp = _SM.GraphicsDevice.Viewport;
+
+            Vector3 position3 = vp.Unproject(
+                            new Vector3(x, y, 0),
+                            matrices.Projection,
+                            matrices.View,
+                            matrices.World);
+
+            x = (int)position3.X;
+            y = (int)position3.Y;
         }
     }
 }
