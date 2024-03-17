@@ -26,6 +26,7 @@ namespace Infiniminer
         Effect bloomCombineEffect;
         Effect gaussianBlurEffect;
 
+        public RenderTarget2D DefaultBackBuffer = null;
         RenderTarget2D resolveTarget;
         RenderTarget2D renderTarget1;
         RenderTarget2D renderTarget2;
@@ -181,7 +182,7 @@ namespace Infiniminer
             // Pass 4: draw both rendertarget 1 and the original scene
             // image back into the main backbuffer, using a shader that
             // combines them to produce the final bloomed result.
-            GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.SetRenderTarget(DefaultBackBuffer);
 
             EffectParameterCollection parameters = bloomCombineEffect.Parameters;
 
@@ -214,7 +215,7 @@ namespace Infiniminer
                                renderTarget.Width, renderTarget.Height,
                                effect, currentBuffer);
 
-            GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.SetRenderTarget(DefaultBackBuffer);
         }
 
 

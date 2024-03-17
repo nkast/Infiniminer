@@ -77,17 +77,43 @@ namespace Infiniminer.States
         private void UpdateUIViewport(Viewport viewport)
         {
             // calculate virtual resolution
-            float vWidth = (viewport.AspectRatio > VAspect) ? (VHeight * viewport.AspectRatio) : VWidth;
-            float vHeight = (viewport.AspectRatio < VAspect) ? (VWidth / viewport.AspectRatio) : VHeight;
-
-            uiEffect.World = Matrix.Identity;
-            uiEffect.View = Matrix.Identity;
-            uiEffect.Projection = Matrix.CreateOrthographicOffCenter(0, vWidth, vHeight, 0, 0, -1);
+            float aspect = viewport.AspectRatio;
+            float vWidth = (aspect > VAspect) ? (VHeight * aspect) : VWidth;
+            float vHeight = (aspect < VAspect) ? (VWidth / aspect) : VHeight;
 
             drawRect = new Rectangle((int)vWidth / 2 - VWidth / 2,
                                      (int)vHeight / 2 - VHeight / 2,
                                      1024,
                                      1024);
+
+            Matrix world = Matrix.CreateScale(1f, -1f, -1f) // Flip Y and Depth
+                         * Matrix.CreateTranslation(-vWidth / 2f, vHeight / 2f, 0f) // offset center
+                         * Matrix.CreateScale(1f / vWidth, 1f / vWidth, 1f); // normalize scale
+
+            if (_SM.propertyBag.playerCamera.UseVrCamera)
+            {
+                float uiScale = 1f; // scale UI 1meter across.
+                world *= Matrix.CreateScale(uiScale, uiScale, 1f);
+
+                // position UI panel
+                world *= Matrix.CreateTranslation(0.0f, 0.1f, -1.0f);
+
+                uiEffect.World = world;
+                uiEffect.View = _SM.propertyBag.playerCamera.ViewMatrix;
+                uiEffect.Projection = _SM.propertyBag.playerCamera.ProjectionMatrix;
+            }
+            else
+            {
+                float fov = MathHelper.ToRadians(70);
+                float uiScale = ((float)Math.Tan(fov * 0.5)) * aspect * 2f; // scale to fit nearPlane
+                world *= Matrix.CreateScale(uiScale, uiScale, 1f);
+
+                world *= Matrix.CreateTranslation(0.0f, 0.0f, -1.0f); // position to near plane
+
+                uiEffect.World = world;
+                uiEffect.View = Matrix.Identity;
+                uiEffect.Projection = Matrix.CreatePerspectiveFieldOfView(fov, aspect, 1f, 1000.0f);
+            }
         }
 
         public override void OnLeave(string newState)
@@ -213,13 +239,15 @@ namespace Infiniminer.States
         public override void OnMouseDown(MouseButton button, int x, int y)
         {
             ScreenToUI(uiEffect, ref x, ref y);
+            x -= drawRect.X;
+            y -= drawRect.Y;
 
             if (directConnectIPEnter == false)
             {
-                int serverIndex = (y - drawRect.Y - 75) / 25;
+                int serverIndex = (y - 75) / 25;
                 if (serverIndex >= 0 && serverIndex < serverList.Count)
                 {
-                    int distanceFromCenter = Math.Abs(drawRect.X + VWidth / 2 - x);
+                    int distanceFromCenter = Math.Abs(VWidth / 2 - x);
                     if (distanceFromCenter < descWidths[serverIndex] / 2)
                     {
                         (_SM as InfiniminerGame).JoinGame(serverList[serverIndex].ipEndPoint);
@@ -228,8 +256,6 @@ namespace Infiniminer.States
                     }
                 }
 
-                x -= drawRect.X;
-                y -= drawRect.Y;
                 switch (ClickRegion.HitTest(clkMenuServer, new Point(x, y)))
                 {
                     case "refresh":

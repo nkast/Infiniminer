@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <DefineConstants>$(DefineConstants);KNI</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="nkast.Xna.Framework" Version="3.11.9002" />
@@ -8,7 +9,7 @@
     <PackageReference Include="nkast.Xna.Framework.Graphics" Version="3.11.9002" />
     <PackageReference Include="nkast.Xna.Framework.Audio" Version="3.11.9002" />
     <PackageReference Include="nkast.Xna.Framework.Media" Version="3.11.9002" />
-    <PackageReference Include="nkast.Xna.Framework.Ref" Version="3.11.9002" >
+    <PackageReference Include="nkast.Xna.Framework.Ref" Version="3.11.9002">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
   </ItemGroup>

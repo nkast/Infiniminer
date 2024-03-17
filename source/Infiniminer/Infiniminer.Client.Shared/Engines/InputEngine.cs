@@ -374,6 +374,41 @@ public class InputEngine
         MenuBack.Nodes.Add(new VirtualButton.GamePad.Button(Buttons.B));
         MenuBack.Nodes.Add(new VirtualButton.GamePad.Button(Buttons.Back));
         MenuBack.Nodes.Add(new VirtualButton.Keyboard.Key(Keys.Escape));
+
+#if KNI
+        UseTool.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.LeftTrigger));
+        UseTool.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.RightTrigger));
+        PingTeam.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.RightStick));
+        //ToolHotkey1.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.DPadLeft));
+        //ToolHotkey2.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.DPadUp));
+        //ToolHotkey3.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.DPadRight));
+        ChangeTool.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.RightShoulder));
+        ChangeBlockType.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.LeftShoulder));
+        DepositOre.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.B));
+        WithdrawOre.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.Y));
+        Move.Nodes.Add(new VirtualJoystick.TouchController.LeftStick());
+        Sprint.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.LeftStick));
+        Jump.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.A));
+        Camera.Nodes.Add(new VirtualJoystick.TouchController.RightStick());
+        ChangeTeam.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.X));
+        ChangeClass.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.A));
+        ShowHelpButton.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.Back));
+        ShowOptionsButton.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.Start));
+        QuitButton.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.Y));
+        PixelcideButton.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.B));
+        //MenuUp.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.DPadUp));
+        MenuUp.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.LeftThumbstickUp));
+        //MenuDown.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.DPadDown));
+        MenuDown.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.LeftThumbstickDown));
+        //MenuRight.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.DPadRight));
+        MenuRight.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.LeftThumbstickRight));
+        //MenuLeft.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.DPadLeft));
+        MenuLeft.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.LeftThumbstickLeft));
+        MenuConfirm.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.A));
+        MenuConfirm.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.Start));
+        MenuBack.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.B));
+        MenuBack.Nodes.Add(new VirtualButton.TouchController.Button(Buttons.Back));
+#endif
     }
 
 
@@ -389,6 +424,14 @@ public class InputEngine
         {
             ControlType = ControlType.KeyboardMouse;
         }
+#if KNI
+        if (ControlType == ControlType.KeyboardMouse && InputManager.TouchController.AnyButtonCheck())
+        {
+            ControlType = ControlType.GamePad;
+        }
+#endif
+
+
         // ControlType = InputManager.GamePad.AnyButtonCheck() ? ControlType.GamePad : ControlType.KeyboardMouse;
     }
 
@@ -396,6 +439,9 @@ public class InputEngine
     {
         if (ControlType != ControlType.GamePad) { return; }
         InputManager.GamePad.Vibrate(strength, time);
+#if KNI
+        InputManager.TouchController.Vibrate(strength, time);
+#endif
     }
 
     public void Register()

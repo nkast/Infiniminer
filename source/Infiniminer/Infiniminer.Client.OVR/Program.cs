@@ -1,4 +1,4 @@
-/* ----------------------------------------------------------------------------
+﻿/* ----------------------------------------------------------------------------
 MIT License
 
 Copyright (c) 2009 Zach Barth
@@ -23,46 +23,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ---------------------------------------------------------------------------- */
 
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
-namespace Infiniminer;
-
-public static class InputManager
+namespace Infiniminer
 {
-    internal static List<VirtualInput> VirtualInputs { get; private set; }
-    public static KeyboardInfo Keyboard { get; private set; }
-    public static MouseInfo Mouse { get; private set; }
-    public static GamePadInfo GamePad { get; private set; }
-#if KNI
-    public static TouchControllerInfo TouchController { get; private set; }
-# endif
-
-    static  InputManager()
+    public static class Program
     {
-        Keyboard = new();
-        Mouse = new();
-        GamePad = new(PlayerIndex.One);
-#if KNI
-        TouchController = new();
-        TouchController.LeftStickThreshold = new Vector2(0.3f);
-        TouchController.RightStickThreshold = new Vector2(0.3f);
-#endif
-        VirtualInputs = new List<VirtualInput>();
-    }
-
-    public static void Update(GameTime gameTime)
-    {
-        Keyboard.Update();
-        Mouse.Update();
-        GamePad.Update(gameTime);
-#if KNI
-        TouchController.Update(gameTime);
-#endif
-
-        for (int i = 0; i < VirtualInputs.Count; i++)
+        static void Main(string[] args)
         {
-            VirtualInputs[i].Update();
+            using Game game = new Infiniminer3DVRGame(args);
+            game.Run();
         }
     }
 }

@@ -23,6 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ---------------------------------------------------------------------------- */
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -32,6 +33,9 @@ namespace Infiniminer
     {
         public float Pitch, Yaw;
         public Vector3 Position;
+        public bool UseVrCamera;
+        public Matrix VrHeadTransform;
+        public float VrYaw;
         public Matrix ViewMatrix = Matrix.Identity;
         public Matrix ProjectionMatrix = Matrix.Identity;
 
@@ -48,13 +52,13 @@ namespace Infiniminer
         // Returns a unit vector pointing in the direction that we're looking.
         public Vector3 GetLookVector()
         {
-            Matrix rotation = Matrix.CreateRotationX(Pitch) * Matrix.CreateRotationY(Yaw);
+            Matrix rotation = Matrix.CreateRotationX(Pitch) * Matrix.CreateRotationY(Yaw + VrYaw);
             return Vector3.Transform(Vector3.Forward, rotation);
         }
 
         public Vector3 GetRightVector()
         {
-            Matrix rotation = Matrix.CreateRotationX(Pitch) * Matrix.CreateRotationY(Yaw);
+            Matrix rotation = Matrix.CreateRotationX(Pitch) * Matrix.CreateRotationY(Yaw + VrYaw);
             return Vector3.Transform(Vector3.Right, rotation);
         }
 
@@ -62,6 +66,30 @@ namespace Infiniminer
         {
             Vector3 target = Position + GetLookVector();
             this.ViewMatrix = Matrix.CreateLookAt(Position, target, Vector3.Up);
+        }
+
+        // update Yaw and Pitch from a matrix
+        public void ApplyHeadTransform(Matrix headTransform)
+        {
+            VrHeadTransform = headTransform;
+
+            Vector3 right = headTransform.Right;
+            Vector2 xz = new Vector2(right.X, -right.Z);
+
+            if (xz != Vector2.Zero)
+            {
+                xz.Normalize();
+                VrYaw = (float)Math.Atan2(xz.Y, xz.X);
+                headTransform = headTransform * Matrix.CreateRotationY(-VrYaw); // invert yaw
+            }
+
+            Vector3 forward = headTransform.Forward;
+            Vector2 yz = new Vector2(-forward.Z, forward.Y);
+            if (yz != Vector2.Zero)
+            {
+                yz.Normalize();
+                Pitch = (float)Math.Atan2(yz.Y, yz.X);
+            }
         }
     }
 }
