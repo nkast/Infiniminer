@@ -156,7 +156,7 @@ namespace Infiniminer.States
                         dataPacketsRecieved += 1;
             string progressText = String.Format("{0:00}% LOADED", dataPacketsRecieved / 256.0f * 100);
 
-            spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred, effect: uiEffect);
+            spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, blendState: BlendState.AlphaBlend, effect: uiEffect);
             spriteBatch.Draw(texMenu, drawRect, Color.White);
             spriteBatch.DrawString(uiFont, progressText, new Vector2(((int)(drawRect.X + VWidth / 2 - uiFont.MeasureString(progressText).X / 2)), drawRect.Y + 430), Color.White);
             for (int i = 0; i < currentHint.Length; i++)

@@ -226,8 +226,7 @@ namespace Infiniminer
         void DrawFullscreenQuad(Texture2D texture, int width, int height,
                                 Effect effect, IntermediateBuffer currentBuffer)
         {
-            spriteBatch.Begin(blendState: BlendState.Opaque,
-                              sortMode: SpriteSortMode.Immediate);
+            spriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.Opaque);
 
             // Begin the custom effect, if it is currently enabled. If the user
             // has selected one of the show intermediate buffer options, we still

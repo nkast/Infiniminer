@@ -347,7 +347,7 @@ namespace Infiniminer
             UpdateUIViewport(graphicsDevice.Viewport);
 
             // Draw the UI.
-            spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Immediate, effect: uiEffect);
+            spriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend, effect: uiEffect);
 
             // Draw the crosshair.
             spriteBatch.Draw(texCrosshairs, new Rectangle(vWidth / 2 - texCrosshairs.Width / 2,
