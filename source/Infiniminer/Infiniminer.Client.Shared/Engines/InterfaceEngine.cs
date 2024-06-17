@@ -58,7 +58,7 @@ namespace Infiniminer
             uiEffect.VertexColorEnabled = true;
 
             // Create states.
-            pointSamplerState = new SamplerState() { Filter = TextureFilter.Point };
+            pointSamplerState = SamplerState.PointClamp;
 
             // Load textures.
             texCrosshairs = gameInstance.Content.Load<Texture2D>("ui/tex_ui_crosshair");
