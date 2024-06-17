@@ -156,7 +156,7 @@ namespace Infiniminer
 
             // Draw our text over the player.
             SpriteBatch spriteBatch = new SpriteBatch(graphicsDevice);
-            spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Immediate);
+            spriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
             Vector3 screenSpace = graphicsDevice.Viewport.Project(Vector3.Zero,
                                                                   projectionMatrix,
                                                                   viewMatrix,

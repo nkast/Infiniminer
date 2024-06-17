@@ -145,7 +145,7 @@ namespace Infiniminer.States
                     blueTeamCount += 1;
             }
 
-            spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred, effect: uiEffect);
+            spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, blendState: BlendState.AlphaBlend, effect: uiEffect);
             spriteBatch.Draw(texMenu, drawRect, Color.White);
             QuickDrawText(spriteBatch, "" + redTeamCount + " PLAYERS", 360, Defines.IM_RED);
             QuickDrawText(spriteBatch, "" + blueTeamCount + " PLAYERS", 620, Defines.IM_BLUE);

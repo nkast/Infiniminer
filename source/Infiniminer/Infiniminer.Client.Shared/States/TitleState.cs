@@ -119,7 +119,7 @@ namespace Infiniminer.States
         {
             UpdateUIViewport(graphicsDevice.Viewport);
 
-            spriteBatch.Begin(blendState: BlendState.AlphaBlend, sortMode: SpriteSortMode.Deferred, effect: uiEffect);
+            spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, blendState: BlendState.AlphaBlend, effect: uiEffect);
             spriteBatch.Draw(texMenu, drawRect, Color.White);
             spriteBatch.End();
         }
