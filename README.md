@@ -1,5 +1,5 @@
-# Infiniminer Monogame 3.8.1.303 Port
-This repository is a port of the original Infiniminer source code forked from https://github.com/gibbed/Infiniminer.  This port brings the Infiniminer source from XNA 3.1 to MonoGame 3.8.1.303.  
+# Infiniminer Monogame 3.8.2.1105 Port
+This repository is a port of the original Infiniminer source code forked from https://github.com/gibbed/Infiniminer.  This port brings the Infiniminer source from XNA 3.1 to MonoGame 3.8.2.1105.  
 
 The goal of this port was to port the original source code which targeted .NET Framework and bring it up to target .NET 6 and make use of the MonoGame Cross Platform Desktop Project (mgdesktopgl) templates so that the game could be run on Windows, Mac, and Linux.
 
@@ -10,11 +10,11 @@ This repository contains two branches as defined below
 
 | Branch | Description |
 |---|---|
-| `main` | This branch contains all updated work done to port Infiniminer to MonoGame 3.8.1.303 |
+| `main` | This branch contains all updated work done to port Infiniminer to MonoGame 3.8.2.1105 |
 | `original` | This branch contains the original source code forked. |
 
 ## Current Port Status
-At this time, the original source code has been ported to MonoGame 3.8.1.303 and will run without crashing, but the following bugs need to be fixed before the game is fully playable.
+At this time, the original source code has been ported to MonoGame 3.8.2.1105 and will run without crashing, but the following bugs need to be fixed before the game is fully playable.
 - ❌ Bug: Windows OS specific DLLs are used throughout the codebase, and at this time those specific function calls have been disabled.  A workaround will need to be implemented to make it cross platform.
 - ❌ Bug: `System.Windows.Forms` is used in several sections in the code base.  This will need to be adjusted to be cross platform once a good general solution is found
 
