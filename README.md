@@ -15,7 +15,6 @@ This repository contains two branches as defined below
 
 ## Current Port Status
 At this time, the original source code has been ported to MonoGame 3.8.1.303 and will run without crashing, but the following bugs need to be fixed before the game is fully playable.
-- ❌ Bug: Bloom Effect doesn't work properly. If enabled, the BlockEngine render is just blank.  For now this is disabled globally by commenting out the part of the code that checks and applies the bloom shader in BlockEngine.cs
 - ❌ Bug: Windows OS specific DLLs are used throughout the codebase, and at this time those specific function calls have been disabled.  A workaround will need to be implemented to make it cross platform.
 - ❌ Bug: `System.Windows.Forms` is used in several sections in the code base.  This will need to be adjusted to be cross platform once a good general solution is found
 
