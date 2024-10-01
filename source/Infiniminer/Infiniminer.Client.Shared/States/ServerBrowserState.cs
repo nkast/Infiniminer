@@ -52,6 +52,12 @@ namespace Infiniminer.States
             new ClickRegion(new Rectangle(0,713,425,42), "direct")
         };
 
+        int SelectionsCount { get { return clkMenuServer.Length; } }
+        int selectionIndex = -1;
+        float selectionAlpha = 0;
+        Texture2D texMenuDot;
+        ClickRegion hoverRegion;
+
         public override void OnEnter(string oldState)
         {
             _SM.IsMouseVisible = true;
@@ -63,6 +69,10 @@ namespace Infiniminer.States
             uiEffect.TextureEnabled = true;
             uiEffect.VertexColorEnabled = true;
             texMenu = _SM.Content.Load<Texture2D>("menus/tex_menu_server");
+
+            texMenuDot = new Texture2D(_SM.GraphicsDevice, 1, 1);
+            texMenuDot.SetData<Color>(new Color[] { Color.White });
+
             UpdateUIViewport(_SM.GraphicsDevice.Viewport);
 
             uiFont = _SM.Content.Load<SpriteFont>("font_04b08");
@@ -123,12 +133,57 @@ namespace Infiniminer.States
 
         public override string OnUpdate(GameTime gameTime, KeyboardState keyState, MouseState mouseState)
         {
+
+            _P.inputEngine.Update(gameTime);
+
+            if (_P.inputEngine.MenuRight.Released())
+            {
+                selectionIndex = (selectionIndex + 1) % SelectionsCount;
+                selectionAlpha = 0;
+                _P.PlaySound(InfiniminerSound.ClickLow);
+            }
+            if (_P.inputEngine.MenuLeft.Released())
+            {
+                selectionIndex = (selectionIndex - 1 + SelectionsCount) % SelectionsCount;
+                selectionAlpha = 0;
+                _P.PlaySound(InfiniminerSound.ClickLow);
+            }
+            if (_SM.WindowHasFocus() && _P.inputEngine.MenuConfirm.Released())
+            {
+                if (selectionIndex != -1)
+                {
+                    ClickRegion selectedRegion = clkMenuServer[selectionIndex];
+                    SelectNextState(selectedRegion);
+                }
+            }
+
             return nextState;
         }
 
         public override void OnRenderAtEnter(GraphicsDevice graphicsDevice)
         {
 
+        }
+
+        private void DrawSelection(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            ClickRegion menuRegion = null;
+            if (hoverRegion != null)
+                menuRegion = hoverRegion;
+            else if (selectionIndex != -1)
+                menuRegion = clkMenuServer[selectionIndex];
+            else
+                return;
+
+            Rectangle rect = menuRegion.Rectangle;
+            rect.X += drawRect.X;
+            rect.Y += drawRect.Y;
+
+            selectionAlpha += (1f - selectionAlpha) * 0.1f;
+            float timeAlpha = (1f + (float)Math.Cos(Math.Tau * gameTime.TotalGameTime.TotalSeconds)) / 2f;
+            float alpha = selectionAlpha * 0.175f + timeAlpha * 0.025f;
+
+            spriteBatch.Draw(texMenuDot, rect, new Rectangle(0, 0, 1, 1), Color.White * alpha);
         }
 
         public override void OnRenderAtUpdate(GraphicsDevice graphicsDevice, GameTime gameTime)
@@ -138,6 +193,7 @@ namespace Infiniminer.States
             descWidths = new List<int>();
             spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, blendState: BlendState.AlphaBlend, effect: uiEffect);
             spriteBatch.Draw(texMenu, drawRect, Color.White);
+            DrawSelection(spriteBatch, gameTime);
 
             int drawY = 80;
             foreach (ServerInformation server in serverList)
@@ -256,30 +312,67 @@ namespace Infiniminer.States
                     }
                 }
 
-                switch (ClickRegion.HitTest(clkMenuServer, new Point(x, y)))
-                {
-                    case "refresh":
-                        _P.PlaySound(InfiniminerSound.ClickHigh);
-                        serverList = (_SM as InfiniminerGame).EnumerateServers(0.5f);
-                        break;
+                ClickRegion selectedRegion = ClickRegion.HitTest(clkMenuServer, new Point(x, y));
+                if (selectedRegion != null)
+                    SelectNextState(selectedRegion);
 
-                    case "direct":
-                        directConnectIPEnter = true;
-                        _P.PlaySound(InfiniminerSound.ClickHigh);
-                        break;
-                }
+                selectionIndex = -1;
+                selectionAlpha = 0;
+            }
+        }
+
+        private void SelectNextState(ClickRegion selectedRegion)
+        {
+            switch (selectedRegion.Tag)
+            {
+                case "refresh":
+                    _P.PlaySound(InfiniminerSound.ClickHigh);
+                    serverList = (_SM as InfiniminerGame).EnumerateServers(0.5f);
+                    break;
+
+                case "direct":
+                    directConnectIPEnter = true;
+                    _P.PlaySound(InfiniminerSound.ClickHigh);
+                    break;
             }
         }
 
         public override void OnMouseUp(MouseButton button, int x, int y)
         {
             ScreenToUI(uiEffect, ref x, ref y);
+            x -= drawRect.X;
+            y -= drawRect.Y;
 
         }
 
         public override void OnMouseScroll(int scrollDelta)
         {
+            if (scrollDelta < 0)
+            {
+                selectionIndex = (selectionIndex + 1) % SelectionsCount;
+                selectionAlpha = 0;
+                _P.PlaySound(InfiniminerSound.ClickLow);
+            }
+            else
+            {
+                selectionIndex = (selectionIndex - 1 + SelectionsCount) % SelectionsCount;
+                selectionAlpha = 0;
+                _P.PlaySound(InfiniminerSound.ClickLow);
+            }
+        }
 
+        public override void OnMouseMove(int x, int y)
+        {
+            ScreenToUI(uiEffect, ref x, ref y);
+            x -= drawRect.X;
+            y -= drawRect.Y;
+
+            hoverRegion = ClickRegion.HitTest(clkMenuServer, new Point(x, y));
+            if (hoverRegion != null)
+            {
+                selectionIndex = -1;
+                selectionAlpha = 0;
+            }
         }
 
         // convert mouse screen position to UI world position

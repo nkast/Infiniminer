@@ -153,6 +153,8 @@ namespace StateMasher
                         currentState.OnMouseUp(MouseButton.RightButton, msNew.X, msNew.Y);
                     if (msOld.ScrollWheelValue != msNew.ScrollWheelValue)
                         currentState.OnMouseScroll(msNew.ScrollWheelValue - msOld.ScrollWheelValue);
+                    if (msOld.X != msNew.X || msOld.Y != msNew.Y)
+                        currentState.OnMouseMove(msNew.X, msNew.Y);
                 }
                 msOld = msNew;
             }
