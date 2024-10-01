@@ -38,7 +38,7 @@ namespace Infiniminer
             InactiveSleepTime = TimeSpan.FromSeconds(0);
 
             // OVR requirees at least DX feature level 10.0
-            graphicsDeviceManager.GraphicsProfile = GraphicsProfile.FL10_0;
+            graphicsDeviceManager.GraphicsProfile = GraphicsProfile.FL11_0;
 
             // create oculus device
             _ovrDevice = new OvrDevice(graphicsDeviceManager);
