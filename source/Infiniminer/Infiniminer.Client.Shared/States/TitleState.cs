@@ -101,7 +101,7 @@ namespace Infiniminer.States
         {
             _P.inputEngine.Update(gameTime);
 
-            if(_P.inputEngine.MenuConfirm.Pressed())
+            if(_SM.WindowHasFocus() && _P.inputEngine.MenuConfirm.Pressed())
             {
                 _P.inputEngine.MenuConfirm.ConsumePress();
                 nextState = "Infiniminer.States.ServerBrowserState";
