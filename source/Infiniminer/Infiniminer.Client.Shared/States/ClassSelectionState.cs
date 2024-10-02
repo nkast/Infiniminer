@@ -46,6 +46,12 @@ namespace Infiniminer.States
             new ClickRegion(new Rectangle(819,172,133,190), "sapper")
         };
 
+        int SelectionsCount { get { return clkClassMenu.Length; } }
+        int selectionIndex = -1;
+        float selectionAlpha = 0;
+        Texture2D texMenuDot;
+        ClickRegion hoverRegion;
+
         public override void OnEnter(string oldState)
         {
             _SM.IsMouseVisible = true;
@@ -56,6 +62,9 @@ namespace Infiniminer.States
             uiEffect.VertexColorEnabled = true;
             texMenuRed = _SM.Content.Load<Texture2D>("menus/tex_menu_class_red");
             texMenuBlue = _SM.Content.Load<Texture2D>("menus/tex_menu_class_blue");
+
+            texMenuDot = new Texture2D(_SM.GraphicsDevice, 1, 1);
+            texMenuDot.SetData<Color>(new Color[] { Color.White });
 
             UpdateUIViewport(_SM.GraphicsDevice.Viewport);
 
@@ -122,6 +131,29 @@ namespace Infiniminer.States
             _P.interfaceEngine.Update(gameTime);
             _P.particleEngine.Update(gameTime);
 
+            _P.inputEngine.Update(gameTime);
+
+            if (_P.inputEngine.MenuRight.Released())
+            {
+                selectionIndex = (selectionIndex + 1) % SelectionsCount;
+                selectionAlpha = 0;
+                _P.PlaySound(InfiniminerSound.ClickLow);
+            }
+            if (_P.inputEngine.MenuLeft.Released())
+            {
+                selectionIndex = (selectionIndex - 1 + SelectionsCount) % SelectionsCount;
+                selectionAlpha = 0;
+                _P.PlaySound(InfiniminerSound.ClickLow);
+            }
+            if (_SM.WindowHasFocus() && _P.inputEngine.MenuConfirm.Released())
+            {
+                if (selectionIndex != -1)
+                {
+                    ClickRegion selectedRegion = clkClassMenu[selectionIndex];
+                    SelectNextState(selectedRegion);
+                }
+            }
+
             return nextState;
         }
 
@@ -130,11 +162,33 @@ namespace Infiniminer.States
 
         }
 
+        private void DrawSelection(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            ClickRegion menuRegion = null;
+            if (hoverRegion != null)
+                menuRegion = hoverRegion;
+            else if (selectionIndex != -1)
+                menuRegion = clkClassMenu[selectionIndex];
+            else
+                return;
+
+            Rectangle rect = menuRegion.Rectangle;
+            rect.X += drawRect.X;
+            rect.Y += drawRect.Y;
+
+            selectionAlpha += (1f - selectionAlpha) * 0.1f;
+            float timeAlpha = (1f + (float)Math.Cos(Math.Tau * gameTime.TotalGameTime.TotalSeconds)) / 2f;
+            float alpha = selectionAlpha * 0.175f + timeAlpha * 0.025f;
+
+            spriteBatch.Draw(texMenuDot, rect, new Rectangle(0, 0, 1, 1), Color.White * alpha);
+        }
+
         public override void OnRenderAtUpdate(GraphicsDevice graphicsDevice, GameTime gameTime)
         {
             UpdateUIViewport(graphicsDevice.Viewport);
             spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, blendState: BlendState.AlphaBlend, effect: uiEffect);
             spriteBatch.Draw((_P.playerTeam == PlayerTeam.Red) ? texMenuRed : texMenuBlue, drawRect, Color.White);
+            DrawSelection(spriteBatch, gameTime);
             spriteBatch.End();
         }
 
@@ -154,7 +208,17 @@ namespace Infiniminer.States
             x -= drawRect.X;
             y -= drawRect.Y;
 
-            switch (ClickRegion.HitTest(clkClassMenu, new Point(x, y)))
+            ClickRegion selectedRegion = ClickRegion.HitTest(clkClassMenu, new Point(x, y));
+            if (selectedRegion != null)
+                SelectNextState(selectedRegion);
+
+            selectionIndex = -1;
+            selectionAlpha = 0;
+        }
+
+        private void SelectNextState(ClickRegion selectedRegion)
+        {
+            switch (selectedRegion.Tag)
             {
                 case "miner":
                     _P.SetPlayerClass(PlayerClass.Miner);
@@ -189,7 +253,32 @@ namespace Infiniminer.States
 
         public override void OnMouseScroll(int scrollDelta)
         {
+            if (scrollDelta < 0)
+            {
+                selectionIndex = (selectionIndex + 1) % SelectionsCount;
+                selectionAlpha = 0;
+                _P.PlaySound(InfiniminerSound.ClickLow);
+            }
+            else
+            {
+                selectionIndex = (selectionIndex - 1 + SelectionsCount) % SelectionsCount;
+                selectionAlpha = 0;
+                _P.PlaySound(InfiniminerSound.ClickLow);
+            }
+        }
 
+        public override void OnMouseMove(int x, int y)
+        {
+            ScreenToUI(uiEffect, ref x, ref y);
+            x -= drawRect.X;
+            y -= drawRect.Y;
+
+            hoverRegion = ClickRegion.HitTest(clkClassMenu, new Point(x, y));
+            if (hoverRegion != null)
+            {
+                selectionIndex = -1;
+                selectionAlpha = 0;
+            }
         }
 
         // convert mouse screen position to UI world position

@@ -46,6 +46,12 @@ namespace Infiniminer.States
             new ClickRegion(new Rectangle(135,424,761,181), "blue")
         };
 
+        int SelectionsCount { get { return clkTeamMenu.Length; } }
+        int selectionIndex = -1;
+        float selectionAlpha = 0;
+        Texture2D texMenuDot;
+        ClickRegion hoverRegion;
+
         public override void OnEnter(string oldState)
         {
             _SM.IsMouseVisible = true;
@@ -55,6 +61,9 @@ namespace Infiniminer.States
             uiEffect.TextureEnabled = true;
             uiEffect.VertexColorEnabled = true;
             texMenu = _SM.Content.Load<Texture2D>("menus/tex_menu_team");
+
+            texMenuDot = new Texture2D(_SM.GraphicsDevice, 1, 1);
+            texMenuDot.SetData<Color>(new Color[] { Color.White });
 
             UpdateUIViewport(_SM.GraphicsDevice.Viewport);
 
@@ -119,6 +128,29 @@ namespace Infiniminer.States
             // Do network stuff.
             (_SM as InfiniminerGame).UpdateNetwork(gameTime);
 
+            _P.inputEngine.Update(gameTime);
+
+            if (_P.inputEngine.MenuDown.Released())
+            {
+                selectionIndex = (selectionIndex + 1) % SelectionsCount;
+                selectionAlpha = 0;
+                _P.PlaySound(InfiniminerSound.ClickLow);
+            }
+            if (_P.inputEngine.MenuUp.Released())
+            {
+                selectionIndex = (selectionIndex - 1 + SelectionsCount) % SelectionsCount;
+                selectionAlpha = 0;
+                _P.PlaySound(InfiniminerSound.ClickLow);
+            }
+            if (_SM.WindowHasFocus() && _P.inputEngine.MenuConfirm.Released())
+            {
+                if (selectionIndex != -1)
+                {
+                    ClickRegion selectedRegion = clkTeamMenu[selectionIndex];
+                    SelectNextState(selectedRegion);
+                }
+            }
+
             return nextState;
         }
 
@@ -130,6 +162,27 @@ namespace Infiniminer.States
         public void QuickDrawText(SpriteBatch spriteBatch, string text, int y, Color color)
         {
             spriteBatch.DrawString(uiFont, text, new Vector2(drawRect.X + VWidth / 2 - uiFont.MeasureString(text).X / 2, drawRect.Y + y), color);
+        }
+
+        private void DrawSelection(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            ClickRegion menuRegion = null;
+            if (hoverRegion != null)
+                menuRegion = hoverRegion;
+            else if (selectionIndex != -1)
+                menuRegion = clkTeamMenu[selectionIndex];
+            else
+                return;
+
+            Rectangle rect = menuRegion.Rectangle;
+            rect.X += drawRect.X;
+            rect.Y += drawRect.Y;
+
+            selectionAlpha += (1f - selectionAlpha) * 0.1f;
+            float timeAlpha = (1f + (float)Math.Cos(Math.Tau * gameTime.TotalGameTime.TotalSeconds)) / 2f;
+            float alpha = selectionAlpha * 0.175f + timeAlpha * 0.025f;
+
+            spriteBatch.Draw(texMenuDot, rect, new Rectangle(0, 0, 1, 1), Color.White * alpha);
         }
 
         public override void OnRenderAtUpdate(GraphicsDevice graphicsDevice, GameTime gameTime)
@@ -147,6 +200,7 @@ namespace Infiniminer.States
 
             spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, blendState: BlendState.AlphaBlend, effect: uiEffect);
             spriteBatch.Draw(texMenu, drawRect, Color.White);
+            DrawSelection(spriteBatch, gameTime);
             QuickDrawText(spriteBatch, "" + redTeamCount + " PLAYERS", 360, Defines.IM_RED);
             QuickDrawText(spriteBatch, "" + blueTeamCount + " PLAYERS", 620, Defines.IM_BLUE);
             spriteBatch.End();
@@ -169,7 +223,17 @@ namespace Infiniminer.States
             x -= drawRect.X;
             y -= drawRect.Y;
 
-            switch (ClickRegion.HitTest(clkTeamMenu, new Point(x, y)))
+            ClickRegion selectedRegion = ClickRegion.HitTest(clkTeamMenu, new Point(x, y));
+            if (selectedRegion != null)
+                SelectNextState(selectedRegion);
+
+            selectionIndex = -1;
+            selectionAlpha = 0;
+        }
+
+        private void SelectNextState(ClickRegion selectedRegion)
+        {
+            switch (selectedRegion.Tag)
             {
                 case "red":
                     if (_P.playerTeam == PlayerTeam.Red && canCancel)
@@ -202,7 +266,32 @@ namespace Infiniminer.States
 
         public override void OnMouseScroll(int scrollDelta)
         {
+            if (scrollDelta < 0)
+            {
+                selectionIndex = (selectionIndex + 1) % SelectionsCount;
+                selectionAlpha = 0;
+                _P.PlaySound(InfiniminerSound.ClickLow);
+            }
+            else
+            {
+                selectionIndex = (selectionIndex - 1 + SelectionsCount) % SelectionsCount;
+                selectionAlpha = 0;
+                _P.PlaySound(InfiniminerSound.ClickLow);
+            }
+        }
 
+        public override void OnMouseMove(int x, int y)
+        {
+            ScreenToUI(uiEffect, ref x, ref y);
+            x -= drawRect.X;
+            y -= drawRect.Y;
+
+            hoverRegion = ClickRegion.HitTest(clkTeamMenu, new Point(x, y));
+            if (hoverRegion != null)
+            {
+                selectionIndex = -1;
+                selectionAlpha = 0;
+            }
         }
 
         // convert mouse screen position to UI world position

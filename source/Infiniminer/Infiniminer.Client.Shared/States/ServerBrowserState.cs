@@ -41,7 +41,9 @@ namespace Infiniminer.States
         Rectangle drawRect;
         string nextState = null;
         List<ServerInformation> serverList = new List<ServerInformation>();
-        List<int> descWidths;
+        ClickRegion[] clkServers;
+        const int TxtPanningX = 15;
+        const int TxtPanningY =  3;
         SpriteFont uiFont;
         bool directConnectIPEnter = false;
         string directConnectIP = "";
@@ -51,6 +53,12 @@ namespace Infiniminer.States
             new ClickRegion(new Rectangle(763,713,243,42), "refresh"),
             new ClickRegion(new Rectangle(0,713,425,42), "direct")
         };
+
+        int SelectionsCount { get { return clkServers.Length + clkMenuServer.Length; } }
+        int selectionIndex = -1;
+        float selectionAlpha = 0;
+        Texture2D texMenuDot;
+        ClickRegion hoverRegion;
 
         public override void OnEnter(string oldState)
         {
@@ -63,12 +71,39 @@ namespace Infiniminer.States
             uiEffect.TextureEnabled = true;
             uiEffect.VertexColorEnabled = true;
             texMenu = _SM.Content.Load<Texture2D>("menus/tex_menu_server");
+
+            texMenuDot = new Texture2D(_SM.GraphicsDevice, 1, 1);
+            texMenuDot.SetData<Color>(new Color[] { Color.White });
+
             UpdateUIViewport(_SM.GraphicsDevice.Viewport);
 
             uiFont = _SM.Content.Load<SpriteFont>("font_04b08");
             keyMap = new KeyMap();
 
             serverList = (_SM as InfiniminerGame).EnumerateServers(0.5f);
+            RefreshClkServers();
+        }
+
+        private void RefreshClkServers()
+        {
+            clkServers = new ClickRegion[serverList.Count];
+
+            for (int i = 0; i < serverList.Count; i++)
+            {
+                if (i >= 23)
+                    break;
+
+                string serverDesc = serverList[i].GetServerDesc();
+
+                Vector2 txtSize = uiFont.MeasureString(serverDesc);
+                Rectangle rect = default;
+                rect.Width  = (int)txtSize.X + TxtPanningX * 2;
+                rect.Height = (int)txtSize.Y + TxtPanningY * 2;
+                rect.X = (VWidth / 2) - (rect.Width / 2);
+                rect.Y = 80 + i * 25;
+
+                clkServers[i] = new ClickRegion(rect, i.ToString());
+            }
         }
 
         const int VWidth = 1024;
@@ -123,6 +158,38 @@ namespace Infiniminer.States
 
         public override string OnUpdate(GameTime gameTime, KeyboardState keyState, MouseState mouseState)
         {
+
+            _P.inputEngine.Update(gameTime);
+
+            if (_P.inputEngine.MenuDown.Released())
+            {
+                selectionIndex = (selectionIndex + 1) % SelectionsCount;
+                selectionAlpha = 0;
+                _P.PlaySound(InfiniminerSound.ClickLow);
+            }
+            if (_P.inputEngine.MenuUp.Released())
+            {
+                selectionIndex = (selectionIndex - 1 + SelectionsCount) % SelectionsCount;
+                selectionAlpha = 0;
+                _P.PlaySound(InfiniminerSound.ClickLow);
+            }
+            if (_SM.WindowHasFocus() && _P.inputEngine.MenuConfirm.Released())
+            {
+                if (selectionIndex >= 0 && selectionIndex < clkServers.Length)
+                {
+                    int serverIndex = selectionIndex;
+
+                    (_SM as InfiniminerGame).JoinGame(serverList[selectionIndex].ipEndPoint);
+                    nextState = "Infiniminer.States.LoadingState";
+                    _P.PlaySound(InfiniminerSound.ClickHigh);
+                }
+                if (selectionIndex >= clkServers.Length)
+                {
+                    ClickRegion selectedRegion = clkMenuServer[selectionIndex- clkServers.Length];
+                    SelectNextState(selectedRegion);
+                }
+            }
+
             return nextState;
         }
 
@@ -131,24 +198,46 @@ namespace Infiniminer.States
 
         }
 
+        private void DrawSelection(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            ClickRegion menuRegion = null;
+            if (hoverRegion != null)
+                menuRegion = hoverRegion;
+            else if (selectionIndex >= 0 && selectionIndex < clkServers.Length)
+                menuRegion = clkServers[selectionIndex];
+            else if (selectionIndex >= clkServers.Length)
+                menuRegion = clkMenuServer[selectionIndex- clkServers.Length];
+            else
+                return;
+
+            Rectangle rect = menuRegion.Rectangle;
+            rect.X += drawRect.X;
+            rect.Y += drawRect.Y;
+
+            selectionAlpha += (1f - selectionAlpha) * 0.1f;
+            float timeAlpha = (1f + (float)Math.Cos(Math.Tau * gameTime.TotalGameTime.TotalSeconds)) / 2f;
+            float alpha = selectionAlpha * 0.175f + timeAlpha * 0.025f;
+
+            spriteBatch.Draw(texMenuDot, rect, new Rectangle(0, 0, 1, 1), Color.White * alpha);
+        }
+
         public override void OnRenderAtUpdate(GraphicsDevice graphicsDevice, GameTime gameTime)
         {
             UpdateUIViewport(graphicsDevice.Viewport);
 
-            descWidths = new List<int>();
             spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, blendState: BlendState.AlphaBlend, effect: uiEffect);
             spriteBatch.Draw(texMenu, drawRect, Color.White);
+            DrawSelection(spriteBatch, gameTime);
 
-            int drawY = 80;
-            foreach (ServerInformation server in serverList)
+            for (int i = 0; i < serverList.Count; i++)
             {
-                if (drawY < 660)
-                {
-                    int textWidth = (int)(uiFont.MeasureString(server.GetServerDesc()).X);
-                    descWidths.Add(textWidth + 30);
-                    spriteBatch.DrawString(uiFont, server.GetServerDesc(), new Vector2(drawRect.X + VWidth / 2 - textWidth / 2, drawRect.Y + drawY), Color.White);
-                    drawY += 25;
-                }
+                if (i >= 23)
+                    break;
+
+                string serverDesc = serverList[i].GetServerDesc();
+                Rectangle rect = clkServers[i].Rectangle;
+
+                spriteBatch.DrawString(uiFont, serverDesc, new Vector2(drawRect.X + rect.X + TxtPanningX, drawRect.Y + rect.Y + TxtPanningY), Color.White);
             }
 
             spriteBatch.DrawString(uiFont, Defines.INFINIMINER_VERSION, new Vector2(10, drawRect.Y * 2 + VHeight - 20), Color.White);
@@ -244,42 +333,87 @@ namespace Infiniminer.States
 
             if (directConnectIPEnter == false)
             {
-                int serverIndex = (y - 75) / 25;
-                if (serverIndex >= 0 && serverIndex < serverList.Count)
+                ClickRegion clkServer = ClickRegion.HitTest(clkServers, new Point(x, y));
+                if (clkServer != null)
                 {
-                    int distanceFromCenter = Math.Abs(VWidth / 2 - x);
-                    if (distanceFromCenter < descWidths[serverIndex] / 2)
-                    {
-                        (_SM as InfiniminerGame).JoinGame(serverList[serverIndex].ipEndPoint);
-                        nextState = "Infiniminer.States.LoadingState";
-                        _P.PlaySound(InfiniminerSound.ClickHigh);
-                    }
+                    int serverIndex = int.Parse(clkServer.Tag);
+                    
+                    (_SM as InfiniminerGame).JoinGame(serverList[serverIndex].ipEndPoint);
+                    nextState = "Infiniminer.States.LoadingState";
+                    _P.PlaySound(InfiniminerSound.ClickHigh);
                 }
 
-                switch (ClickRegion.HitTest(clkMenuServer, new Point(x, y)))
-                {
-                    case "refresh":
-                        _P.PlaySound(InfiniminerSound.ClickHigh);
-                        serverList = (_SM as InfiniminerGame).EnumerateServers(0.5f);
-                        break;
+                ClickRegion selectedRegion = ClickRegion.HitTest(clkMenuServer, new Point(x, y));
+                if (selectedRegion != null)
+                    SelectNextState(selectedRegion);
 
-                    case "direct":
-                        directConnectIPEnter = true;
-                        _P.PlaySound(InfiniminerSound.ClickHigh);
-                        break;
-                }
+                selectionIndex = -1;
+                selectionAlpha = 0;
+            }
+        }
+
+        private void SelectNextState(ClickRegion selectedRegion)
+        {
+            switch (selectedRegion.Tag)
+            {
+                case "refresh":
+                    _P.PlaySound(InfiniminerSound.ClickHigh);
+                    serverList = (_SM as InfiniminerGame).EnumerateServers(0.5f);
+                    RefreshClkServers();
+                    break;
+
+                case "direct":
+                    directConnectIPEnter = true;
+                    _P.PlaySound(InfiniminerSound.ClickHigh);
+                    break;
             }
         }
 
         public override void OnMouseUp(MouseButton button, int x, int y)
         {
             ScreenToUI(uiEffect, ref x, ref y);
+            x -= drawRect.X;
+            y -= drawRect.Y;
 
         }
 
         public override void OnMouseScroll(int scrollDelta)
         {
+            if (scrollDelta < 0)
+            {
+                selectionIndex = (selectionIndex + 1) % SelectionsCount;
+                selectionAlpha = 0;
+                _P.PlaySound(InfiniminerSound.ClickLow);
+            }
+            else
+            {
+                selectionIndex = (selectionIndex - 1 + SelectionsCount) % SelectionsCount;
+                selectionAlpha = 0;
+                _P.PlaySound(InfiniminerSound.ClickLow);
+            }
+        }
 
+        public override void OnMouseMove(int x, int y)
+        {
+            ScreenToUI(uiEffect, ref x, ref y);
+            x -= drawRect.X;
+            y -= drawRect.Y;
+
+            ClickRegion selectedServerRegion = ClickRegion.HitTest(clkServers, new Point(x, y));
+            if (selectedServerRegion != null)
+            {
+                hoverRegion = selectedServerRegion;
+                selectionIndex = -1;
+                selectionAlpha = 0;
+                return;
+            }
+
+            hoverRegion = ClickRegion.HitTest(clkMenuServer, new Point(x, y));
+            if (hoverRegion != null)
+            {
+                selectionIndex = -1;
+                selectionAlpha = 0;
+            }
         }
 
         // convert mouse screen position to UI world position

@@ -41,12 +41,12 @@ namespace Infiniminer
         /// <summary>
         /// Returns the tag, if any, of the region that contains point.
         /// </summary>
-        public static string HitTest(ClickRegion[] regionList, Point point)
+        public static ClickRegion HitTest(ClickRegion[] regionList, Point point)
         {
             foreach (ClickRegion r in regionList)
             {
                 if (r.Rectangle.Contains(point))
-                    return r.Tag;
+                    return r;
             }
             return null;
         }

@@ -82,6 +82,10 @@ namespace StateMasher
         {
         }
 
+        public virtual void OnMouseMove(int x, int y)
+        {
+        }
+
         //public virtual void OnStatusChange(NetConnectionStatus status)
         //{
         //}
