@@ -31,6 +31,7 @@ namespace Infiniminer
     {
         static void Main(string[] args)
         {
+            Microsoft.Xna.Platform.XR.XRFactory.RegisterXRFactory(new Microsoft.Xna.Platform.XR.LibOVR.ConcreteXRFactory());
             using Game game = new Infiniminer3DVRGame(args);
             game.Run();
         }
