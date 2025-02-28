@@ -280,6 +280,8 @@ namespace Infiniminer
         {
             RegenerateDirtyVertexLists();
 
+            BoundingFrustum boundingFrustum = new BoundingFrustum(gameInstance.propertyBag.playerCamera.ViewMatrix * gameInstance.propertyBag.playerCamera.ProjectionMatrix);
+      
             for (BlockTexture blockTexture = BlockTexture.None + 1; blockTexture < BlockTexture.MAXIMUM; blockTexture++)
                 for (uint r = 0; r < NUMREGIONS; r++)
                 {
@@ -295,7 +297,6 @@ namespace Infiniminer
 
                     // If this isn't in our view frustum, don't render it.
                     BoundingSphere regionBounds = new BoundingSphere(GetRegionCenter(r), REGIONSIZE);
-                    BoundingFrustum boundingFrustum = new BoundingFrustum(gameInstance.propertyBag.playerCamera.ViewMatrix * gameInstance.propertyBag.playerCamera.ProjectionMatrix);
                     if (boundingFrustum.Contains(regionBounds) == ContainmentType.Disjoint)
                         continue;
 
