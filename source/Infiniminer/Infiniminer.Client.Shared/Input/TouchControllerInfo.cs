@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Input.Oculus;
+using Microsoft.Xna.Framework.Input.XR;
 
 namespace Infiniminer;
 
@@ -39,8 +39,8 @@ public sealed class TouchControllerInfo
     private float _rightVibrateStrength;
     private TimeSpan _rightVibrateTimeRemaining;
 
-    TouchControllerState PreviousState;
-    TouchControllerState CurrentState;
+    GamePadState PreviousState;
+    GamePadState CurrentState;
 
     public bool IsAttached { get; private set; }
     public Vector2 LeftStickThreshold { get; set; }
@@ -181,9 +181,9 @@ public sealed class TouchControllerInfo
     ///////////////////////////////////////////////////////////////////////////
     #region Face Buttons
 
-    public bool ButtonCheck(Buttons button) => CurrentState.IsButtonPressed(button);
-    public bool ButtonPressed(Buttons button) => CurrentState.IsButtonPressed(button) && !PreviousState.IsButtonPressed(button);
-public bool ButtonReleased(Buttons button) => !CurrentState.IsButtonPressed(button) && PreviousState.IsButtonPressed(button);
+    public bool ButtonCheck(Buttons button) => CurrentState.IsButtonDown(button);
+    public bool ButtonPressed(Buttons button) => CurrentState.IsButtonDown(button) && !PreviousState.IsButtonDown(button);
+    public bool ButtonReleased(Buttons button) => !CurrentState.IsButtonDown(button) && PreviousState.IsButtonDown(button);
 
     #endregion Face Buttons
 

@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input.Oculus;
+using Microsoft.Xna.Framework.Input.XR;
+using Microsoft.Xna.Framework.XR;
 
 namespace Infiniminer
 {
@@ -11,7 +12,7 @@ namespace Infiniminer
         SpriteBatch spriteBatch;
         BasicEffect spriteBatchEffect;
 
-        OvrDevice _ovrDevice;
+        XRDevice _xrDevice;
         HandsState _handsState;
 
         RasterizerState _wireFrameRasterizerState;
@@ -41,7 +42,7 @@ namespace Infiniminer
             graphicsDeviceManager.GraphicsProfile = GraphicsProfile.FL11_0;
 
             // create oculus device
-            _ovrDevice = new OvrDevice(graphicsDeviceManager);
+            _xrDevice = new XRDevice("Infiniminer XR", this);
         }
 
         protected override void LoadContent()
@@ -62,12 +63,12 @@ namespace Infiniminer
         protected override void Update(GameTime gameTime)
         {
             // initialize ovrDevice
-            if (!_ovrDevice.IsConnected)
+            if (_xrDevice.DeviceState != XRDeviceState.Enabled)
             {
                 try
                 {
                     // Initialize Oculus VR
-                    int ovrCreateResult = _ovrDevice.CreateDevice();
+                    int ovrCreateResult = _xrDevice.BeginSessionAsync();
                     if (ovrCreateResult == 0)
                     {
 
@@ -79,9 +80,9 @@ namespace Infiniminer
                 }
             }
 
-            if (_ovrDevice.IsConnected)
+            if (_xrDevice.DeviceState == XRDeviceState.Enabled)
             {
-                _handsState = _ovrDevice.GetHandsState();
+                _handsState = _xrDevice.GetHandsState();
             }
 
             base.Update(gameTime);
@@ -98,21 +99,21 @@ namespace Infiniminer
             Matrix view = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
             Matrix projection = Matrix.CreatePerspectiveFieldOfView(1, aspect, 1, 10);
 
-            if (_ovrDevice.IsConnected)
+            if (_xrDevice.DeviceState == XRDeviceState.Enabled)
             {
                 // draw on VR headset
-                int ovrResult = _ovrDevice.BeginFrame();
+                int ovrResult = _xrDevice.BeginFrame();
                 if (ovrResult >= 0)
                 {
-                    HeadsetState headsetState = _ovrDevice.GetHeadsetState();
-                    Matrix headTransform = headsetState.HeadTransform;
+                    HeadsetState headsetState = _xrDevice.GetHeadsetState();
+                    Matrix headTransform = Matrix.CreateFromPose(headsetState.HeadPose);
 
                     this.propertyBag.playerCamera.ApplyHeadTransform(headTransform);
 
                     // draw each eye on a rendertarget
-                    for (int eye = 0; eye < 2; eye++)
+                    foreach (XREye eye in _xrDevice.GetEyes())
                     {
-                        RenderTarget2D rt = _ovrDevice.GetEyeRenderTarget(eye);
+                        RenderTarget2D rt = _xrDevice.GetEyeRenderTarget(eye);
                         GraphicsDevice.SetRenderTarget(rt);
                         if (this.propertyBag.blockEngine.bloomPosteffect != null)
                             this.propertyBag.blockEngine.bloomPosteffect.DefaultBackBuffer = rt;
@@ -128,7 +129,7 @@ namespace Infiniminer
                         view = headsetState.GetEyeView(eye);
                         view = Matrix.Invert(eyeTransform);
 
-                        projection = _ovrDevice.CreateProjection(eye, 0.01f, 1000.0f);
+                        projection = _xrDevice.CreateProjection(eye, 0.01f, 1000.0f);
 
                         this.propertyBag.playerCamera.UseVrCamera = true;
                         this.propertyBag.playerCamera.ViewMatrix = Matrix.Invert(globalWorld) * view;
@@ -147,11 +148,11 @@ namespace Infiniminer
                         if (this.propertyBag.blockEngine.bloomPosteffect != null)
                             this.propertyBag.blockEngine.bloomPosteffect.DefaultBackBuffer = null;
                         // submit eye rendertarget
-                        _ovrDevice.CommitRenderTarget(eye, rt);
+                        _xrDevice.CommitRenderTarget(eye, rt);
                     }
 
                     // submit frame
-                    int result = _ovrDevice.EndFrame();
+                    int result = _xrDevice.EndFrame();
 
                     // draw on PC screen
                     GraphicsDevice.SetRenderTarget(null);
