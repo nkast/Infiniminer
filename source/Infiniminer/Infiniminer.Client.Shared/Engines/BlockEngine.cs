@@ -121,6 +121,7 @@ namespace Infiniminer
         const int REGIONSIZE = 16;
         const int REGIONRATIO = MAPSIZE / REGIONSIZE;
         const int NUMREGIONS = REGIONRATIO * REGIONRATIO * REGIONRATIO;
+        readonly float REGIONBOUNDINGRADIUS = new Vector3(REGIONSIZE / 2).Length();
 
         public void DownloadComplete()
         {
@@ -296,7 +297,7 @@ namespace Infiniminer
                         continue;
 
                     // If this isn't in our view frustum, don't render it.
-                    BoundingSphere regionBounds = new BoundingSphere(GetRegionCenter(r), REGIONSIZE);
+                    BoundingSphere regionBounds = new BoundingSphere(GetRegionCenter(r), REGIONBOUNDINGRADIUS);
                     if (boundingFrustum.Contains(regionBounds) == ContainmentType.Disjoint)
                         continue;
 
