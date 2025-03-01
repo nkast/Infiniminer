@@ -121,6 +121,7 @@ namespace Infiniminer
         const int REGIONSIZE = 16;
         const int REGIONRATIO = MAPSIZE / REGIONSIZE;
         const int NUMREGIONS = REGIONRATIO * REGIONRATIO * REGIONRATIO;
+        readonly float REGIONBOUNDINGRADIUS = new Vector3(REGIONSIZE / 2).Length();
 
         public void DownloadComplete()
         {
@@ -280,6 +281,8 @@ namespace Infiniminer
         {
             RegenerateDirtyVertexLists();
 
+            BoundingFrustum boundingFrustum = new BoundingFrustum(gameInstance.propertyBag.playerCamera.ViewMatrix * gameInstance.propertyBag.playerCamera.ProjectionMatrix);
+      
             for (BlockTexture blockTexture = BlockTexture.None + 1; blockTexture < BlockTexture.MAXIMUM; blockTexture++)
                 for (uint r = 0; r < NUMREGIONS; r++)
                 {
@@ -294,8 +297,7 @@ namespace Infiniminer
                         continue;
 
                     // If this isn't in our view frustum, don't render it.
-                    BoundingSphere regionBounds = new BoundingSphere(GetRegionCenter(r), REGIONSIZE);
-                    BoundingFrustum boundingFrustum = new BoundingFrustum(gameInstance.propertyBag.playerCamera.ViewMatrix * gameInstance.propertyBag.playerCamera.ProjectionMatrix);
+                    BoundingSphere regionBounds = new BoundingSphere(GetRegionCenter(r), REGIONBOUNDINGRADIUS);
                     if (boundingFrustum.Contains(regionBounds) == ContainmentType.Disjoint)
                         continue;
 
