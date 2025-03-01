@@ -15,4 +15,11 @@
   <ItemGroup>
     <ProjectReference Include="..\Infiniminer.Shared\Infiniminer.Shared.Kni.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ILLink.Descriptors.Kni.xml">
+      <LogicalName>ILLink.Descriptors.xml</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>
