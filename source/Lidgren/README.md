@@ -1,4 +1,4 @@
-# Ligren Version 1.0.0.0
+# Lidgren Version 1.0.0.0
 This directory contains the original source for Lidgren version 1.0.0.0 exported from https://code.google.com/archive/p/lidgren-network/ then modfied and updated to target .NET 6.0.  The purpose of this was to update that specific version of Lidgren from .NET Framework to .NET 6 to support the port of Inifiniminer from XNA 3.1 to MonoGame 3.8.1.303.
 
 ## License
