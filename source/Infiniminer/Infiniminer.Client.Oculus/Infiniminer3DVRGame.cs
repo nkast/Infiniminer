@@ -154,33 +154,6 @@ namespace Infiniminer
                     // submit frame
                     int result = _xrDevice.EndFrame();
 
-                    // draw on PC screen
-                    GraphicsDevice.SetRenderTarget(null);
-                    if (this.propertyBag.blockEngine.bloomPosteffect != null)
-                        this.propertyBag.blockEngine.bloomPosteffect.DefaultBackBuffer = null;
-
-                    this.propertyBag.playerCamera.ApplyHeadTransform(Matrix.Identity);
-                    this.propertyBag.playerCamera.UseVrCamera = false;
-
-                    view = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
-                    projection = Matrix.CreatePerspectiveFieldOfView(1, aspect, 1, 10);
-                    DrawScene(gameTime, view, projection);
-
-                    this.propertyBag.playerCamera.UseVrCamera = true;
-                    this.propertyBag.playerCamera.ApplyHeadTransform(headTransform);
-
-                    // preview VR rendertargets
-                    //GraphicsDevice.Clear(Color.Black);
-                    //var pp = GraphicsDevice.PresentationParameters;
-                    //int height = pp.BackBufferHeight;
-                    //float aspectRatio = (float)ovrDevice.GetEyeRenderTarget(0).Width / ovrDevice.GetEyeRenderTarget(0).Height;
-
-                    //int width = Math.Min(pp.BackBufferWidth, (int)(height * aspectRatio));
-                    //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
-                    //spriteBatch.Draw(ovrDevice.GetEyeRenderTarget(0), new Rectangle(0, 0, width, height), Color.White);
-                    //spriteBatch.Draw(ovrDevice.GetEyeRenderTarget(1), new Rectangle(width, 0, width, height), Color.White);
-                    //spriteBatch.End();
-
                     return;
                 }
             }
