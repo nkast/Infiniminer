@@ -82,9 +82,10 @@ namespace Infiniminer
 
             // Look up the resolution and format of our main backbuffer.
             PresentationParameters pp = GraphicsDevice.PresentationParameters;
+            Viewport vp = GraphicsDevice.Viewport;
 
-            int width = pp.BackBufferWidth;
-            int height = pp.BackBufferHeight;
+            int width = vp.Width;
+            int height = vp.Height;
 
             InitializeRenderTargets(width, height, pp);
         }
@@ -132,9 +133,10 @@ namespace Infiniminer
         {
             // Look up the resolution and format of our main backbuffer.
             PresentationParameters pp = GraphicsDevice.PresentationParameters;
+            Viewport vp = GraphicsDevice.Viewport;
 
-            int width = Math.Max(pp.BackBufferWidth, 1);
-            int height = Math.Max(pp.BackBufferHeight, 1);
+            int width = Math.Max(vp.Width, 1);
+            int height = Math.Max(vp.Height, 1);
 
             if (resolveTarget.Width != width || resolveTarget.Height != height)
             {
