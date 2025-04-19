@@ -95,7 +95,7 @@ namespace Infiniminer
             SurfaceFormat format = pp.BackBufferFormat;
 
             // Create a texture for reading back the backbuffer contents.
-            resolveTarget = new RenderTarget2D(GraphicsDevice, width, height, false, format, pp.DepthStencilFormat, pp.MultiSampleCount, RenderTargetUsage.DiscardContents);
+            resolveTarget = new RenderTarget2D(GraphicsDevice, width, height, false, format, pp.DepthStencilFormat, 4, RenderTargetUsage.DiscardContents);
 
             // Create two rendertargets for the bloom processing. These are half the
             // size of the backbuffer, in order to minimize fillrate costs. Reducing

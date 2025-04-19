@@ -453,6 +453,7 @@ namespace Infiniminer
             graphicsDeviceManager.PreferredBackBufferWidth = 1024;
             graphicsDeviceManager.PreferredBackBufferHeight = 768;
             graphicsDeviceManager.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
+            graphicsDeviceManager.PreferMultiSampling = true;
 
             using(ConfigurationFileReader reader = new ConfigurationFileReader(TitleContainer.OpenStream("client.config.txt")))
             {
