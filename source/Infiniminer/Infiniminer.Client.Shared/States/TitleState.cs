@@ -109,7 +109,8 @@ namespace Infiniminer.States
             }
             else if(_P.inputEngine.MenuBack.Pressed())
             {
-                _SM.Exit();
+                try { _SM.Exit(); }
+                catch (PlatformNotSupportedException) { /* ignore */ }
             }
             
             return nextState;
